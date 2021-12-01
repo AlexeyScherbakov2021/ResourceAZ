@@ -32,13 +32,15 @@
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
-            <DataGrid Margin="10" AutoGenerateColumns="false"
+            <DataGrid Margin="4" AutoGenerateColumns="false"
                 ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" CanUserAddRows="False" CanUserDeleteRows="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}"  ClipboardContentBinding="{x:Null}"/>
-                    <DataGridTextColumn Header="Ток" Binding="{Binding Current, StringFormat=F2}" ClipboardContentBinding="{x:Null}"/>
-                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}" ClipboardContentBinding="{x:Null}"/>
-                    <DataGridTextColumn Header="Потенциал" Binding="{Binding SummPot, StringFormat=F2}" ClipboardContentBinding="{x:Null}"/>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
+                    <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Потенц." Binding="{Binding SummPot, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F2}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
@@ -52,7 +54,7 @@
                 <RadioButton Content="Среднее по годам" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
                 <RadioButton Content="Среднее по месяцам" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
                 <RadioButton Content="Среднее по дням" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
-                <CheckBox Content="Удалить неадекватные значения" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" IsChecked="{Binding RemoveBadValue}"/>
+                <CheckBox Content="Удалить неадекватные значения" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" IsChecked="{Binding RemoveBadValue}" Visibility="Hidden"/>
             </Grid>
         </GroupBox>
         <GroupBox Header="Параметры расчета" Margin="667,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="226" Background="#FFE8E8E8">
@@ -62,6 +64,8 @@
             <Grid>
                 <TextBox Margin="158,9,10,114" Text="{Binding MinPotCalc}"/>
                 <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
+                <RadioButton Content="Брать крайние точки" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" IsChecked="{Binding EndPoints}"/>
+                <RadioButton Content="Линия аппроксимации" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" IsChecked="{Binding LineApprox}"/>
             </Grid>
         </GroupBox>
         <Button Content="Рассчитать" HorizontalAlignment="Left" Margin="478,247,0,0" VerticalAlignment="Top" Width="110" Height="38" Command="{Binding CalculateCommand}"/>

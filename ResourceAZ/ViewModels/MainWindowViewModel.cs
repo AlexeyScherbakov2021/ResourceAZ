@@ -16,15 +16,17 @@ using OxyPlot.Series;
 using System.Windows.Media;
 using OxyPlot.Axes;
 using System.Collections.ObjectModel;
+using ResourceAZ.Views;
 
 namespace ResourceAZ.ViewModels
 {
-    enum TypeMeasure { CURRENT,  NAPR, POTENCIAL };
-    enum KindGroup { NONE, DAY, MONTH, YEAR };
+    //enum TypeMeasure { CURRENT,  NAPR, POTENCIAL };
 
      internal class MainWindowViewModel : ViewModel
     {
+        // оригинал полученного списка измерений
         private ObservableCollection<Measure> listMeasureOrig;
+        // сгрупированный список измерений
         private ObservableCollection<Measure> _listMeasure;
         public ObservableCollection<Measure> listMeasure
         {
@@ -32,23 +34,31 @@ namespace ResourceAZ.ViewModels
             set
             {
                 Set(ref _listMeasure, value);
-                ModelToChart(listMeasure, TypeMeasure.CURRENT);
-                //ModelToChart(listMeasure, TypeMeasure.NAPR);
-                //ModelToChart(listMeasure, TypeMeasure.POTENCIAL);
-
+                ModelToChart(listMeasure);
             }
         }
 
+        // измерения, преобраованные в списки точек для графика
+        #region
         public ObservableCollection<DataPoint> dpCurrent { get; set; }
         ObservableCollection<DataPoint> dpNapr { get; set; }
         ObservableCollection<DataPoint> dpPot { get; set; }
-
-        private IMeasureData repository = new MeasureDataGen();
+        // модели для графиков
         public PlotModel ModelCurrent { get; }
         public PlotModel ModelNapr { get; }
         public PlotModel ModelPot { get; }
+        #endregion
+
+        // база данных измерений
+        private IMeasureData repository = new MeasureDataGen();
+
+
         public double MinPotCalc { get; set; } = -1.5;
 
+        private KindGroup SelectGroup;
+
+        // переменные связанные с экраннй формой
+        #region
         private bool _GroupNone;
         public bool GroupNone
         {
@@ -57,7 +67,10 @@ namespace ResourceAZ.ViewModels
             {
                 _GroupNone = value;
                 if (value)
+                {
                     FormatListMeasure(KindGroup.NONE);
+                    SelectGroup = KindGroup.NONE;
+                }
             }
         } 
         private bool _GroupYear;
@@ -68,9 +81,12 @@ namespace ResourceAZ.ViewModels
             {
                 _GroupYear = value;
                 if (value)
+                { 
                     FormatListMeasure(KindGroup.YEAR);
-            }
+                    SelectGroup = KindGroup.YEAR;
+                }
         }
+    }
 
         private bool _GroupMonth;
         public bool GroupMonth
@@ -80,7 +96,10 @@ namespace ResourceAZ.ViewModels
             {
                 _GroupMonth = value;
                 if(value)
+                { 
                     FormatListMeasure(KindGroup.MONTH);
+                    SelectGroup = KindGroup.MONTH;
+                }
             }
         }
 
@@ -92,11 +111,23 @@ namespace ResourceAZ.ViewModels
             {
                 _GroupDay = value;
                 if (value)
+                { 
                     FormatListMeasure(KindGroup.DAY);
+                    SelectGroup = KindGroup.DAY;
+                }
             }
         }
 
-public bool RemoveBadValue { get; set; }
+        public bool RemoveBadValue { get; set; }
+
+        public bool LineApprox { get; set; }
+        public bool EndPoints { get; set; } = true;
+
+        #endregion
+
+        #region
+        #endregion
+
 
         #region Команды
         public ICommand CloseApplicationCommand { get; }
@@ -107,6 +138,8 @@ public bool RemoveBadValue { get; set; }
             Application.Current.Shutdown();
         }
 
+
+        // команда на расчеты
         public ICommand CalculateCommand { get; }
         private bool CanCalculateCommand(object p)
         {
@@ -114,6 +147,13 @@ public bool RemoveBadValue { get; set; }
         }
         private void OnCalculateCommand(object p)
         {
+            KindCalc kc = LineApprox ? KindCalc.ApprLine : KindCalc.EndPoints;
+            double LastR = listMeasure[listMeasure.Count - 1].Resist;
+            double LastA = listMeasure[listMeasure.Count - 1].Koeff;
+
+            CalcWindow calcWin = new CalcWindow(SelectGroup, kc, LastA, LastR, MinPotCalc);
+            calcWin.ShowDialog();
+
         }
 
         #endregion
@@ -135,11 +175,14 @@ public bool RemoveBadValue { get; set; }
             listMeasureOrig = repository.GetAllData();
             listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
 
+            // отмечаем на экране первый RadioButton
             GroupNone = true;
         }
 
 
-
+        //--------------------------------------------------------------------------------------------
+        // первоначальная инициализация графиков
+        //--------------------------------------------------------------------------------------------
         private void InitChart()
         {
 
@@ -163,7 +206,7 @@ public bool RemoveBadValue { get; set; }
             ModelCurrent.Title = "Выходной ток";
             ModelCurrent.Axes.Add(YAxis);
 
-            // инициализация граяика напряжения
+            // инициализация графика напряжения
             dpNapr = new ObservableCollection<DataPoint>();
             ls = new LineSeries();
             ls.ItemsSource = dpNapr;
@@ -183,7 +226,7 @@ public bool RemoveBadValue { get; set; }
             ModelNapr.Title = "Напряжение";
             ModelNapr.Axes.Add(YAxis);
 
-            // инициализация граяика потенциала
+            // инициализация графика потенциала
             dpPot = new ObservableCollection<DataPoint>();
             ls = new LineSeries();
             ls.ItemsSource = dpPot;
@@ -205,17 +248,16 @@ public bool RemoveBadValue { get; set; }
 
         }
 
-
-
         //--------------------------------------------------------------------------------------------
         // создание графиков и перенос данных а график
         //--------------------------------------------------------------------------------------------
-        private void ModelToChart(ObservableCollection<Measure> meas, TypeMeasure type)
+        private void ModelToChart(ObservableCollection<Measure> meas)
         {
             dpCurrent.Clear();
             dpNapr.Clear();
             dpPot.Clear();
 
+            // заполнение точками срисков для графиков
             foreach (Measure m in meas)
             {
                 dpCurrent.Add(new DataPoint(m.date.ToOADate(), m.Current));
@@ -224,6 +266,7 @@ public bool RemoveBadValue { get; set; }
 
             }
 
+            // обновление точек графиков на экране
             ModelCurrent.InvalidatePlot(true);
             ModelNapr.InvalidatePlot(true);
             ModelPot.InvalidatePlot(true);
