@@ -54,6 +54,8 @@ namespace ResourceAZ.ViewModels
 
 
         public double MinPotCalc { get; set; } = -1.5;
+        public double MaxCurrentSKZ { get; set; } = 20.0;
+        public double MAxNaprSKZ { get; set; } = 48.0;
 
         private KindGroup SelectGroup;
 

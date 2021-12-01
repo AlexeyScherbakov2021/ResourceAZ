@@ -57,15 +57,19 @@
                 <CheckBox Content="Удалить неадекватные значения" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" IsChecked="{Binding RemoveBadValue}" Visibility="Hidden"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Параметры расчета" Margin="667,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="226" Background="#FFE8E8E8">
+        <GroupBox Header="Параметры расчета" Margin="667,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="234" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid>
-                <TextBox Margin="158,9,10,114" Text="{Binding MinPotCalc}"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
-                <RadioButton Content="Брать крайние точки" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" IsChecked="{Binding EndPoints}"/>
-                <RadioButton Content="Линия аппроксимации" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top" IsChecked="{Binding LineApprox}"/>
+                <TextBox Margin="172,9,6,114" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
+                <TextBox Margin="172,32,6,91" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
+                <TextBox Margin="172,55,6,68" Text="{Binding MAxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
+                <RadioButton Content="Брать крайние точки" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding EndPoints}"/>
+                <RadioButton Content="Линия аппроксимации" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="{Binding LineApprox}"/>
             </Grid>
         </GroupBox>
         <Button Content="Рассчитать" HorizontalAlignment="Left" Margin="478,247,0,0" VerticalAlignment="Top" Width="110" Height="38" Command="{Binding CalculateCommand}"/>
