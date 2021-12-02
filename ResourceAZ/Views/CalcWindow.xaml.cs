@@ -20,14 +20,11 @@ namespace ResourceAZ.Views
     /// </summary>
     public partial class CalcWindow : Window
     {
-        private double minPot;
 
-
-        public CalcWindow(KindGroup kg, KindCalc kc, double LastA, double LastR, double MinPot)
+        public CalcWindow()
         {
-            minPot = MinPot;
-
             InitializeComponent();
         }
+
     }
 }

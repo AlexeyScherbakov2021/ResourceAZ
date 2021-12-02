@@ -20,9 +20,8 @@ using ResourceAZ.Views;
 
 namespace ResourceAZ.ViewModels
 {
-    //enum TypeMeasure { CURRENT,  NAPR, POTENCIAL };
 
-     internal class MainWindowViewModel : ViewModel
+     internal partial class MainWindowViewModel : ViewModel
     {
         // оригинал полученного списка измерений
         private ObservableCollection<Measure> listMeasureOrig;
@@ -35,6 +34,11 @@ namespace ResourceAZ.ViewModels
             {
                 Set(ref _listMeasure, value);
                 ModelToChart(listMeasure);
+                if (LineApprox)
+                {
+                    CalcApproxLine(ModelA, dpA);
+                    CalcApproxLine(ModelR, dpR);
+                }
             }
         }
 
@@ -43,82 +47,33 @@ namespace ResourceAZ.ViewModels
         public ObservableCollection<DataPoint> dpCurrent { get; set; }
         ObservableCollection<DataPoint> dpNapr { get; set; }
         ObservableCollection<DataPoint> dpPot { get; set; }
+        ObservableCollection<DataPoint> dpA { get; set; }
+        //ObservableCollection<DataPoint> dpAavg { get; set; }
+        ObservableCollection<DataPoint> dpR { get; set; }
+       // ObservableCollection<DataPoint> dpRavg { get; set; }
         // модели для графиков
         public PlotModel ModelCurrent { get; }
         public PlotModel ModelNapr { get; }
         public PlotModel ModelPot { get; }
+        public PlotModel ModelA { get; }
+        public PlotModel ModelR { get; }
         #endregion
 
         // база данных измерений
         private IMeasureData repository = new MeasureDataGen();
 
-
         public double MinPotCalc { get; set; } = -1.5;
         public double MaxCurrentSKZ { get; set; } = 20.0;
-        public double MAxNaprSKZ { get; set; } = 48.0;
+        public double MaxNaprSKZ { get; set; } = 48.0;
 
         private KindGroup SelectGroup;
 
         // переменные связанные с экраннй формой
         #region
-        private bool _GroupNone;
-        public bool GroupNone
-        {
-            get => _GroupNone;
-            set
-            {
-                _GroupNone = value;
-                if (value)
-                {
-                    FormatListMeasure(KindGroup.NONE);
-                    SelectGroup = KindGroup.NONE;
-                }
-            }
-        } 
-        private bool _GroupYear;
-        public bool GroupYear
-        {
-            get => _GroupYear;
-            set
-            {
-                _GroupYear = value;
-                if (value)
-                { 
-                    FormatListMeasure(KindGroup.YEAR);
-                    SelectGroup = KindGroup.YEAR;
-                }
-        }
-    }
-
-        private bool _GroupMonth;
-        public bool GroupMonth
-        {
-            get => _GroupMonth;
-            set
-            {
-                _GroupMonth = value;
-                if(value)
-                { 
-                    FormatListMeasure(KindGroup.MONTH);
-                    SelectGroup = KindGroup.MONTH;
-                }
-            }
-        }
-
-        private bool _GroupDay;
-        public bool GroupDay
-        {
-            get => _GroupDay;
-            set
-            {
-                _GroupDay = value;
-                if (value)
-                { 
-                    FormatListMeasure(KindGroup.DAY);
-                    SelectGroup = KindGroup.DAY;
-                }
-            }
-        }
+        public bool GroupNone { get; set; }
+        public bool GroupYear { get; set; }
+        public bool GroupMonth { get; set; }
+        public bool GroupDay { get; set; }
 
         public bool RemoveBadValue { get; set; }
 
@@ -126,10 +81,6 @@ namespace ResourceAZ.ViewModels
         public bool EndPoints { get; set; } = true;
 
         #endregion
-
-        #region
-        #endregion
-
 
         #region Команды
         public ICommand CloseApplicationCommand { get; }
@@ -140,6 +91,41 @@ namespace ResourceAZ.ViewModels
             Application.Current.Shutdown();
         }
 
+        public ICommand KindCalcCommand { get; }
+        private bool CanKindCalcCommand(object p) => true;
+        private void OnKindCalcCommandCommandExecuted(object p)
+        {
+            KindCalc param = (KindCalc)p;
+            if (param == KindCalc.ApprLine)
+            {
+                CalcApproxLine(ModelA, dpA);
+                CalcApproxLine(ModelR, dpR);
+            }
+            else
+            {
+                if (ModelA.Series.Count == 2)
+                {
+                    ModelA.Series[1].IsVisible = false;
+                    ModelA.InvalidatePlot(true);
+                }
+
+                if (ModelR.Series.Count == 2)
+                {
+                    ModelR.Series[1].IsVisible = false;
+                    ModelR.InvalidatePlot(true);
+                }
+            }
+        }
+
+        public ICommand GroupByCommand { get; }
+        private bool CanGroupByCommand(object p) => true;
+        private void OnGroupByCommandExecuted(object p)
+        {
+            KindGroup param = (KindGroup)p;
+            FormatListMeasure(param);
+            SelectGroup = param;
+
+        }
 
         // команда на расчеты
         public ICommand CalculateCommand { get; }
@@ -147,14 +133,17 @@ namespace ResourceAZ.ViewModels
         {
             return listMeasure.Count > 2;
         }
+
         private void OnCalculateCommand(object p)
         {
             KindCalc kc = LineApprox ? KindCalc.ApprLine : KindCalc.EndPoints;
             double LastR = listMeasure[listMeasure.Count - 1].Resist;
             double LastA = listMeasure[listMeasure.Count - 1].Koeff;
 
-            CalcWindow calcWin = new CalcWindow(SelectGroup, kc, LastA, LastR, MinPotCalc);
-            calcWin.ShowDialog();
+            CalcWindowViewModel vm = new CalcWindowViewModel(SelectGroup, kc, MinPotCalc, listMeasure);
+            Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);
+            win.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            win.Show();
 
         }
 
@@ -165,13 +154,21 @@ namespace ResourceAZ.ViewModels
             // инициализация команд
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecuted, CanCloseApplicationCommand);
             CalculateCommand = new LambdaCommand(OnCalculateCommand, CanCalculateCommand);
+            KindCalcCommand = new LambdaCommand(OnKindCalcCommandCommandExecuted, CanKindCalcCommand);
+            GroupByCommand = new LambdaCommand(OnGroupByCommandExecuted, CanGroupByCommand);
 
             // подгтовка графиков для всех измерений
             ModelCurrent = new PlotModel();
             ModelNapr = new PlotModel();
             ModelPot = new PlotModel();
+            ModelA = new PlotModel();
+            ModelR = new PlotModel();
 
-            InitChart();
+            dpCurrent = InitChart(ModelCurrent, "Выходной ток");
+            dpNapr = InitChart(ModelNapr, "Напряжение");
+            dpPot = InitChart(ModelPot, "Потенциал");
+            dpA = InitChart(ModelA, "Коэффициенты");
+            dpR = InitChart(ModelR, "Сопротивление");
 
             // получение списка значений
             listMeasureOrig = repository.GetAllData();
@@ -179,99 +176,7 @@ namespace ResourceAZ.ViewModels
 
             // отмечаем на экране первый RadioButton
             GroupNone = true;
-        }
 
-
-        //--------------------------------------------------------------------------------------------
-        // первоначальная инициализация графиков
-        //--------------------------------------------------------------------------------------------
-        private void InitChart()
-        {
-
-            // инициализация графика тока
-            dpCurrent = new ObservableCollection<DataPoint>();
-            LineSeries ls = new LineSeries();
-            ls.ItemsSource = dpCurrent;
-            ModelCurrent.Series.Add(ls);
-            ls.Color = OxyColor.FromRgb(0, 0, 255);
-            ls.MarkerType = MarkerType.Circle;
-            ls.StrokeThickness = 3;
-            var XAxis = new DateTimeAxis();
-            XAxis.AxislineStyle = LineStyle.Dot;
-            XAxis.StringFormat = "dd.MM.yyyy";
-            XAxis.MajorGridlineStyle = LineStyle.Automatic;
-            XAxis.MinorGridlineStyle = LineStyle.Dot;
-            ModelCurrent.Axes.Add(XAxis);
-            var YAxis = new LinearAxis();
-            YAxis.MajorGridlineStyle = LineStyle.Automatic;
-            YAxis.MinorGridlineStyle = LineStyle.Dot;
-            ModelCurrent.Title = "Выходной ток";
-            ModelCurrent.Axes.Add(YAxis);
-
-            // инициализация графика напряжения
-            dpNapr = new ObservableCollection<DataPoint>();
-            ls = new LineSeries();
-            ls.ItemsSource = dpNapr;
-            ModelNapr.Series.Add(ls);
-            ls.Color = OxyColor.FromRgb(0, 0, 255);
-            ls.MarkerType = MarkerType.Circle;
-            ls.StrokeThickness = 3;
-            XAxis = new DateTimeAxis();
-            XAxis.AxislineStyle = LineStyle.Dot;
-            XAxis.StringFormat = "dd.MM.yyyy";
-            XAxis.MajorGridlineStyle = LineStyle.Automatic;
-            XAxis.MinorGridlineStyle = LineStyle.Dot;
-            ModelNapr.Axes.Add(XAxis);
-            YAxis = new LinearAxis();
-            YAxis.MajorGridlineStyle = LineStyle.Automatic;
-            YAxis.MinorGridlineStyle = LineStyle.Dot;
-            ModelNapr.Title = "Напряжение";
-            ModelNapr.Axes.Add(YAxis);
-
-            // инициализация графика потенциала
-            dpPot = new ObservableCollection<DataPoint>();
-            ls = new LineSeries();
-            ls.ItemsSource = dpPot;
-            ModelPot.Series.Add(ls);
-            ls.Color = OxyColor.FromRgb(0, 0, 255);
-            ls.MarkerType = MarkerType.Circle;
-            ls.StrokeThickness = 3;
-            XAxis = new DateTimeAxis();
-            XAxis.AxislineStyle = LineStyle.Dot;
-            XAxis.StringFormat = "dd.MM.yyyy";
-            XAxis.MajorGridlineStyle = LineStyle.Automatic;
-            XAxis.MinorGridlineStyle = LineStyle.Dot;
-            ModelPot.Axes.Add(XAxis);
-            YAxis = new LinearAxis();
-            YAxis.MajorGridlineStyle = LineStyle.Automatic;
-            YAxis.MinorGridlineStyle = LineStyle.Dot;
-            ModelPot.Title = "Потенциал";
-            ModelPot.Axes.Add(YAxis);
-
-        }
-
-        //--------------------------------------------------------------------------------------------
-        // создание графиков и перенос данных а график
-        //--------------------------------------------------------------------------------------------
-        private void ModelToChart(ObservableCollection<Measure> meas)
-        {
-            dpCurrent.Clear();
-            dpNapr.Clear();
-            dpPot.Clear();
-
-            // заполнение точками срисков для графиков
-            foreach (Measure m in meas)
-            {
-                dpCurrent.Add(new DataPoint(m.date.ToOADate(), m.Current));
-                dpNapr.Add(new DataPoint(m.date.ToOADate(), m.Napr));
-                dpPot.Add(new DataPoint(m.date.ToOADate(), m.SummPot));
-
-            }
-
-            // обновление точек графиков на экране
-            ModelCurrent.InvalidatePlot(true);
-            ModelNapr.InvalidatePlot(true);
-            ModelPot.InvalidatePlot(true);
         }
 
 

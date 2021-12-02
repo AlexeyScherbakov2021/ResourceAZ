@@ -19,6 +19,7 @@ namespace ResourceAZ.Repository
                 new Measure { date = new DateTime(2016,1,1), Current=3.25, Napr=12.87, SummPot=-0.9 },
                 new Measure { date = new DateTime(2017,1,1), Current=3.4, Napr=13.26, SummPot=-0.9},
                 new Measure { date = new DateTime(2018,1,1), Current=3.58, Napr=13.8, SummPot=-0.9},
+
                 new Measure { date = new DateTime(2018,1,10), Current=3.5, Napr=13.71, SummPot=-0.9},
                 new Measure { date = new DateTime(2018,2,1), Current=3.5, Napr=13.68, SummPot=-0.9},
                 new Measure { date = new DateTime(2018,2,10), Current=3.5, Napr=13.85, SummPot=-0.9},

@@ -1,4 +1,4 @@
-﻿<Window x:Class="ResourceAZ.MainWindow"
+﻿<Window x:Class="ResourceAZ.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,17 +13,27 @@
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="916,39,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="246" HorizontalAlignment="Left" Width="472">
+        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="424,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelNapr}" Margin="916,303,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="246" HorizontalAlignment="Left" Width="472">
+        <oxy:PlotView Model="{Binding ModelNapr}" Margin="424,404,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelPot}" Margin="916,571,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="246" HorizontalAlignment="Left" Width="472">
+        <oxy:PlotView Model="{Binding ModelPot}" Margin="424,572,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
+            <oxy:PlotView.Effect>
+                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+            </oxy:PlotView.Effect>
+        </oxy:PlotView>
+        <oxy:PlotView Model="{Binding ModelA}" Margin="770,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
+            <oxy:PlotView.Effect>
+                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+            </oxy:PlotView.Effect>
+        </oxy:PlotView>
+        <oxy:PlotView Model="{Binding ModelR}" Margin="770,497,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
@@ -39,25 +49,24 @@
                     <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
                     <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
                     <DataGridTextColumn Header="Потенц." Binding="{Binding SummPot, StringFormat=F2}"/>
-                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
                     <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
-        <GroupBox Header="Манипуляции со списком" Margin="424,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="232" Background="#FFE8E8E8">
+        <GroupBox Header="Манипуляции со списком" Margin="424,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="280" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid Margin="0">
-                <RadioButton Content="Все измерения" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone}">
-                </RadioButton>
-                <RadioButton Content="Среднее по годам" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
-                <RadioButton Content="Среднее по месяцам" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
-                <RadioButton Content="Среднее по дням" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
+                <RadioButton Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone}"/>
+                <RadioButton Content="Среднее по годам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.YEAR}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
+                <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
+                <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
                 <CheckBox Content="Удалить неадекватные значения" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" IsChecked="{Binding RemoveBadValue}" Visibility="Hidden"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Параметры расчета" Margin="667,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="234" Background="#FFE8E8E8">
+        <GroupBox Header="Параметры расчета" Margin="770,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="374" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -66,13 +75,13 @@
                 <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
                 <TextBox Margin="172,32,6,91" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
                 <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
-                <TextBox Margin="172,55,6,68" Text="{Binding MAxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
+                <TextBox Margin="172,55,6,68" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
                 <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
-                <RadioButton Content="Брать крайние точки" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding EndPoints}"/>
-                <RadioButton Content="Линия аппроксимации" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="{Binding LineApprox}"/>
+                <RadioButton Content="Брать крайние точки" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.EndPoints}" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding EndPoints}"/>
+                <RadioButton Content="Линия аппроксимации" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.ApprLine}" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="{Binding LineApprox}"/>
             </Grid>
         </GroupBox>
-        <Button Content="Рассчитать" HorizontalAlignment="Left" Margin="478,247,0,0" VerticalAlignment="Top" Width="110" Height="38" Command="{Binding CalculateCommand}"/>
-        <Button Content="Закрыть программу" HorizontalAlignment="Left" Margin="607,247,0,0" VerticalAlignment="Top" Width="137" Height="38" Command="{Binding CloseApplicationCommand}"/>
+        <Button Content="Рассчитать" HorizontalAlignment="Left" Margin="1235,404,0,0" VerticalAlignment="Top" Width="137" Height="38" Command="{Binding CalculateCommand}"/>
+        <Button Content="Закрыть программу" HorizontalAlignment="Left" Margin="1235,462,0,0" VerticalAlignment="Top" Width="137" Height="38" Command="{Binding CloseApplicationCommand}"/>
     </Grid>
 </Window>
