@@ -10,7 +10,7 @@ namespace ResourceAZ.ViewModels
 
     internal partial class MainWindowViewModel : ViewModel
     {
-        private ObservableCollection<DataPoint> InitChart(PlotModel model, string title)
+        public ObservableCollection<DataPoint> InitChart(PlotModel model, string title)
         {
             ObservableCollection<DataPoint>  dp = new ObservableCollection<DataPoint>();
             LineSeries ls = new LineSeries();

@@ -43,13 +43,15 @@
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <DataGrid Margin="4" AutoGenerateColumns="false"
-                ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" CanUserAddRows="False" CanUserDeleteRows="False">
+                ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                      HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
+                      CanUserAddRows="False" CanUserDeleteRows="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
                     <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
                     <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
                     <DataGridTextColumn Header="Потенц." Binding="{Binding SummPot, StringFormat=F2}"/>
-                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}"/>
                     <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
                 </DataGrid.Columns>
             </DataGrid>

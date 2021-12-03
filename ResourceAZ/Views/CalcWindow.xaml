@@ -13,6 +13,27 @@
         <vm:CalcWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <DataGrid HorizontalAlignment="Left" Height="481" Margin="52,200,0,0" VerticalAlignment="Top" Width="354"/>
+        <DataGrid HorizontalAlignment="Left" ItemsSource="{Binding listMeasure}" Height="481" Margin="52,200,0,0" 
+                  VerticalAlignment="Top" Width="354" HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
+                      CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
+                <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
+                <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
+                <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}"/>
+                <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="488,146,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="260" HorizontalAlignment="Left" Width="428">
+            <oxy:PlotView.Effect>
+                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+            </oxy:PlotView.Effect>
+        </oxy:PlotView>
+        <oxy:PlotView Model="{Binding ModelNapr}" Margin="488,416,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="260" HorizontalAlignment="Left" Width="428">
+            <oxy:PlotView.Effect>
+                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+            </oxy:PlotView.Effect>
+        </oxy:PlotView>
+
     </Grid>
 </Window>

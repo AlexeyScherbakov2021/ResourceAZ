@@ -62,11 +62,8 @@ namespace ResourceAZ.ViewModels
         // база данных измерений
         private IMeasureData repository = new MeasureDataGen();
 
-        public double MinPotCalc { get; set; } = -1.5;
-        public double MaxCurrentSKZ { get; set; } = 20.0;
-        public double MaxNaprSKZ { get; set; } = 48.0;
 
-        private KindGroup SelectGroup;
+        public KindGroup SelectGroup;
 
         // переменные связанные с экраннй формой
         #region
@@ -79,7 +76,9 @@ namespace ResourceAZ.ViewModels
 
         public bool LineApprox { get; set; }
         public bool EndPoints { get; set; } = true;
-
+        public double MinPotCalc { get; set; } = -0.9;
+        public double MaxCurrentSKZ { get; set; } = 15.0;
+        public double MaxNaprSKZ { get; set; } = 48.0;
         #endregion
 
         #region Команды
@@ -140,7 +139,8 @@ namespace ResourceAZ.ViewModels
             double LastR = listMeasure[listMeasure.Count - 1].Resist;
             double LastA = listMeasure[listMeasure.Count - 1].Koeff;
 
-            CalcWindowViewModel vm = new CalcWindowViewModel(SelectGroup, kc, MinPotCalc, listMeasure);
+            //CalcWindowViewModel vm = new CalcWindowViewModel(SelectGroup, kc, MinPotCalc, listMeasure);
+            CalcWindowViewModel vm = new CalcWindowViewModel(this);
             Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);
             win.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             win.Show();
@@ -172,11 +172,16 @@ namespace ResourceAZ.ViewModels
 
             // получение списка значений
             listMeasureOrig = repository.GetAllData();
+            foreach(Measure m in listMeasureOrig)
+            {
+                m.Koeff = m.SummPot / m.Current;
+                m.Resist = m.Napr / m.Current;
+            }
+
             listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
 
             // отмечаем на экране первый RadioButton
             GroupNone = true;
-
         }
 
 
@@ -206,7 +211,9 @@ namespace ResourceAZ.ViewModels
                                        Current = avgCurr,
                                        date = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day),
                                        Napr = avgNapr,
-                                       SummPot = avgPot
+                                       SummPot = avgPot,
+                                       Koeff = avgPot / avgCurr,
+                                       Resist = avgNapr / avgCurr
                                    };
                     break;
 
@@ -223,23 +230,27 @@ namespace ResourceAZ.ViewModels
                                          Current = avgCurr,
                                          date = new DateTime(g.Key.Year, g.Key.Month, 1),
                                          Napr = avgNapr,
-                                         SummPot = avgPot
+                                         SummPot = avgPot,
+                                         Koeff = avgPot / avgCurr,
+                                         Resist = avgNapr / avgCurr
                                      };
                     break;
 
                 case KindGroup.YEAR:
                     group = from Measure in listMeasureOrig
-                                    group Measure by Measure.date.Year into g
-                                    let avgCurr = g.Average(a => a.Current)
-                                    let avgNapr = g.Average(a => a.Napr)
-                                    let avgPot = g.Average(a => a.SummPot)
-                                    select new Measure
-                                    {
-                                        Current = avgCurr,
-                                        date = new DateTime(g.Key, 1, 1),
-                                        Napr = avgNapr,
-                                        SummPot = avgPot
-                                    };
+                            group Measure by Measure.date.Year into g
+                            let avgCurr = g.Average(a => a.Current)
+                            let avgNapr = g.Average(a => a.Napr)
+                            let avgPot = g.Average(a => a.SummPot)
+                            select new Measure
+                            {
+                                Current = avgCurr,
+                                date = new DateTime(g.Key, 1, 1),
+                                Napr = avgNapr,
+                                SummPot = avgPot,
+                                Koeff = avgPot / avgCurr,
+                                Resist = avgNapr / avgCurr
+                            };
                     break;
             }
 
