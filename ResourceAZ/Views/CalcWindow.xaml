@@ -13,27 +13,43 @@
         <vm:CalcWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <DataGrid HorizontalAlignment="Left" ItemsSource="{Binding listMeasure}" Height="481" Margin="52,200,0,0" 
-                  VerticalAlignment="Top" Width="354" HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
+        <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="389" Background="#FFE8E8E8" VerticalAlignment="Top" Height="423">
+            <GroupBox.Effect>
+                <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
+            </GroupBox.Effect>
+            <DataGrid ItemsSource="{Binding listMeasure}" Margin="4" IsReadOnly="True" HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
                       CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
-                <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
-                <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
-                <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}"/>
-                <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="488,146,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="260" HorizontalAlignment="Left" Width="428">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
+                    <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}"/>
+                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="426,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="200" HorizontalAlignment="Left" Width="350">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelNapr}" Margin="488,416,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="260" HorizontalAlignment="Left" Width="428">
+        <oxy:PlotView Model="{Binding ModelNapr}" Margin="798,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="200" HorizontalAlignment="Left" Width="350">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
+        <GroupBox Header="Результаты расчета" HorizontalAlignment="Left" Height="194" Margin="426,278,0,0" VerticalAlignment="Top" Width="722" Background="#FFF9F9F9">
+            <GroupBox.Effect>
+                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+            </GroupBox.Effect>
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" Margin="10,55,0,0" TextWrapping="Wrap" Text="{Binding textResult}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="12,11,0,0" Text="Изменение коэффициента влияния за год" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="12,27,0,0" Text="Изменение входного сопротивления за год" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="266,11,0,0" Text="{Binding deltaA, StringFormat=F3}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="266,27,0,0" Text="{Binding deltaR, StringFormat=F3}" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
 
     </Grid>
 </Window>

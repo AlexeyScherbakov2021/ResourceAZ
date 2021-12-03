@@ -22,6 +22,7 @@ namespace ResourceAZ.ViewModels
         private ObservableCollection<Measure> InputMeasure;
         public double deltaA { get; set; }
         public double deltaR { get; set; }
+        public string textResult { get; set; }
 
         public PlotModel ModelCurrent { get; }
         public PlotModel ModelNapr { get; }
@@ -51,27 +52,20 @@ namespace ResourceAZ.ViewModels
 
             ModelCurrent = new PlotModel();
             ModelNapr = new PlotModel();
-
-
         }
-
-        //public CalcWindowViewModel(KindGroup kg, KindCalc kc,double MinPot, ObservableCollection<Measure> measure) : this()
-        //SelectGroup = kg;
-        //    SelectCalc = kc;
-        //    InputMeasure = measure;
-        //    MinSummPot = MinPot;
 
         public CalcWindowViewModel(MainWindowViewModel model) : this()
         {
             SelectGroup = model.SelectGroup;
-            SelectCalc = model.LineApprox ? KindCalc.ApprLine : KindCalc.EndPoints;
+            SelectCalc = model.CalcPotencial ? KindCalc.Potencial : KindCalc.Resist;
             InputMeasure = model.listMeasure;
             MinSummPot = model.MinPotCalc;
+            int LimitYearCurr = 0;
+            int LimitYearNapr = 0;
 
-            if(SelectCalc == KindCalc.ApprLine)
+            if(SelectCalc == KindCalc.Potencial)
             {
                 // расчет по линии аппроксимации
-
                 double StartValueA = InputMeasure[0].Koeff;
                 double EndValueA = InputMeasure[InputMeasure.Count - 1].Koeff;
                 double StartValueR = InputMeasure[0].Resist;
@@ -80,13 +74,11 @@ namespace ResourceAZ.ViewModels
                 DateTime EndDate = InputMeasure[InputMeasure.Count - 1].date;
                 DateTime StartDate = InputMeasure[0].date;
 
-
-
                 TimeSpan dateSub = EndDate.Subtract(StartDate);
                 double Years = dateSub.Days / 365;
 
-                double deltaA = (StartValueA - EndValueA) / Years;
-                double deltaR = (StartValueR - EndValueR) / Years;
+                deltaA = (StartValueA - EndValueA) / Years;
+                deltaR = (StartValueR - EndValueR) / Years;
 
                 do
                 {
@@ -103,6 +95,12 @@ namespace ResourceAZ.ViewModels
                     meas.Napr = meas.Current * meas.Resist;
                     listMeasure.Add(meas);
 
+                    if( LimitYearCurr == 0 && meas.Current >= model.MaxCurrentSKZ)
+                        LimitYearCurr = EndDate.Year - 1;
+
+                    if ( LimitYearNapr == 0 && meas.Napr >= model.MaxNaprSKZ)
+                        LimitYearNapr = EndDate.Year - 1;
+
                 } while (listMeasure[listMeasure.Count - 1].Current <= model.MaxCurrentSKZ || 
                                 listMeasure[listMeasure.Count - 1].Napr <= model.MaxNaprSKZ);
 
@@ -110,9 +108,9 @@ namespace ResourceAZ.ViewModels
                 EndDateTime = EndDate;
 
             }
-            else
+            else if(SelectCalc == KindCalc.Resist)
             {
-                // расчет по крайним точкам
+                // расчет по сопротивлению
 
                 
 
@@ -120,9 +118,12 @@ namespace ResourceAZ.ViewModels
 
             dpCurrent = InitChart(ModelCurrent, "Выходной ток", model.MaxCurrentSKZ);
             dpNapr = InitChart(ModelNapr, "Напряжение", model.MaxNaprSKZ);
-            // занесение точек в графики и отображение их
+            // занесение точек в графики и их отображение 
             ModelToChart(listMeasure);
 
+            textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
+                $"По току в {LimitYearCurr} году\n" +
+                $"По напряжению в {LimitYearNapr} году";
         }
 
         //--------------------------------------------------------------------------------------------

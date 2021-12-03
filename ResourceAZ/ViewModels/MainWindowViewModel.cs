@@ -34,7 +34,7 @@ namespace ResourceAZ.ViewModels
             {
                 Set(ref _listMeasure, value);
                 ModelToChart(listMeasure);
-                if (LineApprox)
+                if (CalcPotencial)
                 {
                     CalcApproxLine(ModelA, dpA);
                     CalcApproxLine(ModelR, dpR);
@@ -74,8 +74,8 @@ namespace ResourceAZ.ViewModels
 
         public bool RemoveBadValue { get; set; }
 
-        public bool LineApprox { get; set; }
-        public bool EndPoints { get; set; } = true;
+        public bool CalcPotencial { get; set; } = true;
+        public bool CalcResist { get; set; }
         public double MinPotCalc { get; set; } = -0.9;
         public double MaxCurrentSKZ { get; set; } = 15.0;
         public double MaxNaprSKZ { get; set; } = 48.0;
@@ -94,26 +94,28 @@ namespace ResourceAZ.ViewModels
         private bool CanKindCalcCommand(object p) => true;
         private void OnKindCalcCommandCommandExecuted(object p)
         {
-            KindCalc param = (KindCalc)p;
-            if (param == KindCalc.ApprLine)
-            {
-                CalcApproxLine(ModelA, dpA);
-                CalcApproxLine(ModelR, dpR);
-            }
-            else
-            {
-                if (ModelA.Series.Count == 2)
-                {
-                    ModelA.Series[1].IsVisible = false;
-                    ModelA.InvalidatePlot(true);
-                }
+            //KindCalc param = (KindCalc)p;
+            //CalcApproxLine(ModelA, dpA);
+            //CalcApproxLine(ModelR, dpR);
+            //if (param == KindCalc.ApprLine)
+            //{
+            //    CalcApproxLine(ModelA, dpA);
+            //    CalcApproxLine(ModelR, dpR);
+            //}
+            //else
+            //{
+            //    if (ModelA.Series.Count == 2)
+            //    {
+            //        ModelA.Series[1].IsVisible = false;
+            //        ModelA.InvalidatePlot(true);
+            //    }
 
-                if (ModelR.Series.Count == 2)
-                {
-                    ModelR.Series[1].IsVisible = false;
-                    ModelR.InvalidatePlot(true);
-                }
-            }
+            //    if (ModelR.Series.Count == 2)
+            //    {
+            //        ModelR.Series[1].IsVisible = false;
+            //        ModelR.InvalidatePlot(true);
+            //    }
+            //}
         }
 
         public ICommand GroupByCommand { get; }
@@ -135,7 +137,7 @@ namespace ResourceAZ.ViewModels
 
         private void OnCalculateCommand(object p)
         {
-            KindCalc kc = LineApprox ? KindCalc.ApprLine : KindCalc.EndPoints;
+            KindCalc kc = CalcPotencial ? KindCalc.Potencial : KindCalc.Resist;
             double LastR = listMeasure[listMeasure.Count - 1].Resist;
             double LastA = listMeasure[listMeasure.Count - 1].Koeff;
 
@@ -182,6 +184,10 @@ namespace ResourceAZ.ViewModels
 
             // отмечаем на экране первый RadioButton
             GroupNone = true;
+
+            CalcApproxLine(ModelA, dpA);
+            CalcApproxLine(ModelR, dpR);
+
         }
 
 
