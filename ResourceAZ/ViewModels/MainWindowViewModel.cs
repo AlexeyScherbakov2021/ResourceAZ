@@ -252,7 +252,7 @@ namespace ResourceAZ.ViewModels
                             select new Measure
                             {
                                 Current = avgCurr,
-                                date = new DateTime(g.Key, 1, 1),
+                                date = new DateTime(g.Key, 7, 1),
                                 Napr = avgNapr,
                                 SummPot = avgPot,
                                 Koeff = avgPot / avgCurr,

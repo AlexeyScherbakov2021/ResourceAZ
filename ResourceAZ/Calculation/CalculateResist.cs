@@ -25,6 +25,9 @@ namespace ResourceAZ.Calculation
             int LimitYearNapr = 0;
             double StartValueR = listMeasure[0].Resist;
             double EndValueR = listMeasure[listMeasure.Count - 1].Resist;
+            double EndValueCurrent = listMeasure[listMeasure.Count - 1].Current;
+            double EndValueNapr = listMeasure[listMeasure.Count - 1].Napr;
+
 
             DateTime EndDate = listMeasure[listMeasure.Count - 1].date;
             DateTime StartDate = listMeasure[0].date;
@@ -44,18 +47,18 @@ namespace ResourceAZ.Calculation
                 meas.date = EndDate;
                 meas.Resist = EndValueR;
 
-                meas.Current = MinSummPot / meas.Koeff;
-                meas.Napr = meas.Current * meas.Resist;
+                meas.Current = EndValueNapr / meas.Resist;
+                meas.Napr = EndValueCurrent * meas.Resist;
                 listCalcMeasure.Add(meas);
 
                 if (LimitYearCurr == 0 && meas.Current >= maxCur)
                     LimitYearCurr = EndDate.Year - 1;
 
-                if (LimitYearNapr == 0 && meas.Napr >= maxNapr)
+                if (LimitYearNapr == 0 && meas.Napr <= 0)
                     LimitYearNapr = EndDate.Year - 1;
 
-            } while (listCalcMeasure[listCalcMeasure.Count - 1].Current <= maxCur ||
-                            listCalcMeasure[listCalcMeasure.Count - 1].Napr <= maxNapr);
+            } while (listCalcMeasure[listCalcMeasure.Count - 1].Current <= maxCur /*||
+                            listCalcMeasure[listCalcMeasure.Count - 1].Napr > 0*/);
 
             return listCalcMeasure;
         }

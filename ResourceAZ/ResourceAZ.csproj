@@ -94,6 +94,7 @@
     <Compile Include="Infrastructure\Enums.cs" />
     <Compile Include="Models\Measure.cs" />
     <Compile Include="Repository\IMeasureData.cs" />
+    <Compile Include="Repository\MeasureDataExcel.cs" />
     <Compile Include="Repository\MeasureDataGen.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\CalcWindowViewModel.cs" />

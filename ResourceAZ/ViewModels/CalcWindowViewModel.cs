@@ -85,9 +85,9 @@ namespace ResourceAZ.ViewModels
             ModelToChart(listMeasure);
 
             Measure meas = listMeasure.Where(m => m.Current >= model.MaxCurrentSKZ).FirstOrDefault();
-            int LimitYearCurr = meas?.date.Year ?? 0;
+            int LimitYearCurr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
             meas = listMeasure.Where(m => m.Napr >= model.MaxNaprSKZ).FirstOrDefault();
-            int LimitYearNapr = meas?.date.Year ?? 0;
+            int LimitYearNapr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
 
             textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
                 $"По току в {LimitYearCurr} году\n" +

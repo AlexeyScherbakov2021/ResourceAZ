@@ -28,7 +28,7 @@ namespace ResourceAZ.Calculation
             double StartValueR = listMeasure[0].Resist;
             double EndValueR = listMeasure[listMeasure.Count - 1].Resist;
 
-            DateTime EndDate = listMeasure[listMeasure.Count - 1].date;
+            DateTime EndDate = new DateTime( listMeasure[listMeasure.Count - 1].date.Year, 1, 1);
             DateTime StartDate = listMeasure[0].date;
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
