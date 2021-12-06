@@ -43,11 +43,7 @@
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </GroupBox.Effect>
             <Grid>
-                <TextBlock HorizontalAlignment="Left" Margin="10,55,0,0" TextWrapping="Wrap" Text="{Binding textResult}" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="12,11,0,0" Text="Изменение коэффициента влияния за год" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="12,27,0,0" Text="Изменение входного сопротивления за год" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="266,11,0,0" Text="{Binding deltaA, StringFormat=F3}" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="266,27,0,0" Text="{Binding deltaR, StringFormat=F3}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding textResult}" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
 

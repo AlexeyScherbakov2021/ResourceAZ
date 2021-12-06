@@ -1,30 +1,28 @@
-﻿using ResourceAZ.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ResourceAZ.Models;
 
 namespace ResourceAZ.Calculation
 {
-    internal class CalculatePotencial : ICalculateBase
+    internal class CalculateResist : ICalculateBase
     {
         ObservableCollection<Measure> listCalcMeasure;
 
-        public CalculatePotencial()
+        public CalculateResist()
         {
             listCalcMeasure = new ObservableCollection<Measure>();
         }
 
+
         public ObservableCollection<Measure> Calc(ObservableCollection<Measure> listMeasure, double MinSummPot, double maxCur, double maxNapr)
         {
-            double deltaA;
             double deltaR;
             int LimitYearCurr = 0;
             int LimitYearNapr = 0;
-            double StartValueA = listMeasure[0].Koeff;
-            double EndValueA = listMeasure[listMeasure.Count - 1].Koeff;
             double StartValueR = listMeasure[0].Resist;
             double EndValueR = listMeasure[listMeasure.Count - 1].Resist;
 
@@ -34,20 +32,18 @@ namespace ResourceAZ.Calculation
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365;
 
-            deltaA = (StartValueA - EndValueA) / Years;
             deltaR = (StartValueR - EndValueR) / Years;
 
             do
             {
                 Measure meas = new Measure();
-                EndValueA -= deltaA;
                 EndValueR -= deltaR;
-                if (EndValueA >= 0 || EndValueR <= 0)
+                if (EndValueR <= 0)
                     break;
                 EndDate = EndDate.AddYears(1);
                 meas.date = EndDate;
-                meas.Koeff = EndValueA;
                 meas.Resist = EndValueR;
+
                 meas.Current = MinSummPot / meas.Koeff;
                 meas.Napr = meas.Current * meas.Resist;
                 listCalcMeasure.Add(meas);
@@ -62,7 +58,6 @@ namespace ResourceAZ.Calculation
                             listCalcMeasure[listCalcMeasure.Count - 1].Napr <= maxNapr);
 
             return listCalcMeasure;
-
         }
     }
 }

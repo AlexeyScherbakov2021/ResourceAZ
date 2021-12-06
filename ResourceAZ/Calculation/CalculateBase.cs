@@ -8,17 +8,10 @@ using System.Threading.Tasks;
 
 namespace ResourceAZ.Calculation
 {
-    internal abstract class CalculateBase
+    interface ICalculateBase
     {
-        protected ObservableCollection<Measure> listMeasure;
 
-
-        public CalculateBase(ObservableCollection<Measure> m)
-        {
-            listMeasure = m;
-        }
-
-        public abstract void Calc();
+        ObservableCollection<Measure> Calc(ObservableCollection<Measure> listMeasure, double MinSummPot, double maxCur, double maxNapr);
 
     }
 }

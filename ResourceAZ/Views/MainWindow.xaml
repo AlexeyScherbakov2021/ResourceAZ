@@ -73,12 +73,12 @@
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid>
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
                 <TextBox Margin="172,9,6,114" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
                 <TextBox Margin="172,32,6,91" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
                 <TextBox Margin="172,55,6,68" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
                 <RadioButton Content="Расчет по сопротивлению" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.Resist}" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}"/>
                 <RadioButton Content="Расчет по потенциалам" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.Potencial}" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
             </Grid>

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using ResourceAZ.ViewModels;
 using OxyPlot.Series;
 using OxyPlot.Axes;
+using ResourceAZ.Calculation;
 
 namespace ResourceAZ.ViewModels
 {
@@ -20,8 +21,8 @@ namespace ResourceAZ.ViewModels
         private KindCalc SelectCalc;
         public double MinSummPot { get; set; }
         private ObservableCollection<Measure> InputMeasure;
-        public double deltaA { get; set; }
-        public double deltaR { get; set; }
+        //public double deltaA { get; set; }
+        //public double deltaR { get; set; }
         public string textResult { get; set; }
 
         public PlotModel ModelCurrent { get; }
@@ -42,13 +43,13 @@ namespace ResourceAZ.ViewModels
             }
         }
 
-        DateTime StartDateTime;
-        DateTime EndDateTime;
+        //DateTime StartDateTime;
+        //DateTime EndDateTime;
 
 
         public CalcWindowViewModel()
         {
-            listMeasure = new ObservableCollection<Measure>();
+            //listMeasure = new ObservableCollection<Measure>();
 
             ModelCurrent = new PlotModel();
             ModelNapr = new PlotModel();
@@ -60,70 +61,39 @@ namespace ResourceAZ.ViewModels
             SelectCalc = model.CalcPotencial ? KindCalc.Potencial : KindCalc.Resist;
             InputMeasure = model.listMeasure;
             MinSummPot = model.MinPotCalc;
-            int LimitYearCurr = 0;
-            int LimitYearNapr = 0;
+            ICalculateBase calc = null;
 
-            if(SelectCalc == KindCalc.Potencial)
-            {
-                // расчет по линии аппроксимации
-                double StartValueA = InputMeasure[0].Koeff;
-                double EndValueA = InputMeasure[InputMeasure.Count - 1].Koeff;
-                double StartValueR = InputMeasure[0].Resist;
-                double EndValueR = InputMeasure[InputMeasure.Count - 1].Resist;
+            if (SelectCalc == KindCalc.Potencial)
+                // расчет по линии потенциалам
+                calc = new CalculatePotencial();
 
-                DateTime EndDate = InputMeasure[InputMeasure.Count - 1].date;
-                DateTime StartDate = InputMeasure[0].date;
-
-                TimeSpan dateSub = EndDate.Subtract(StartDate);
-                double Years = dateSub.Days / 365;
-
-                deltaA = (StartValueA - EndValueA) / Years;
-                deltaR = (StartValueR - EndValueR) / Years;
-
-                do
-                {
-                    Measure meas = new Measure();
-                    EndValueA -= deltaA;
-                    EndValueR -= deltaR;
-                    if (EndValueA >= 0 || EndValueR <= 0)
-                        break;
-                    EndDate = EndDate.AddYears(1);
-                    meas.date = EndDate;
-                    meas.Koeff = EndValueA;
-                    meas.Resist = EndValueR;
-                    meas.Current = MinSummPot / meas.Koeff;
-                    meas.Napr = meas.Current * meas.Resist;
-                    listMeasure.Add(meas);
-
-                    if( LimitYearCurr == 0 && meas.Current >= model.MaxCurrentSKZ)
-                        LimitYearCurr = EndDate.Year - 1;
-
-                    if ( LimitYearNapr == 0 && meas.Napr >= model.MaxNaprSKZ)
-                        LimitYearNapr = EndDate.Year - 1;
-
-                } while (listMeasure[listMeasure.Count - 1].Current <= model.MaxCurrentSKZ || 
-                                listMeasure[listMeasure.Count - 1].Napr <= model.MaxNaprSKZ);
-
-                StartDateTime = InputMeasure[InputMeasure.Count - 1].date.AddYears(1);
-                EndDateTime = EndDate;
-
-            }
             else if(SelectCalc == KindCalc.Resist)
-            {
-                // расчет по сопротивлению
+                // расчет по сопротивлениям
+                calc = new CalculateResist();
 
-                
+            if (calc == null)
+                throw new Exception("Не определен тип расчета.");
 
-            }
+            listMeasure = calc.Calc(model.listMeasure, model.MinPotCalc, model.MaxCurrentSKZ, model.MaxNaprSKZ);
 
-            dpCurrent = InitChart(ModelCurrent, "Выходной ток", model.MaxCurrentSKZ);
-            dpNapr = InitChart(ModelNapr, "Напряжение", model.MaxNaprSKZ);
+            // добавление в график максимальных линий
+            dpCurrent = InitChart(ModelCurrent, $"Выходной ток. Макимальный {model.MaxCurrentSKZ} А.", 
+                model.MaxCurrentSKZ, listMeasure[listMeasure.Count - 1].Current);
+            dpNapr = InitChart(ModelNapr, $"Напряжение. Максимальное {model.MaxNaprSKZ} В.", 
+                model.MaxNaprSKZ, listMeasure[listMeasure.Count - 1].Napr);
             // занесение точек в графики и их отображение 
             ModelToChart(listMeasure);
+
+            Measure meas = listMeasure.Where(m => m.Current >= model.MaxCurrentSKZ).FirstOrDefault();
+            int LimitYearCurr = meas?.date.Year ?? 0;
+            meas = listMeasure.Where(m => m.Napr >= model.MaxNaprSKZ).FirstOrDefault();
+            int LimitYearNapr = meas?.date.Year ?? 0;
 
             textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
                 $"По току в {LimitYearCurr} году\n" +
                 $"По напряжению в {LimitYearNapr} году";
+                //$"Максимальноый ток СКЗ {model.MaxCurrentSKZ} А.\n" +
+                //$"Максимальное напряжение СКЗ {model.MaxNaprSKZ} В.";
         }
 
         //--------------------------------------------------------------------------------------------
@@ -147,14 +117,20 @@ namespace ResourceAZ.ViewModels
             ModelNapr.InvalidatePlot(true);
         }
 
-        public ObservableCollection<DataPoint> InitChart(PlotModel model, string title, double MaxLine)
+
+        //--------------------------------------------------------------------------------------------
+        // инициализация графика
+        //--------------------------------------------------------------------------------------------
+        public ObservableCollection<DataPoint> InitChart(PlotModel model, string title, double MaxLine, double Maximum)
         {
+            DateTime StartDateTime = listMeasure[0].date;
+            DateTime EndDateTime = listMeasure[listMeasure.Count - 1].date;
 
             ObservableCollection<DataPoint> dp = new ObservableCollection<DataPoint>();
             LineSeries ls = new LineSeries();
+            
             ls.ItemsSource = dp;
-            model.Series.Add(ls);
-            ls.Color = OxyColor.FromRgb(0, 0, 255);
+            ls.Color = OxyColors.Blue;
             ls.MarkerType = MarkerType.Circle;
             ls.StrokeThickness = 3;
             var XAxis = new DateTimeAxis();
@@ -169,20 +145,37 @@ namespace ResourceAZ.ViewModels
             YAxis.MinorGridlineStyle = LineStyle.Dot;
             YAxis.FontSize = 11;
             model.Title = title;
+            YAxis.Maximum = Maximum;
             model.Axes.Add(YAxis);
             model.TitleFontSize = 13;
             model.PlotMargins = new OxyThickness(20, 0, 5, 20);
 
-            ls = new LineSeries();
+            AreaSeries ar = new AreaSeries();
             ObservableCollection<DataPoint> dpMax = new ObservableCollection<DataPoint>();
-            DataPoint d = new DataPoint(StartDateTime.ToOADate(), MaxLine);
-            dpMax.Add(d);
-            d = new DataPoint(EndDateTime.ToOADate(), MaxLine);
-            dpMax.Add(d);
-            ls.ItemsSource = dpMax;
-            ls.Color = OxyColor.FromRgb(255, 0, 0);
-            ls.StrokeThickness = 3;
+            //DataPoint d = new DataPoint(StartDateTime.ToOADate(), MaxLine);
+            //dpMax.Add(d);
+            //d = new DataPoint(EndDateTime.ToOADate(), MaxLine);
+            //dpMax.Add(d);
+            //ar.ItemsSource = dpMax;
+            ar.Color = OxyColor.FromArgb(255, 255, 150, 150);
+            ar.StrokeThickness = 1;
+            ar.Points.Add(new DataPoint(StartDateTime.ToOADate(), MaxLine));
+            ar.Points.Add(new DataPoint(EndDateTime.ToOADate(), MaxLine));
+            ar.Points2.Add(new DataPoint(StartDateTime.ToOADate(), MaxLine + 500));
+            ar.Points2.Add(new DataPoint(EndDateTime.ToOADate(), MaxLine + 500));
+            //var YAxis2 = new LinearAxis();
+            //YAxis2.Title = "Линия";
+            //YAxis2.Key = "fffff";
+            //YAxis2.Unit = "0000000000000";
+            //YAxis2.Position = AxisPosition.Right;
+            //model.Axes.Add(YAxis2);
+
+            model.Series.Add(ar);
             model.Series.Add(ls);
+
+            //HighLowSeries hs = new HighLowSeries();
+            //hs.ItemsSource = dpMax;
+            //model.Series.Add(hs);
 
             return dp;
         }

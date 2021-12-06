@@ -16,7 +16,7 @@ namespace ResourceAZ.ViewModels
             LineSeries ls = new LineSeries();
             ls.ItemsSource = dp;
             model.Series.Add(ls);
-            ls.Color = OxyColor.FromRgb(0, 0, 255);
+            ls.Color = OxyColors.Blue;
             ls.MarkerType = MarkerType.Circle;
             ls.StrokeThickness = 3;
             var XAxis = new DateTimeAxis();

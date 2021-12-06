@@ -17,6 +17,7 @@ using System.Windows.Media;
 using OxyPlot.Axes;
 using System.Collections.ObjectModel;
 using ResourceAZ.Views;
+using ResourceAZ.Calculation;
 
 namespace ResourceAZ.ViewModels
 {

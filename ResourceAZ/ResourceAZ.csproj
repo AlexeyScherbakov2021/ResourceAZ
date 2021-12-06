@@ -85,6 +85,7 @@
     </Compile>
     <Compile Include="Calculation\CalculateBase.cs" />
     <Compile Include="Calculation\CalculatePotencial.cs" />
+    <Compile Include="Calculation\CalculateResist.cs" />
     <Compile Include="Infrastructure\ApproxLine.cs" />
     <Compile Include="Infrastructure\ChartFunctional.cs" />
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
