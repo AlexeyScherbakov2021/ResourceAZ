@@ -13,32 +13,32 @@
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="424,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
+        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="460,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelNapr}" Margin="424,404,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
+        <oxy:PlotView Model="{Binding ModelNapr}" Margin="460,404,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelPot}" Margin="424,572,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
+        <oxy:PlotView Model="{Binding ModelPot}" Margin="460,572,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelA}" Margin="744,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
+        <oxy:PlotView Model="{Binding ModelA}" Margin="768,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelR}" Margin="744,497,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
+        <oxy:PlotView Model="{Binding ModelR}" Margin="768,497,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="389" Background="#FFE8E8E8" VerticalAlignment="Top" Height="673">
+        <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="409" Background="#FFE8E8E8" VerticalAlignment="Top" Height="673">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -56,7 +56,7 @@
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
-        <GroupBox Header="Манипуляции со списком" Margin="424,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="280" Background="#FFE8E8E8">
+        <GroupBox Header="Манипуляции со списком" Margin="460,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="280" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -68,7 +68,7 @@
                 <CheckBox Content="Удалить неадекватные значения" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" IsChecked="{Binding RemoveBadValue}" Visibility="Hidden"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Параметры расчета" Margin="744,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="374" Background="#FFE8E8E8">
+        <GroupBox Header="Параметры расчета" Margin="768,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="374" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -83,7 +83,7 @@
                 <RadioButton Content="Расчет по потенциалам" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.Potencial}" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
             </Grid>
         </GroupBox>
-        <GroupBox  HorizontalAlignment="Left" Height="659" Margin="1152,63,0,0" VerticalAlignment="Top" Width="216" Background="#FFE6E6E6">
+        <GroupBox  HorizontalAlignment="Left" Height="659" Margin="1168,63,0,0" VerticalAlignment="Top" Width="216" Background="#FFE6E6E6">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>

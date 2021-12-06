@@ -18,7 +18,7 @@ namespace ResourceAZ.ViewModels
             model.Series.Add(ls);
             ls.Color = OxyColors.Blue;
             ls.MarkerType = MarkerType.Circle;
-            ls.StrokeThickness = 3;
+            ls.StrokeThickness = 2;
             var XAxis = new DateTimeAxis();
             XAxis.AxislineStyle = LineStyle.Dot;
             XAxis.StringFormat = "dd.MM.yyyy";
@@ -71,14 +71,14 @@ namespace ResourceAZ.ViewModels
         //--------------------------------------------------------------------------------------------
         // расчет аппроксимации линии
         //--------------------------------------------------------------------------------------------
-        private void CalcApproxLine(PlotModel model, ObservableCollection<DataPoint> dp)
+        private ObservableCollection<DataPoint> CalcApproxLine(PlotModel model, ObservableCollection<DataPoint> dp)
         {
             ObservableCollection<DataPoint> dpAvg = CalcDataPoint(dp);
             if (model.Series.Count == 1)
             {
                 LineSeries ls = new LineSeries();
                 ls.Color = OxyColor.FromRgb(255, 0, 0);
-                ls.MarkerType = MarkerType.Circle;
+                //ls.MarkerType = MarkerType.Circle;
                 ls.StrokeThickness = 3;
                 model.Series.Add(ls);
 
@@ -86,6 +86,8 @@ namespace ResourceAZ.ViewModels
             model.Series[1].IsVisible = true;
             (model.Series[1] as LineSeries).ItemsSource = dpAvg;
             model.InvalidatePlot(true);
+
+            return dpAvg;
         }
 
     }

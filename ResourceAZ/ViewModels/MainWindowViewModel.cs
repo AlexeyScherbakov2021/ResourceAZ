@@ -37,8 +37,8 @@ namespace ResourceAZ.ViewModels
                 ModelToChart(listMeasure);
                 if (CalcPotencial)
                 {
-                    CalcApproxLine(ModelA, dpA);
-                    CalcApproxLine(ModelR, dpR);
+                    dpAavg = CalcApproxLine(ModelA, dpA);
+                    dpRavg = CalcApproxLine(ModelR, dpR);
                 }
             }
         }
@@ -49,9 +49,12 @@ namespace ResourceAZ.ViewModels
         ObservableCollection<DataPoint> dpNapr { get; set; }
         ObservableCollection<DataPoint> dpPot { get; set; }
         ObservableCollection<DataPoint> dpA { get; set; }
-        //ObservableCollection<DataPoint> dpAavg { get; set; }
+        ObservableCollection<DataPoint> dpAavg { get; set; }
         ObservableCollection<DataPoint> dpR { get; set; }
-       // ObservableCollection<DataPoint> dpRavg { get; set; }
+        ObservableCollection<DataPoint> dpRavg { get; set; }
+
+
+        // ObservableCollection<DataPoint> dpRavg { get; set; }
         // модели для графиков
         public PlotModel ModelCurrent { get; }
         public PlotModel ModelNapr { get; }
@@ -61,7 +64,8 @@ namespace ResourceAZ.ViewModels
         #endregion
 
         // база данных измерений
-        private IMeasureData repository = new MeasureDataGen();
+        //private IMeasureData repository = new MeasureDataGen();
+        private IMeasureData repository = new MeasureDataExcel();
 
 
         public KindGroup SelectGroup;
@@ -133,7 +137,7 @@ namespace ResourceAZ.ViewModels
         public ICommand CalculateCommand { get; }
         private bool CanCalculateCommand(object p)
         {
-            return listMeasure.Count > 2;
+            return listMeasure.Count > 1;
         }
 
         private void OnCalculateCommand(object p)
@@ -142,7 +146,13 @@ namespace ResourceAZ.ViewModels
             double LastR = listMeasure[listMeasure.Count - 1].Resist;
             double LastA = listMeasure[listMeasure.Count - 1].Koeff;
 
-            //CalcWindowViewModel vm = new CalcWindowViewModel(SelectGroup, kc, MinPotCalc, listMeasure);
+            if(dpRavg[dpRavg.Count - 1].Y >= dpRavg[0].Y)
+            {
+                MessageBox.Show("Расчет невозможен. \nСопротивление со временем должно уменьшаться.","Ошибка", MessageBoxButton.OK, MessageBoxImage.Error );
+                return;
+            }
+
+
             CalcWindowViewModel vm = new CalcWindowViewModel(this);
             Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);
             win.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -186,8 +196,8 @@ namespace ResourceAZ.ViewModels
             // отмечаем на экране первый RadioButton
             GroupNone = true;
 
-            CalcApproxLine(ModelA, dpA);
-            CalcApproxLine(ModelR, dpR);
+            dpAavg = CalcApproxLine(ModelA, dpA);
+            dpRavg = CalcApproxLine(ModelR, dpR);
 
         }
 
