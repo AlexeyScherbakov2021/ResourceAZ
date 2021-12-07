@@ -45,7 +45,12 @@
             <DataGrid Margin="4" AutoGenerateColumns="false" IsReadOnly="True"
                     ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                     HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
-                    CanUserAddRows="False" CanUserDeleteRows="False">
+                    CanUserAddRows="False" CanUserDeleteRows="False" SelectedItem="{Binding SelectedMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Удалить строку" Command="{Binding DeleteLineCommand}"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
                     <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
@@ -61,7 +66,7 @@
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid Margin="0">
-                <RadioButton Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone}"/>
+                <RadioButton Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <RadioButton Content="Среднее по годам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.YEAR}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
                 <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
                 <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
@@ -88,9 +93,34 @@
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid Margin="0">
-                <Button Content="Закрыть программу" HorizontalAlignment="Left" VerticalAlignment="Top" Width="136" Height="64" Command="{Binding CloseApplicationCommand}" Margin="34,144,0,0"/>
-                <Button Content="Рассчитать" HorizontalAlignment="Left" Margin="34,52,0,0" VerticalAlignment="Top" Width="136" Height="62" Command="{Binding CalculateCommand}"/>
+                <Button HorizontalAlignment="Left" Width="136" Margin="34,19,0,574" Command="{Binding FromExcelCommand}">
+                    <StackPanel Width="127" Orientation="Horizontal" RenderTransformOrigin="0.5,0.5">
+                        <StackPanel.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform AngleY="0.296"/>
+                                <RotateTransform/>
+                                <TranslateTransform Y="-0.328"/>
+                            </TransformGroup>
+                        </StackPanel.RenderTransform>
+                        <Image Source="/ResourceAZ;component/Resources/Images/excel_imports.png" Stretch="None" Height="32" Margin="5"/>
+                        <TextBlock Text="Открыть Excel" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                    </StackPanel>
+                </Button>
+                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="136" Height="60" Command="{Binding CloseApplicationCommand}" Margin="34,178,0,0">
+                    <StackPanel Orientation="Horizontal" >
+                        <Image Source="/ResourceAZ;component/Resources/Images/door.png" Width="32" Height="32" Margin="5"/>
+                        <TextBlock Margin="5" Text="Закрыть программу" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Width="79"/>
+                    </StackPanel>
+                </Button>
+                <Button HorizontalAlignment="Left" Margin="34,95,0,0" VerticalAlignment="Top" Width="136" Height="60" Command="{Binding CalculateCommand}">
+                    <StackPanel Orientation="Horizontal" Width="127" >
+                        <Image Source="/ResourceAZ;component/Resources/Images/calc.png" Width="32" Height="32" Margin="5"/>
+                        <TextBlock Margin="5" Text="Рассчитать" TextAlignment="Center" VerticalAlignment="Center" Width="73"/>
+                    </StackPanel>
+                </Button>
             </Grid>
         </GroupBox>
+        <TextBlock HorizontalAlignment="Left" Margin="23,14,0,0" Text="{Binding FileName}" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
     </Grid>
 </Window>

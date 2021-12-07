@@ -10,9 +10,7 @@ namespace ResourceAZ.Repository
 {
     interface IMeasureData
     {
-        ObservableCollection<Measure> GetAllData();
-
-
+        ObservableCollection<Measure> GetAllData(string Source = null);
 
     }
 }

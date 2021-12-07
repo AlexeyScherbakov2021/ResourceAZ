@@ -28,11 +28,12 @@ namespace ResourceAZ.Calculation
             double StartValueR = listMeasure[0].Resist;
             double EndValueR = listMeasure[listMeasure.Count - 1].Resist;
 
-            DateTime EndDate = new DateTime( listMeasure[listMeasure.Count - 1].date.Year, 1, 1);
+            //DateTime EndDate = new DateTime( listMeasure[listMeasure.Count - 1].date.Year, 1, 1);
+            DateTime EndDate = listMeasure[listMeasure.Count - 1].date;
             DateTime StartDate = listMeasure[0].date;
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
-            double Years = dateSub.Days / 365;
+            double Years = dateSub.Days / 365.0;
 
             deltaA = (StartValueA - EndValueA) / Years;
             deltaR = (StartValueR - EndValueR) / Years;

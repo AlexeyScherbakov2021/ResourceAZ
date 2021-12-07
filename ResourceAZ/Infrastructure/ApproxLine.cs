@@ -11,6 +11,9 @@ namespace ResourceAZ.ViewModels
 
         private ObservableCollection<DataPoint> CalcDataPoint(ObservableCollection<DataPoint> dp)
         {
+            if (dp.Count == 0)
+                return null;
+
             ObservableCollection<DataPoint> dpApprox = new ObservableCollection<DataPoint>();
 
             double X = 0;

@@ -76,24 +76,27 @@ namespace ResourceAZ.ViewModels
 
             listMeasure = calc.Calc(model.listMeasure, model.MinPotCalc, model.MaxCurrentSKZ, model.MaxNaprSKZ);
 
-            // добавление в график максимальных линий
-            dpCurrent = InitChart(ModelCurrent, $"Выходной ток. Макимальный {model.MaxCurrentSKZ} А.", 
-                model.MaxCurrentSKZ, listMeasure[listMeasure.Count - 1].Current);
-            dpNapr = InitChart(ModelNapr, $"Напряжение. Максимальное {model.MaxNaprSKZ} В.", 
-                model.MaxNaprSKZ, listMeasure[listMeasure.Count - 1].Napr);
-            // занесение точек в графики и их отображение 
-            ModelToChart(listMeasure);
+            if (listMeasure.Count > 0)
+            {
+                // добавление в график максимальных линий
+                dpCurrent = InitChart(ModelCurrent, $"Выходной ток. Макимальный {model.MaxCurrentSKZ} А.",
+                    model.MaxCurrentSKZ, listMeasure[listMeasure.Count - 1].Current);
+                dpNapr = InitChart(ModelNapr, $"Напряжение. Максимальное {model.MaxNaprSKZ} В.",
+                    model.MaxNaprSKZ, listMeasure[listMeasure.Count - 1].Napr);
+                // занесение точек в графики и их отображение 
+                ModelToChart(listMeasure);
 
-            Measure meas = listMeasure.Where(m => m.Current >= model.MaxCurrentSKZ).FirstOrDefault();
-            int LimitYearCurr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
-            meas = listMeasure.Where(m => m.Napr >= model.MaxNaprSKZ).FirstOrDefault();
-            int LimitYearNapr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
+                Measure meas = listMeasure.Where(m => m.Current >= model.MaxCurrentSKZ).FirstOrDefault();
+                int LimitYearCurr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
+                meas = listMeasure.Where(m => m.Napr >= model.MaxNaprSKZ).FirstOrDefault();
+                int LimitYearNapr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
 
-            textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
-                $"По току в {LimitYearCurr} году\n" +
-                $"По напряжению в {LimitYearNapr} году";
+                textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
+                    $"По току в {LimitYearCurr} году\n" +
+                    $"По напряжению в {LimitYearNapr} году";
                 //$"Максимальноый ток СКЗ {model.MaxCurrentSKZ} А.\n" +
                 //$"Максимальное напряжение СКЗ {model.MaxNaprSKZ} В.";
+            }
         }
 
         //--------------------------------------------------------------------------------------------

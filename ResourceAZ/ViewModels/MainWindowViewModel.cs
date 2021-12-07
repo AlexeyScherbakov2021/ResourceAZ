@@ -18,6 +18,7 @@ using OxyPlot.Axes;
 using System.Collections.ObjectModel;
 using ResourceAZ.Views;
 using ResourceAZ.Calculation;
+using Microsoft.Win32;
 
 namespace ResourceAZ.ViewModels
 {
@@ -42,6 +43,8 @@ namespace ResourceAZ.ViewModels
                 }
             }
         }
+        public Measure SelectedMeasure { get; set; }
+
 
         // измерения, преобраованные в списки точек для графика
         #region
@@ -72,7 +75,15 @@ namespace ResourceAZ.ViewModels
 
         // переменные связанные с экраннй формой
         #region
-        public bool GroupNone { get; set; }
+        bool _GroupNone;
+        public bool GroupNone
+        {
+            get => _GroupNone;
+            set
+            {
+                Set(ref _GroupNone, value);
+            }
+        }
         public bool GroupYear { get; set; }
         public bool GroupMonth { get; set; }
         public bool GroupDay { get; set; }
@@ -84,6 +95,16 @@ namespace ResourceAZ.ViewModels
         public double MinPotCalc { get; set; } = -0.9;
         public double MaxCurrentSKZ { get; set; } = 15.0;
         public double MaxNaprSKZ { get; set; } = 48.0;
+        private string _FileName;
+        public string FileName
+        {
+            get => _FileName;
+            set
+            {
+                Set(ref _FileName, value);
+            }
+        }
+
         #endregion
 
         #region Команды
@@ -95,32 +116,25 @@ namespace ResourceAZ.ViewModels
             Application.Current.Shutdown();
         }
 
-        public ICommand KindCalcCommand { get; }
-        private bool CanKindCalcCommand(object p) => true;
-        private void OnKindCalcCommandCommandExecuted(object p)
+        public ICommand FromExcelCommand { get; }
+        private bool CanFromExcelCommand(object p) => true;
+        private void OnFromExcelCommandExecuted(object p)
         {
-            //KindCalc param = (KindCalc)p;
-            //CalcApproxLine(ModelA, dpA);
-            //CalcApproxLine(ModelR, dpR);
-            //if (param == KindCalc.ApprLine)
-            //{
-            //    CalcApproxLine(ModelA, dpA);
-            //    CalcApproxLine(ModelR, dpR);
-            //}
-            //else
-            //{
-            //    if (ModelA.Series.Count == 2)
-            //    {
-            //        ModelA.Series[1].IsVisible = false;
-            //        ModelA.InvalidatePlot(true);
-            //    }
+            OpenFileDialog od = new OpenFileDialog();
+            od.Filter = "Excel (*.xlsx)|*.xlsx";
+            od.DefaultExt = "Excel (*.xlsx)|*.xlsx";
 
-            //    if (ModelR.Series.Count == 2)
-            //    {
-            //        ModelR.Series[1].IsVisible = false;
-            //        ModelR.InvalidatePlot(true);
-            //    }
-            //}
+            if (od.ShowDialog() != true)
+                return;
+
+            FileName = "";
+
+            listMeasureOrig = repository.GetAllData(od.FileName);
+
+            OpenNewList();
+
+            FileName = od.FileName;
+
         }
 
         public ICommand GroupByCommand { get; }
@@ -152,11 +166,31 @@ namespace ResourceAZ.ViewModels
                 return;
             }
 
-
             CalcWindowViewModel vm = new CalcWindowViewModel(this);
             Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);
             win.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             win.Show();
+
+        }
+
+        // команда удаления троки из datagrid
+        public ICommand DeleteLineCommand { get; }
+        private bool CanDeleteLineCommand(object p)
+        {
+            return listMeasure.Count > 0 && SelectedMeasure != null;
+        }
+
+        private void OnDeleteLineCommand(object p)
+        {
+            listMeasure.Remove(SelectedMeasure);
+            listMeasureOrig.Remove(SelectedMeasure);
+
+            ModelToChart(listMeasure);
+            if (CalcPotencial)
+            {
+                dpAavg = CalcApproxLine(ModelA, dpA);
+                dpRavg = CalcApproxLine(ModelR, dpR);
+            }
 
         }
 
@@ -167,8 +201,9 @@ namespace ResourceAZ.ViewModels
             // инициализация команд
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecuted, CanCloseApplicationCommand);
             CalculateCommand = new LambdaCommand(OnCalculateCommand, CanCalculateCommand);
-            KindCalcCommand = new LambdaCommand(OnKindCalcCommandCommandExecuted, CanKindCalcCommand);
+            FromExcelCommand = new LambdaCommand(OnFromExcelCommandExecuted, CanFromExcelCommand);
             GroupByCommand = new LambdaCommand(OnGroupByCommandExecuted, CanGroupByCommand);
+            DeleteLineCommand = new LambdaCommand(OnDeleteLineCommand, CanDeleteLineCommand);
 
             // подгтовка графиков для всех измерений
             ModelCurrent = new PlotModel();
@@ -184,8 +219,21 @@ namespace ResourceAZ.ViewModels
             dpR = InitChart(ModelR, "Сопротивление");
 
             // получение списка значений
-            listMeasureOrig = repository.GetAllData();
-            foreach(Measure m in listMeasureOrig)
+            //listMeasureOrig = repository.GetAllData();
+
+            //OpenNewList();
+
+            listMeasureOrig = new ObservableCollection<Measure>();
+            listMeasure = new ObservableCollection<Measure>();
+
+        }
+
+
+        void OpenNewList()
+        {
+            GroupNone = true;
+
+            foreach (Measure m in listMeasureOrig)
             {
                 m.Koeff = m.SummPot / m.Current;
                 m.Resist = m.Napr / m.Current;

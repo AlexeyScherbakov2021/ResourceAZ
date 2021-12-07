@@ -10,7 +10,7 @@ namespace ResourceAZ.Repository
 {
     internal class MeasureDataGen : IMeasureData
     {
-        public ObservableCollection<Measure> GetAllData()
+        public ObservableCollection<Measure> GetAllData(string Source = null)
         {
             ObservableCollection<Measure> listMeasure = new ObservableCollection<Measure>()
             {

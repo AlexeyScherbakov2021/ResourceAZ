@@ -14,11 +14,11 @@ namespace ResourceAZ.Repository
 {
     class MeasureDataExcel : IMeasureData
     {
-        public ObservableCollection<Measure> GetAllData()
+        public ObservableCollection<Measure> GetAllData(string Source)
         {
             ObservableCollection<Measure> listM = new ObservableCollection<Measure>();
 
-            using (XLWorkbook wb = new XLWorkbook(@"c:\Work\VisualC#\ResourceAZ\Excel\УКЗ№68.xlsx"))
+            using (XLWorkbook wb = new XLWorkbook(Source))
             {
                 var ws = wb.Worksheets.Worksheet(1);
 

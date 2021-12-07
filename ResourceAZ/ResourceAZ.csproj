@@ -154,5 +154,17 @@
   <ItemGroup>
     <Folder Include="Resources\Styles\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Cancel.png" />
+    <Resource Include="Resources\Images\excel_imports.png" />
+    <Resource Include="Resources\Images\OK.png" />
+    <Resource Include="Resources\Images\Play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\door.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\calc.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
