@@ -30,16 +30,20 @@ namespace ResourceAZ.ViewModels
                 aY[i] = dp[i].Y;
             }
 
-            var AB = SimpleRegression.Fit(aX, aY);
-
-            double A = AB.Item2;
-            double B = AB.Item1;
-
-            foreach(DataPoint d in dp)
+            try
             {
-                DataPoint dPoint = new DataPoint(d.X, d.X * A + B);
-                dpApprox.Add(dPoint);
+                var AB = SimpleRegression.Fit(aX, aY);
+
+                double A = AB.Item2;
+                double B = AB.Item1;
+
+                foreach (DataPoint d in dp)
+                {
+                    DataPoint dPoint = new DataPoint(d.X, d.X * A + B);
+                    dpApprox.Add(dPoint);
+                }
             }
+            catch { }
 
             return dpApprox;
         }

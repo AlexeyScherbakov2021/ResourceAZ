@@ -9,6 +9,13 @@
         mc:Ignorable="d"
          Background="#FFE6E6E6"
         Title="CalcWindow" Height="749.196" Width="1319.823" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style TargetType="DataGridCell" x:Key="CellRight">
+            <Style.Setters>
+                <Setter Property="TextBlock.TextAlignment" Value="Right" />
+            </Style.Setters>
+        </Style>
+    </Window.Resources>
     <Window.DataContext>
         <vm:CalcWindowViewModel/>
     </Window.DataContext>
@@ -18,13 +25,13 @@
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <DataGrid ItemsSource="{Binding listMeasure}" Margin="4" IsReadOnly="True" HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
-                      CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                      CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" IsSynchronizedWithCurrentItem="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
-                    <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
-                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
-                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}"/>
-                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
+                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>

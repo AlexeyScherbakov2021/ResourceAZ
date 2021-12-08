@@ -113,6 +113,7 @@
     <Compile Include="Repository\IMeasureData.cs" />
     <Compile Include="Repository\MeasureDataExcel.cs" />
     <Compile Include="Repository\MeasureDataGen.cs" />
+    <Compile Include="Resources\Styles\DataGridSelected.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\CalcWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -151,9 +152,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\Styles\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\Images\Cancel.png" />
     <Resource Include="Resources\Images\excel_imports.png" />

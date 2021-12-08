@@ -9,6 +9,13 @@
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
         Title="Расчет остаточного ресурса Анодного заземлителя" Height="897.5" Width="1439" WindowStartupLocation="CenterScreen" Background="#FFE6E6E6">
+    <Window.Resources>
+        <Style TargetType="DataGridCell" x:Key="CellRight">
+            <Style.Setters>
+                <Setter Property="TextBlock.TextAlignment" Value="Right" />
+            </Style.Setters>
+        </Style>
+    </Window.Resources>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
@@ -42,31 +49,34 @@
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
-            <DataGrid Margin="4" AutoGenerateColumns="false" IsReadOnly="True"
+            <local:DataGridSelected x:Name="dg" Margin="4" AutoGenerateColumns="false" IsReadOnly="True"
                     ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                     HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
-                    CanUserAddRows="False" CanUserDeleteRows="False" SelectedItem="{Binding SelectedMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                    CanUserAddRows="False" CanUserDeleteRows="False" 
+                    SelectedItemsList="{Binding SelectedMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Удалить строку" Command="{Binding DeleteLineCommand}"/>
+                        <MenuItem Header="Удалить строку" Command="{Binding DeleteLineCommand}" 
+                                  CommandParameter="{Binding SelectedIndex, ElementName=dg, Mode=OneWayToSource}"/>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
-                    <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}"/>
-                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}"/>
-                    <DataGridTextColumn Header="Потенц." Binding="{Binding SummPot, StringFormat=F2}"/>
-                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}"/>
-                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}"/>
+                    <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                    <DataGridTextColumn Header="Потенц." Binding="{Binding SummPot, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
+                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
                 </DataGrid.Columns>
-            </DataGrid>
+            </local:DataGridSelected>
         </GroupBox>
         <GroupBox Header="Манипуляции со списком" Margin="460,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="280" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid Margin="0">
-                <RadioButton Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <RadioButton x:Name="radioButton" Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <RadioButton Content="Среднее по годам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.YEAR}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
                 <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
                 <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>

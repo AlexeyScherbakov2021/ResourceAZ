@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using ResourceAZ.Views;
 using ResourceAZ.Calculation;
 using Microsoft.Win32;
+using System.Collections;
 
 namespace ResourceAZ.ViewModels
 {
@@ -43,7 +44,14 @@ namespace ResourceAZ.ViewModels
                 }
             }
         }
-        public Measure SelectedMeasure { get; set; }
+        public IList _SelectedMeasure;
+        public IList SelectedMeasure {
+            get => _SelectedMeasure;
+            set
+            {
+                _SelectedMeasure = value;
+            }
+        }
 
 
         // измерения, преобраованные в списки точек для графика
@@ -177,13 +185,28 @@ namespace ResourceAZ.ViewModels
         public ICommand DeleteLineCommand { get; }
         private bool CanDeleteLineCommand(object p)
         {
-            return listMeasure.Count > 0 && SelectedMeasure != null;
+            //return true;
+            return SelectedMeasure != null && SelectedMeasure?.Count > 0;
         }
 
         private void OnDeleteLineCommand(object p)
         {
-            listMeasure.Remove(SelectedMeasure);
-            listMeasureOrig.Remove(SelectedMeasure);
+            while(SelectedMeasure.Count > 0)
+            {
+                Measure selMeas = SelectedMeasure[0] as Measure;
+                Measure meas = listMeasureOrig.Where(m => m.date == selMeas.date /*&& m.Current == selMeas.Current*/
+                    && m.Resist == selMeas.Resist)
+                    .FirstOrDefault();
+                listMeasureOrig.Remove(meas);
+                listMeasure.Remove(selMeas);
+            }
+
+
+            //Measure meas = listMeasureOrig.Where(m => m.date == SelectedMeasure.date && m.Current == SelectedMeasure.Current)
+            //    .FirstOrDefault();
+
+            //listMeasureOrig.Remove(meas);
+            //listMeasure.Remove(SelectedMeasure);
 
             ModelToChart(listMeasure);
             if (CalcPotencial)
