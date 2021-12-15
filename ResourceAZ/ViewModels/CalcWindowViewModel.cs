@@ -134,7 +134,7 @@ namespace ResourceAZ.ViewModels
             
             ls.ItemsSource = dp;
             ls.Color = OxyColors.Blue;
-            ls.MarkerType = MarkerType.Circle;
+            //ls.MarkerType = MarkerType.Circle;
             ls.StrokeThickness = 3;
             var XAxis = new DateTimeAxis();
             XAxis.AxislineStyle = LineStyle.Dot;

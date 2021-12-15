@@ -59,8 +59,8 @@ namespace ResourceAZ.Calculation
                 if (LimitYearNapr == 0 && meas.Napr >= maxNapr)
                     LimitYearNapr = EndDate.Year - 1;
 
-            } while (listCalcMeasure[listCalcMeasure.Count - 1].Current <= maxCur ||
-                            listCalcMeasure[listCalcMeasure.Count - 1].Napr <= maxNapr);
+            } while ((listCalcMeasure[listCalcMeasure.Count - 1].Current <= maxCur ||
+                            listCalcMeasure[listCalcMeasure.Count - 1].Napr <= maxNapr) && EndDate.Year < 2060);
 
             return listCalcMeasure;
 

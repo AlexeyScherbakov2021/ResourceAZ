@@ -30,13 +30,13 @@ namespace ResourceAZ//.Resources.Styles
         }
 
 
-        private static void OnSelectedItemsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((DataGridSelected)d).OnSelectedItemsChanged((IList)e.OldValue, (IList)e.NewValue);
-        }
+        //private static void OnSelectedItemsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    ((DataGridSelected)d).OnSelectedItemsChanged((IList)e.OldValue, (IList)e.NewValue);
+        //}
 
-        protected virtual void OnSelectedItemsChanged(IList oldSelectedItems, IList newSelectedItems)
-        {
-        }
+        //protected virtual void OnSelectedItemsChanged(IList oldSelectedItems, IList newSelectedItems)
+        //{
+        //}
     }
 }

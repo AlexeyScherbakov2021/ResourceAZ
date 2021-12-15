@@ -26,6 +26,7 @@ namespace ResourceAZ.ViewModels
 
      internal partial class MainWindowViewModel : ViewModel
     {
+
         // оригинал полученного списка измерений
         private ObservableCollection<Measure> listMeasureOrig;
         // сгрупированный список измерений
@@ -168,11 +169,11 @@ namespace ResourceAZ.ViewModels
             double LastR = listMeasure[listMeasure.Count - 1].Resist;
             double LastA = listMeasure[listMeasure.Count - 1].Koeff;
 
-            if(dpRavg[dpRavg.Count - 1].Y >= dpRavg[0].Y)
-            {
-                MessageBox.Show("Расчет невозможен. \nСопротивление со временем должно уменьшаться.","Ошибка", MessageBoxButton.OK, MessageBoxImage.Error );
-                return;
-            }
+            //if(dpRavg[dpRavg.Count - 1].Y >= dpRavg[0].Y)
+            //{
+            //    MessageBox.Show("Расчет невозможен. \nСопротивление со временем должно уменьшаться.","Ошибка", MessageBoxButton.OK, MessageBoxImage.Error );
+            //    return;
+            //}
 
             CalcWindowViewModel vm = new CalcWindowViewModel(this);
             Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);

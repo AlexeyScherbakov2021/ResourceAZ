@@ -20,32 +20,32 @@
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="460,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
+        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="460,40,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelNapr}" Margin="460,404,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
+        <oxy:PlotView Model="{Binding ModelNapr}" Margin="460,200,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelPot}" Margin="460,572,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="280">
+        <oxy:PlotView Model="{Binding ModelPot}" Margin="460,360,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelA}" Margin="768,240,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
+        <oxy:PlotView Model="{Binding ModelA}" Margin="460,520,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelR}" Margin="768,497,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="225" HorizontalAlignment="Left" Width="374">
+        <oxy:PlotView Model="{Binding ModelR}" Margin="460,680,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="409" Background="#FFE8E8E8" VerticalAlignment="Top" Height="673">
+        <GroupBox Header="Измеренные показания" Margin="19,178,0,0" HorizontalAlignment="Left" Width="409" Background="#FFE8E8E8" VerticalAlignment="Top" Height="672">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -54,7 +54,7 @@
                     HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
                     CanUserAddRows="False" CanUserDeleteRows="False" 
                     SelectedItemsList="{Binding SelectedMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
-                
+
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Удалить строку" Command="{Binding DeleteLineCommand}" 
@@ -71,7 +71,7 @@
                 </DataGrid.Columns>
             </local:DataGridSelected>
         </GroupBox>
-        <GroupBox Header="Манипуляции со списком" Margin="460,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="280" Background="#FFE8E8E8">
+        <GroupBox Header="Манипуляции со списком" Margin="21,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="116" Width="407" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -83,28 +83,28 @@
                 <CheckBox Content="Удалить неадекватные значения" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" IsChecked="{Binding RemoveBadValue}" Visibility="Hidden"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Параметры расчета" Margin="768,49,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="164" Width="374" Background="#FFE8E8E8">
+        <GroupBox Header="Параметры расчета" Margin="1184,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="150" Width="227" Background="#FFE8E8E8">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
-                <TextBox Margin="172,9,6,114" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
+                <TextBox Margin="172,9,-0.7,0" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
                 <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
-                <TextBox Margin="172,32,6,91" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
+                <TextBox Margin="172,32,0,0" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
                 <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
-                <TextBox Margin="172,55,6,68" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40"/>
+                <TextBox Margin="172,55,0,0" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
                 <RadioButton Content="Расчет по сопротивлению" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.Resist}" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}"/>
                 <RadioButton Content="Расчет по потенциалам" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.Potencial}" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
             </Grid>
         </GroupBox>
-        <GroupBox  HorizontalAlignment="Left" Height="659" Margin="1168,63,0,0" VerticalAlignment="Top" Width="216" Background="#FFE6E6E6">
+        <GroupBox  HorizontalAlignment="Left" Height="634" Margin="1184,216,0,0" VerticalAlignment="Top" Width="216" Background="#FFE6E6E6">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
             <Grid Margin="0">
-                <Button HorizontalAlignment="Left" Width="136" Margin="34,19,0,574" Command="{Binding FromExcelCommand}">
-                    <StackPanel Width="127" Orientation="Horizontal" RenderTransformOrigin="0.5,0.5">
+                <Button HorizontalAlignment="Left" Width="136" Margin="34,19,0,0" Command="{Binding FromExcelCommand}" Height="60" VerticalAlignment="Top">
+                    <StackPanel Orientation="Horizontal" RenderTransformOrigin="0.5,0.5">
                         <StackPanel.RenderTransform>
                             <TransformGroup>
                                 <ScaleTransform/>

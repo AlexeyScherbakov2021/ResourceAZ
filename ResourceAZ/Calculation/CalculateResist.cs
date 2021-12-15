@@ -28,9 +28,12 @@ namespace ResourceAZ.Calculation
             double EndValueCurrent = listMeasure[listMeasure.Count - 1].Current;
             double EndValueNapr = listMeasure[listMeasure.Count - 1].Napr;
 
-
+            // получаем карйние даты
             DateTime EndDate = listMeasure[listMeasure.Count - 1].date;
             DateTime StartDate = listMeasure[0].date;
+
+            // находим средний ток за промежуток
+            double AvgCurrent = listMeasure.Average(a => a.Current);
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365;
@@ -47,8 +50,8 @@ namespace ResourceAZ.Calculation
                 meas.date = EndDate;
                 meas.Resist = EndValueR;
 
-                meas.Current = EndValueNapr / meas.Resist;
-                meas.Napr = EndValueCurrent * meas.Resist;
+                meas.Current = AvgCurrent;
+                meas.Napr = AvgCurrent * meas.Resist;
                 listCalcMeasure.Add(meas);
 
                 if (LimitYearCurr == 0 && meas.Current >= maxCur)
@@ -57,8 +60,7 @@ namespace ResourceAZ.Calculation
                 if (LimitYearNapr == 0 && meas.Napr <= 0)
                     LimitYearNapr = EndDate.Year - 1;
 
-            } while (listCalcMeasure[listCalcMeasure.Count - 1].Current <= maxCur /*||
-                            listCalcMeasure[listCalcMeasure.Count - 1].Napr > 0*/);
+            } while (listCalcMeasure[listCalcMeasure.Count - 1].Napr < maxNapr && EndDate.Year < 2060);
 
             return listCalcMeasure;
         }
