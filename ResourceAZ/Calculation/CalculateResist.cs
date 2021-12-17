@@ -27,12 +27,11 @@ namespace ResourceAZ.Calculation
             //int LimitYearCurr = 0;
             double StartValueR = model.dpRavg[0].Y;
             double EndValueR = model.dpRavg[model.dpRavg.Count - 1].Y;
-            double EndValueCurrent;// = listMeasure[listMeasure.Count - 1].Current;
             double EndValueNapr = model.listMeasure[model.listMeasure.Count - 1].Napr;
 
             // рассчитываем среднее от 20 последних показаний тока
             int Last20Current = model.listMeasure.Count >= 20 ? model.listMeasure.Count - 20 : 0;
-            EndValueCurrent = model.listMeasure.Skip(Last20Current).Average(a => a.Current);
+            double EndValueCurrent = model.listMeasure.Skip(Last20Current).Average(a => a.Current);
             // получаем карйние даты
             DateTime EndDate = model.listMeasure[model.listMeasure.Count - 1].date;
             DateTime StartDate = model.listMeasure[0].date;
@@ -56,11 +55,13 @@ namespace ResourceAZ.Calculation
                 meas.Napr = EndValueCurrent * meas.Resist;
                 listCalcMeasure.Add(meas);
 
-                //if (LimitYearCurr == 0 && meas.Current >= maxCur)
-                //    LimitYearCurr = EndDate.Year - 1;
-
                 if (LimitYearNapr == 0 && meas.Napr >= model.MaxNaprSKZ)
+                {
                     LimitYearNapr = EndDate.Year - 1;
+                    int ind = listCalcMeasure.IndexOf(meas);
+                    if(ind >= 0)
+                        listCalcMeasure[ind - 1].SetColor = true;
+                }
 
             } while (listCalcMeasure[listCalcMeasure.Count - 1].Napr < model.MaxNaprSKZ && EndDate.Year < 2260);
 

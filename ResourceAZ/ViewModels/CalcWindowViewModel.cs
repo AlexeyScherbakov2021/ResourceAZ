@@ -40,18 +40,11 @@ namespace ResourceAZ.ViewModels
             set
             {
                 Set(ref _listMeasure, value);
-                //ModelToChart(listMeasure);
             }
         }
 
-        //DateTime StartDateTime;
-        //DateTime EndDateTime;
-
-
         public CalcWindowViewModel()
         {
-            //listMeasure = new ObservableCollection<Measure>();
-
             ModelCurrent = new PlotModel();
             ModelNapr = new PlotModel();
         }

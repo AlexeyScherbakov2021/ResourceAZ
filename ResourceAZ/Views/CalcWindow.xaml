@@ -33,6 +33,16 @@
                     <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
                     <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
                 </DataGrid.Columns>
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SetColor }" Value="False">
+                                <Setter Property="Background" Value="Orange"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
             </DataGrid>
         </GroupBox>
         <oxy:PlotView Model="{Binding ModelCurrent}" Margin="439,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">

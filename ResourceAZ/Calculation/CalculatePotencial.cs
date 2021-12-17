@@ -65,7 +65,12 @@ namespace ResourceAZ.Calculation
                     LimitYearCurr = EndDate.Year - 1;
 
                 if (LimitYearNapr == 0 && meas.Napr >= model.MaxNaprSKZ)
+                {
                     LimitYearNapr = EndDate.Year - 1;
+                    int ind = listCalcMeasure.IndexOf(meas);
+                    if (ind >= 0)
+                        listCalcMeasure[ind - 1].SetColor = true;
+                }
 
             } while ((listCalcMeasure[listCalcMeasure.Count - 1].Current <= model.MaxCurrentSKZ ||
                             listCalcMeasure[listCalcMeasure.Count - 1].Napr <= model.MaxNaprSKZ) && EndDate.Year < 2260);

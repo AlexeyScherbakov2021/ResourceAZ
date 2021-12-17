@@ -16,6 +16,7 @@ namespace ResourceAZ.Models
         public double Resist { get; set; }
         public double ApprKoeff { get; set; }
         public double ApprResist { get; set; }
+        public bool SetColor { get; set; }
     }
 
 }
