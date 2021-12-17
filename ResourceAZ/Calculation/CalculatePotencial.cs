@@ -11,6 +11,8 @@ namespace ResourceAZ.Calculation
     internal class CalculatePotencial : ICalculateBase
     {
         ObservableCollection<Measure> listCalcMeasure;
+        int LimitYearCurr = 0;
+        int LimitYearNapr = 0;
 
         public CalculatePotencial()
         {
@@ -21,14 +23,11 @@ namespace ResourceAZ.Calculation
         {
             double deltaA;
             double deltaR;
-            int LimitYearCurr = 0;
-            int LimitYearNapr = 0;
             double StartValueA = listMeasure[0].Koeff;
             double EndValueA = listMeasure[listMeasure.Count - 1].Koeff;
             double StartValueR = listMeasure[0].Resist;
             double EndValueR = listMeasure[listMeasure.Count - 1].Resist;
 
-            //DateTime EndDate = new DateTime( listMeasure[listMeasure.Count - 1].date.Year, 1, 1);
             DateTime EndDate = listMeasure[listMeasure.Count - 1].date;
             DateTime StartDate = listMeasure[0].date;
 
@@ -60,10 +59,27 @@ namespace ResourceAZ.Calculation
                     LimitYearNapr = EndDate.Year - 1;
 
             } while ((listCalcMeasure[listCalcMeasure.Count - 1].Current <= maxCur ||
-                            listCalcMeasure[listCalcMeasure.Count - 1].Napr <= maxNapr) && EndDate.Year < 2060);
+                            listCalcMeasure[listCalcMeasure.Count - 1].Napr <= maxNapr) && EndDate.Year < 2260);
 
             return listCalcMeasure;
 
+        }
+
+
+        //----------------------------------------------------------------------------------------------------
+        // строка результата
+        //----------------------------------------------------------------------------------------------------
+        public List<string> ResultText()
+        {
+            List<string> resList = new List<string>
+            {
+                "Тип расчета:  По потенциалу",
+                $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.",
+                $"По току: в {LimitYearCurr} году",
+                $"По напряжению: в {LimitYearNapr} году"
+            };
+
+            return resList;
         }
     }
 }

@@ -8,7 +8,7 @@
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
          Background="#FFE6E6E6"
-        Title="CalcWindow" Height="749.196" Width="1319.823" WindowStartupLocation="CenterScreen">
+        Title="CalcWindow" Height="749.196" Width="1397.823" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style TargetType="DataGridCell" x:Key="CellRight">
             <Style.Setters>
@@ -20,7 +20,7 @@
         <vm:CalcWindowViewModel/>
     </Window.DataContext>
     <Grid>
-        <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="389" Background="#FFE8E8E8" VerticalAlignment="Top" Height="423">
+        <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="389" Background="#FFE8E8E8" VerticalAlignment="Top" Height="525">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -35,22 +35,35 @@
                 </DataGrid.Columns>
             </DataGrid>
         </GroupBox>
-        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="426,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="200" HorizontalAlignment="Left" Width="350">
+        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="439,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelNapr}" Margin="798,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="200" HorizontalAlignment="Left" Width="350">
+        <oxy:PlotView Model="{Binding ModelNapr}" Margin="903,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
             <oxy:PlotView.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </oxy:PlotView.Effect>
         </oxy:PlotView>
-        <GroupBox Header="Результаты расчета" HorizontalAlignment="Left" Height="194" Margin="426,278,0,0" VerticalAlignment="Top" Width="722" Background="#FFF9F9F9">
+        <GroupBox HorizontalAlignment="Left" Height="219" Margin="439,355,0,0" VerticalAlignment="Top" Width="904" Background="#FFF9F9F9">
             <GroupBox.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </GroupBox.Effect>
             <Grid>
-                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="{Binding textResult}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Результаты расчета" VerticalAlignment="Top" FontSize="16"/>
+                <ListBox Padding="10" HorizontalAlignment="Left" Height="167" Margin="10,36,0,0" VerticalAlignment="Top" Width="872" Background="{x:Null}" ItemsSource="{Binding lbResult}" Focusable="False" IsTextSearchEnabled="False">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <ContentControl Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
             </Grid>
         </GroupBox>
 

@@ -10,8 +10,9 @@ namespace ResourceAZ.Calculation
 {
     interface ICalculateBase
     {
-
         ObservableCollection<Measure> Calc(ObservableCollection<Measure> listMeasure, double MinSummPot, double maxCur, double maxNapr);
+
+        List<string> ResultText();
 
     }
 }

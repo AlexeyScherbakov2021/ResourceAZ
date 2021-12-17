@@ -3,6 +3,9 @@ using ResourceAZ.ViewModels.Base;
 using System.Collections.ObjectModel;
 using MathNet.Numerics.LinearRegression;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
+using System;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace ResourceAZ.ViewModels
 {
@@ -42,6 +45,20 @@ namespace ResourceAZ.ViewModels
                     DataPoint dPoint = new DataPoint(d.X, d.X * A + B);
                     dpApprox.Add(dPoint);
                 }
+
+                //double[] ab = Fit.Polynomial(aX, aY, 2, DirectRegressionMethod.NormalEquations);
+
+                //foreach (DataPoint d in dp)
+                //{
+                //    double y = 0;
+                //    for (int i = 0; i < ab.Length; i++)
+                //    {
+                //        y += ab[i] * Math.Pow(d.X, i);
+                //    }
+                //    DataPoint dPoint = new DataPoint(d.X, y);
+                //    dpApprox.Add(dPoint);
+                //}
+
             }
             catch { }
 

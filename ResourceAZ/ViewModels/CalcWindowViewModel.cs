@@ -23,7 +23,8 @@ namespace ResourceAZ.ViewModels
         private ObservableCollection<Measure> InputMeasure;
         //public double deltaA { get; set; }
         //public double deltaR { get; set; }
-        public string textResult { get; set; }
+        //public string textResult { get; set; }
+        public List<string> lbResult { get; set; }
 
         public PlotModel ModelCurrent { get; }
         public PlotModel ModelNapr { get; }
@@ -86,14 +87,17 @@ namespace ResourceAZ.ViewModels
                 // занесение точек в графики и их отображение 
                 ModelToChart(listMeasure);
 
-                Measure meas = listMeasure.Where(m => m.Current >= model.MaxCurrentSKZ).FirstOrDefault();
-                int LimitYearCurr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
-                meas = listMeasure.Where(m => m.Napr >= model.MaxNaprSKZ).FirstOrDefault();
-                int LimitYearNapr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
+                //Measure meas = listMeasure.Where(m => m.Current >= model.MaxCurrentSKZ).FirstOrDefault();
+                //int LimitYearCurr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
+                //meas = listMeasure.Where(m => m.Napr >= model.MaxNaprSKZ).FirstOrDefault();
+                //int LimitYearNapr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
 
-                textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
-                    $"По току в {LimitYearCurr} году\n" +
-                    $"По напряжению в {LimitYearNapr} году";
+                lbResult = calc.ResultText();
+
+
+                //textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
+                //    $"По току в {LimitYearCurr} году\n" +
+                //    $"По напряжению в {LimitYearNapr} году";
                 //$"Максимальноый ток СКЗ {model.MaxCurrentSKZ} А.\n" +
                 //$"Максимальное напряжение СКЗ {model.MaxNaprSKZ} В.";
             }

@@ -202,19 +202,14 @@ namespace ResourceAZ.ViewModels
                 listMeasure.Remove(selMeas);
             }
 
-
             //Measure meas = listMeasureOrig.Where(m => m.date == SelectedMeasure.date && m.Current == SelectedMeasure.Current)
             //    .FirstOrDefault();
-
             //listMeasureOrig.Remove(meas);
             //listMeasure.Remove(SelectedMeasure);
 
             ModelToChart(listMeasure);
-            if (CalcPotencial)
-            {
-                dpAavg = CalcApproxLine(ModelA, dpA);
-                dpRavg = CalcApproxLine(ModelR, dpR);
-            }
+            dpAavg = CalcApproxLine(ModelA, dpA);
+            dpRavg = CalcApproxLine(ModelR, dpR);
 
         }
 
@@ -260,7 +255,7 @@ namespace ResourceAZ.ViewModels
             foreach (Measure m in listMeasureOrig)
             {
                 m.Koeff = m.SummPot / m.Current;
-                m.Resist = m.Napr / m.Current;
+                m.Resist = m.Napr / m.Current + m.Koeff;
             }
 
             listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
@@ -289,21 +284,21 @@ namespace ResourceAZ.ViewModels
 
                 case KindGroup.DAY:
                     group = from Measure in listMeasureOrig
-                                   group Measure
-                                   by new { Measure.date.Year, Measure.date.Month, Measure.date.Day }
+                            group Measure
+                            by new { Measure.date.Year, Measure.date.Month, Measure.date.Day }
                                 into g
-                                   let avgCurr = g.Average(a => a.Current)
-                                   let avgNapr = g.Average(a => a.Napr)
-                                   let avgPot = g.Average(a => a.SummPot)
-                                   select new Measure
-                                   {
-                                       Current = avgCurr,
-                                       date = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day),
-                                       Napr = avgNapr,
-                                       SummPot = avgPot,
-                                       Koeff = avgPot / avgCurr,
-                                       Resist = avgNapr / avgCurr
-                                   };
+                            let avgCurr = g.Average(a => a.Current)
+                            let avgNapr = g.Average(a => a.Napr)
+                            let avgPot = g.Average(a => a.SummPot)
+                            select new Measure
+                            {
+                                Current = avgCurr,
+                                date = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day),
+                                Napr = avgNapr,
+                                SummPot = avgPot,
+                                Koeff = avgPot / avgCurr,
+                                Resist = avgNapr / avgCurr + (avgPot / avgCurr)
+                            };
                     break;
 
                 case KindGroup.MONTH:
@@ -321,7 +316,7 @@ namespace ResourceAZ.ViewModels
                                          Napr = avgNapr,
                                          SummPot = avgPot,
                                          Koeff = avgPot / avgCurr,
-                                         Resist = avgNapr / avgCurr
+                                         Resist = avgNapr / avgCurr + (avgPot / avgCurr)
                                      };
                     break;
 
@@ -338,12 +333,16 @@ namespace ResourceAZ.ViewModels
                                 Napr = avgNapr,
                                 SummPot = avgPot,
                                 Koeff = avgPot / avgCurr,
-                                Resist = avgNapr / avgCurr
+                                Resist = avgNapr / avgCurr + (avgPot / avgCurr)
                             };
                     break;
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());
+
+            dpAavg = CalcApproxLine(ModelA, dpA);
+            dpRavg = CalcApproxLine(ModelR, dpR);
+
         }
 
     }
