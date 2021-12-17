@@ -61,9 +61,9 @@ namespace ResourceAZ.ViewModels
         ObservableCollection<DataPoint> dpNapr { get; set; }
         ObservableCollection<DataPoint> dpPot { get; set; }
         ObservableCollection<DataPoint> dpA { get; set; }
-        ObservableCollection<DataPoint> dpAavg { get; set; }
+        public ObservableCollection<DataPoint> dpAavg { get; set; }
         ObservableCollection<DataPoint> dpR { get; set; }
-        ObservableCollection<DataPoint> dpRavg { get; set; }
+        public ObservableCollection<DataPoint> dpRavg { get; set; }
 
 
         // ObservableCollection<DataPoint> dpRavg { get; set; }
@@ -182,7 +182,7 @@ namespace ResourceAZ.ViewModels
 
         }
 
-        // команда удаления троки из datagrid
+        // команда удаления строки из datagrid
         public ICommand DeleteLineCommand { get; }
         private bool CanDeleteLineCommand(object p)
         {
@@ -202,14 +202,42 @@ namespace ResourceAZ.ViewModels
                 listMeasure.Remove(selMeas);
             }
 
-            //Measure meas = listMeasureOrig.Where(m => m.date == SelectedMeasure.date && m.Current == SelectedMeasure.Current)
-            //    .FirstOrDefault();
-            //listMeasureOrig.Remove(meas);
-            //listMeasure.Remove(SelectedMeasure);
-
             ModelToChart(listMeasure);
             dpAavg = CalcApproxLine(ModelA, dpA);
             dpRavg = CalcApproxLine(ModelR, dpR);
+
+        }
+
+        // команда удаления строки из datagrid
+        public ICommand RemoveDeviationCommand { get; }
+        private bool CanRemoveDeviationCommand(object p)
+        {
+            return listMeasureOrig?.Count > 3;
+        }
+
+        private void OnRemoveDeviationCommand(object p)
+        {
+            double AvgSumPot = listMeasureOrig.Average(a => a.SummPot);
+
+            double AvgCurrent = listMeasureOrig.Average(a => a.Current);
+
+            double AvgNapr = listMeasureOrig.Average(a => a.Napr);
+
+            double AvgResist = listMeasureOrig.Average(a => a.Resist);
+
+            double AvgKoef = listMeasureOrig.Average(a => a.Koeff);
+
+
+            IEnumerable<Measure> list = listMeasureOrig.Where(w => w.SummPot > -0.05 || w.SummPot < AvgSumPot * 2 ||
+                    w.Current < 0.01 || w.Current > AvgCurrent * 2 ||
+                    w.Napr < 0.01 || w.Napr > AvgNapr * 2 ||
+                    w.Resist < 0.1 || w.Resist > 50 ||
+                    w.Koeff > -0.1 || w.Koeff < AvgKoef * 2);
+
+            while (list.Count() > 0)
+                listMeasureOrig.Remove(list.First());
+
+            FormatListMeasure(SelectGroup);
 
         }
 
@@ -223,6 +251,7 @@ namespace ResourceAZ.ViewModels
             FromExcelCommand = new LambdaCommand(OnFromExcelCommandExecuted, CanFromExcelCommand);
             GroupByCommand = new LambdaCommand(OnGroupByCommandExecuted, CanGroupByCommand);
             DeleteLineCommand = new LambdaCommand(OnDeleteLineCommand, CanDeleteLineCommand);
+            RemoveDeviationCommand = new LambdaCommand(OnRemoveDeviationCommand, CanRemoveDeviationCommand);
 
             // подгтовка графиков для всех измерений
             ModelCurrent = new PlotModel();
@@ -251,6 +280,7 @@ namespace ResourceAZ.ViewModels
         void OpenNewList()
         {
             GroupNone = true;
+            SelectGroup = KindGroup.NONE;
 
             foreach (Measure m in listMeasureOrig)
             {

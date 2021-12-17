@@ -81,6 +81,7 @@
                 <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
                 <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
                 <CheckBox Content="Удалить неадекватные значения" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" IsChecked="{Binding RemoveBadValue}" Visibility="Hidden"/>
+                <Button Margin="265,13,10,58" Command="{Binding RemoveDeviationCommand}">Удалить отклонения</Button>
             </Grid>
         </GroupBox>
         <GroupBox Header="Параметры расчета" Margin="1184,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="150" Width="227" Background="#FFE8E8E8">

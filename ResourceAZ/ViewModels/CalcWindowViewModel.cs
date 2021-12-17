@@ -75,7 +75,7 @@ namespace ResourceAZ.ViewModels
             if (calc == null)
                 throw new Exception("Не определен тип расчета.");
 
-            listMeasure = calc.Calc(model.listMeasure, model.MinPotCalc, model.MaxCurrentSKZ, model.MaxNaprSKZ);
+            listMeasure = calc.Calc(model);
 
             if (listMeasure.Count > 0)
             {
