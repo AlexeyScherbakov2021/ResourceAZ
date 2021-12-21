@@ -56,14 +56,19 @@ namespace ResourceAZ.ViewModels
             InputMeasure = model.listMeasure;
             MinSummPot = model.MinPotCalc;
             ICalculateBase calc = null;
+            double MaxCurrent = model.MaxCurrentSKZ;
+            double MaxNapr = model.MaxNaprSKZ;
 
             if (SelectCalc == KindCalc.Potencial)
                 // расчет по линии потенциалам
                 calc = new CalculatePotencial();
 
-            else if(SelectCalc == KindCalc.Resist)
+            else if (SelectCalc == KindCalc.Resist)
+            {
                 // расчет по сопротивлениям
                 calc = new CalculateResist();
+                MaxCurrent = -1;
+            }
 
             if (calc == null)
                 throw new Exception("Не определен тип расчета.");
@@ -74,25 +79,13 @@ namespace ResourceAZ.ViewModels
             {
                 // добавление в график максимальных линий
                 dpCurrent = InitChart(ModelCurrent, $"Выходной ток. Макимальный {model.MaxCurrentSKZ} А.",
-                    model.MaxCurrentSKZ, listMeasure[listMeasure.Count - 1].Current);
+                    MaxCurrent, listMeasure[listMeasure.Count - 1].Current);
                 dpNapr = InitChart(ModelNapr, $"Напряжение. Максимальное {model.MaxNaprSKZ} В.",
-                    model.MaxNaprSKZ, listMeasure[listMeasure.Count - 1].Napr);
+                    MaxNapr, listMeasure[listMeasure.Count - 1].Napr);
                 // занесение точек в графики и их отображение 
                 ModelToChart(listMeasure);
 
-                //Measure meas = listMeasure.Where(m => m.Current >= model.MaxCurrentSKZ).FirstOrDefault();
-                //int LimitYearCurr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
-                //meas = listMeasure.Where(m => m.Napr >= model.MaxNaprSKZ).FirstOrDefault();
-                //int LimitYearNapr = meas?.date.Year - 1 ?? listMeasure[listMeasure.Count - 1].date.Year - 1;
-
                 lbResult = calc.ResultText();
-
-
-                //textResult = $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { Math.Min(LimitYearCurr, LimitYearNapr)} году.\n" +
-                //    $"По току в {LimitYearCurr} году\n" +
-                //    $"По напряжению в {LimitYearNapr} году";
-                //$"Максимальноый ток СКЗ {model.MaxCurrentSKZ} А.\n" +
-                //$"Максимальное напряжение СКЗ {model.MaxNaprSKZ} В.";
             }
         }
 
@@ -104,7 +97,7 @@ namespace ResourceAZ.ViewModels
             dpCurrent.Clear();
             dpNapr.Clear();
 
-            // заполнение точками срисков для графиков
+            // заполнение точками списков для графиков
             foreach (Measure m in meas)
             {
                 dpCurrent.Add(new DataPoint(m.date.ToOADate(), m.Current));
@@ -150,27 +143,19 @@ namespace ResourceAZ.ViewModels
             model.TitleFontSize = 13;
             model.PlotMargins = new OxyThickness(20, 0, 5, 20);
 
-            AreaSeries ar = new AreaSeries();
-            ObservableCollection<DataPoint> dpMax = new ObservableCollection<DataPoint>();
-            //DataPoint d = new DataPoint(StartDateTime.ToOADate(), MaxLine);
-            //dpMax.Add(d);
-            //d = new DataPoint(EndDateTime.ToOADate(), MaxLine);
-            //dpMax.Add(d);
-            //ar.ItemsSource = dpMax;
-            ar.Color = OxyColor.FromArgb(255, 255, 150, 150);
-            ar.StrokeThickness = 1;
-            ar.Points.Add(new DataPoint(StartDateTime.ToOADate(), MaxLine));
-            ar.Points.Add(new DataPoint(EndDateTime.ToOADate(), MaxLine));
-            ar.Points2.Add(new DataPoint(StartDateTime.ToOADate(), MaxLine + 500));
-            ar.Points2.Add(new DataPoint(EndDateTime.ToOADate(), MaxLine + 500));
-            //var YAxis2 = new LinearAxis();
-            //YAxis2.Title = "Линия";
-            //YAxis2.Key = "fffff";
-            //YAxis2.Unit = "0000000000000";
-            //YAxis2.Position = AxisPosition.Right;
-            //model.Axes.Add(YAxis2);
+            if (MaxLine > 0)
+            {
+                AreaSeries ar = new AreaSeries();
+                ObservableCollection<DataPoint> dpMax = new ObservableCollection<DataPoint>();
+                ar.Color = OxyColor.FromArgb(255, 255, 150, 150);
+                ar.StrokeThickness = 1;
+                ar.Points.Add(new DataPoint(StartDateTime.ToOADate(), MaxLine));
+                ar.Points.Add(new DataPoint(EndDateTime.ToOADate(), MaxLine));
+                ar.Points2.Add(new DataPoint(StartDateTime.ToOADate(), MaxLine + 5000));
+                ar.Points2.Add(new DataPoint(EndDateTime.ToOADate(), MaxLine + 5000));
+                model.Series.Add(ar);
+            }
 
-            model.Series.Add(ar);
             model.Series.Add(ls);
 
             //HighLowSeries hs = new HighLowSeries();

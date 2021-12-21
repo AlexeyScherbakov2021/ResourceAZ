@@ -14,6 +14,12 @@
             <Style.Setters>
                 <Setter Property="TextBlock.TextAlignment" Value="Right" />
             </Style.Setters>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SetColor}" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Window.DataContext>
@@ -33,15 +39,16 @@
                     <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
                     <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
                 </DataGrid.Columns>
-                <DataGrid.RowStyle>
-                    <Style TargetType="DataGridRow">
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SetColor }" Value="False">
-                                <Setter Property="Background" Value="Orange"/>
+                            <DataTrigger Binding="{Binding SetColor}" Value="True">
+                                <Setter Property="Background" Value="Red"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </DataGrid.RowStyle>
+                </DataGrid.CellStyle>
 
             </DataGrid>
         </GroupBox>

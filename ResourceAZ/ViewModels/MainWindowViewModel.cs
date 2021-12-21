@@ -26,6 +26,8 @@ namespace ResourceAZ.ViewModels
 
      internal partial class MainWindowViewModel : ViewModel
     {
+        public double[] ApproxA;
+        public double[] ApproxR;
 
         // оригинал полученного списка измерений
         private ObservableCollection<Measure> listMeasureOrig;
@@ -40,8 +42,8 @@ namespace ResourceAZ.ViewModels
                 ModelToChart(listMeasure);
                 if (CalcPotencial)
                 {
-                    dpAavg = CalcApproxLine(ModelA, dpA);
-                    dpRavg = CalcApproxLine(ModelR, dpR);
+                    dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
+                    dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
                 }
             }
         }
@@ -203,8 +205,8 @@ namespace ResourceAZ.ViewModels
             }
 
             ModelToChart(listMeasure);
-            dpAavg = CalcApproxLine(ModelA, dpA);
-            dpRavg = CalcApproxLine(ModelR, dpR);
+            dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
+            dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
 
         }
 
@@ -293,8 +295,8 @@ namespace ResourceAZ.ViewModels
             // отмечаем на экране первый RadioButton
             GroupNone = true;
 
-            dpAavg = CalcApproxLine(ModelA, dpA);
-            dpRavg = CalcApproxLine(ModelR, dpR);
+            dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
+            dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
 
         }
 
@@ -366,12 +368,32 @@ namespace ResourceAZ.ViewModels
                                 Resist = avgNapr / avgCurr + (avgPot / avgCurr)
                             };
                     break;
+
+                case KindGroup.SUMMER:
+                    group = from Measure in listMeasureOrig
+                            where Measure.date.Month < 9 && Measure.date.Month > 5
+                            group Measure
+                            by new { Measure.date.Year, Measure.date.Month, Measure.date.Day }
+                                into g
+                            let avgCurr = g.Average(a => a.Current)
+                            let avgNapr = g.Average(a => a.Napr)
+                            let avgPot = g.Average(a => a.SummPot)
+                            select new Measure
+                            {
+                                Current = avgCurr,
+                                date = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day),
+                                Napr = avgNapr,
+                                SummPot = avgPot,
+                                Koeff = avgPot / avgCurr,
+                                Resist = avgNapr / avgCurr + (avgPot / avgCurr)
+                            };
+                    break;
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());
 
-            dpAavg = CalcApproxLine(ModelA, dpA);
-            dpRavg = CalcApproxLine(ModelR, dpR);
+            dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
+            dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
 
         }
 

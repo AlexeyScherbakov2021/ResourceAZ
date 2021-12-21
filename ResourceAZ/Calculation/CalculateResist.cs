@@ -19,12 +19,9 @@ namespace ResourceAZ.Calculation
             listCalcMeasure = new ObservableCollection<Measure>();
         }
 
-
-        //public ObservableCollection<Measure> Calc(ObservableCollection<Measure> listMeasure, double MinSummPot, double maxCur, double maxNapr)
         public ObservableCollection<Measure> Calc(MainWindowViewModel model)
         {
             double deltaR;
-            //int LimitYearCurr = 0;
             double StartValueR = model.dpRavg[0].Y;
             double EndValueR = model.dpRavg[model.dpRavg.Count - 1].Y;
             double EndValueNapr = model.listMeasure[model.listMeasure.Count - 1].Napr;
@@ -32,22 +29,36 @@ namespace ResourceAZ.Calculation
             // рассчитываем среднее от 20 последних показаний тока
             int Last20Current = model.listMeasure.Count >= 20 ? model.listMeasure.Count - 20 : 0;
             double EndValueCurrent = model.listMeasure.Skip(Last20Current).Average(a => a.Current);
-            // получаем карйние даты
+            // получаем крайние даты
             DateTime EndDate = model.listMeasure[model.listMeasure.Count - 1].date;
             DateTime StartDate = model.listMeasure[0].date;
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;
 
-            deltaR = (StartValueR - EndValueR) / Years;
+            //deltaR = (StartValueR - EndValueR) / Years;
+            double y;
 
             do
             {
                 Measure meas = new Measure();
-                EndValueR -= deltaR;
+                y = 0;
+                for (int i = 0; i < model.ApproxR.Length; i++)
+                {
+                    y += model.ApproxR[i] * Math.Pow(EndDate.ToOADate(), i);
+                }
+                EndValueR = y;
+
+                //EndValueR -= deltaR;
                 if (EndValueR <= 0)
                     break;
                 EndDate = EndDate.AddYears(1);
+                if(EndDate.Year > 2260)
+                {
+
+                    break;
+                }
+
                 meas.date = EndDate;
                 meas.Resist = EndValueR;
 
@@ -59,11 +70,11 @@ namespace ResourceAZ.Calculation
                 {
                     LimitYearNapr = EndDate.Year - 1;
                     int ind = listCalcMeasure.IndexOf(meas);
-                    if(ind >= 0)
+                    if(ind >= 1)
                         listCalcMeasure[ind - 1].SetColor = true;
                 }
 
-            } while (listCalcMeasure[listCalcMeasure.Count - 1].Napr < model.MaxNaprSKZ && EndDate.Year < 2260);
+            } while (listCalcMeasure[listCalcMeasure.Count - 1].Napr < model.MaxNaprSKZ);
 
             return listCalcMeasure;
         }

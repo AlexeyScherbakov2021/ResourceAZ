@@ -71,9 +71,9 @@ namespace ResourceAZ.ViewModels
         //--------------------------------------------------------------------------------------------
         // расчет аппроксимации линии
         //--------------------------------------------------------------------------------------------
-        private ObservableCollection<DataPoint> CalcApproxLine(PlotModel model, ObservableCollection<DataPoint> dp)
+        private ObservableCollection<DataPoint> CalcApproxLine(PlotModel model, ObservableCollection<DataPoint> dp, ref double[] Approx)
         {
-            ObservableCollection<DataPoint> dpAvg = CalcDataPoint(dp);
+            ObservableCollection<DataPoint> dpAvg = CalcDataPoint(dp, ref Approx);
             if (model.Series.Count == 1)
             {
                 LineSeries ls = new LineSeries();

@@ -12,7 +12,7 @@ namespace ResourceAZ.ViewModels
     internal partial class MainWindowViewModel : ViewModel
     {
 
-        private ObservableCollection<DataPoint> CalcDataPoint(ObservableCollection<DataPoint> dp)
+        private ObservableCollection<DataPoint> CalcDataPoint(ObservableCollection<DataPoint> dp, ref double[] Approx)
         {
             if (dp.Count == 0)
                 return null;
@@ -33,35 +33,42 @@ namespace ResourceAZ.ViewModels
                 aY[i] = dp[i].Y;
             }
 
-            try
+            for (int order = 4; order > 0; order--)
             {
-                var AB = SimpleRegression.Fit(aX, aY);
 
-                double A = AB.Item2;
-                double B = AB.Item1;
-
-                foreach (DataPoint d in dp)
+                try
                 {
-                    DataPoint dPoint = new DataPoint(d.X, d.X * A + B);
-                    dpApprox.Add(dPoint);
+                    //var AB = SimpleRegression.Fit(aX, aY);
+
+                    //double A = AB.Item2;
+                    //double B = AB.Item1;
+
+                    //foreach (DataPoint d in dp)
+                    //{
+                    //    DataPoint dPoint = new DataPoint(d.X, d.X * A + B);
+                    //    dpApprox.Add(dPoint);
+                    //}
+
+                    Approx = Fit.Polynomial(aX, aY, order, DirectRegressionMethod.NormalEquations);
+
+                    foreach (DataPoint d in dp)
+                    {
+                        double y = 0;
+                        for (int i = 0; i < Approx.Length; i++)
+                        {
+                            y += Approx[i] * Math.Pow(d.X, i);
+                        }
+                        DataPoint dPoint = new DataPoint(d.X, y);
+                        dpApprox.Add(dPoint);
+                    }
+
+                    break;
+
                 }
-
-                //double[] ab = Fit.Polynomial(aX, aY, 2, DirectRegressionMethod.NormalEquations);
-
-                //foreach (DataPoint d in dp)
-                //{
-                //    double y = 0;
-                //    for (int i = 0; i < ab.Length; i++)
-                //    {
-                //        y += ab[i] * Math.Pow(d.X, i);
-                //    }
-                //    DataPoint dPoint = new DataPoint(d.X, y);
-                //    dpApprox.Add(dPoint);
-                //}
-
+                catch
+                {
+                }
             }
-            catch { }
-
             return dpApprox;
         }
 

@@ -49,10 +49,10 @@ namespace ResourceAZ.Calculation
                 Measure meas = new Measure();
                 EndValueA -= deltaA;
                 EndValueR -= deltaR;
-                if (EndValueR <= 0)
-                    EndValueR = 0.1;
-                if (EndValueA >= 0)
-                    EndValueA = -0.1;
+                if (EndValueR <= 0.05)
+                    EndValueR = 0.05;
+                if (EndValueA >= -0.05)
+                    EndValueA = -0.05;
                 EndDate = EndDate.AddYears(1);
                 meas.date = EndDate;
                 meas.Koeff = EndValueA;
@@ -68,7 +68,7 @@ namespace ResourceAZ.Calculation
                 {
                     LimitYearNapr = EndDate.Year - 1;
                     int ind = listCalcMeasure.IndexOf(meas);
-                    if (ind >= 0)
+                    if (ind > 0)
                         listCalcMeasure[ind - 1].SetColor = true;
                 }
 
