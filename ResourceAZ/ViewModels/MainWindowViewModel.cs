@@ -59,13 +59,13 @@ namespace ResourceAZ.ViewModels
 
         // измерения, преобраованные в списки точек для графика
         #region
-        public ObservableCollection<DataPoint> dpCurrent { get; set; }
-        ObservableCollection<DataPoint> dpNapr { get; set; }
-        ObservableCollection<DataPoint> dpPot { get; set; }
-        ObservableCollection<DataPoint> dpA { get; set; }
-        public ObservableCollection<DataPoint> dpAavg { get; set; }
-        ObservableCollection<DataPoint> dpR { get; set; }
-        public ObservableCollection<DataPoint> dpRavg { get; set; }
+        public List<DataPoint> dpCurrent { get; set; }
+        List<DataPoint> dpNapr { get; set; }
+        List<DataPoint> dpPot { get; set; }
+        List<DataPoint> dpA { get; set; }
+        public List<DataPoint> dpAavg { get; set; }
+        List<DataPoint> dpR { get; set; }
+        public List<DataPoint> dpRavg { get; set; }
 
 
         // ObservableCollection<DataPoint> dpRavg { get; set; }
@@ -194,15 +194,25 @@ namespace ResourceAZ.ViewModels
 
         private void OnDeleteLineCommand(object p)
         {
-            while(SelectedMeasure.Count > 0)
+            while (SelectedMeasure.Count > 0)
             {
                 Measure selMeas = SelectedMeasure[0] as Measure;
-                Measure meas = listMeasureOrig.Where(m => m.date == selMeas.date /*&& m.Current == selMeas.Current*/
+                Measure meas = listMeasureOrig.Where(m => m.date == selMeas.date 
                     && m.Resist == selMeas.Resist)
                     .FirstOrDefault();
                 listMeasureOrig.Remove(meas);
                 listMeasure.Remove(selMeas);
             }
+
+            //foreach (Measure measure in SelectedMeasure)
+            //{
+            //    //Measure selMeas = SelectedMeasure[0] as Measure;
+            //    Measure meas = listMeasureOrig.Where(m => m.date == measure.date /*&& m.Current == selMeas.Current*/
+            //        && m.Resist == measure.Resist)
+            //        .FirstOrDefault();
+            //    listMeasureOrig.Remove(meas);
+            //    listMeasure.Remove(measure);
+            //}
 
             ModelToChart(listMeasure);
             dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);

@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:ResourceAZ.ViewModels"
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
-        Title="Расчет остаточного ресурса Анодного заземлителя" Height="897.5" Width="1439" WindowStartupLocation="CenterScreen" Background="#FFE6E6E6">
+        Title="Расчет остаточного ресурса Анодного заземлителя" Height="897.5" Width="1500" WindowStartupLocation="CenterScreen" Background="#FFE6E6E6">
     <Window.Resources>
         <Style TargetType="DataGridCell" x:Key="CellRight">
             <Style.Setters>
@@ -19,119 +19,140 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <Grid>
-        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="460,40,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
-            <oxy:PlotView.Effect>
-                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-            </oxy:PlotView.Effect>
-        </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelNapr}" Margin="460,200,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
-            <oxy:PlotView.Effect>
-                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-            </oxy:PlotView.Effect>
-        </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelPot}" Margin="460,360,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
-            <oxy:PlotView.Effect>
-                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-            </oxy:PlotView.Effect>
-        </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelA}" Margin="460,520,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
-            <oxy:PlotView.Effect>
-                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-            </oxy:PlotView.Effect>
-        </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelR}" Margin="460,680,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="150" HorizontalAlignment="Left" Width="705">
-            <oxy:PlotView.Effect>
-                <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-            </oxy:PlotView.Effect>
-        </oxy:PlotView>
-        <GroupBox Header="Измеренные показания" Margin="19,178,0,0" HorizontalAlignment="Left" Width="409" Background="#FFE8E8E8" VerticalAlignment="Top" Height="672">
-            <GroupBox.Effect>
-                <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
-            </GroupBox.Effect>
-            <local:DataGridSelected x:Name="dg" Margin="4" AutoGenerateColumns="false" IsReadOnly="True"
+    <DockPanel>
+        <TextBlock HorizontalAlignment="Center" Margin="0,12" Text="{Binding FileName}" VerticalAlignment="Top" FontWeight="Bold" DockPanel.Dock="Top" FontSize="16"/>
+        <StatusBar Height="24" VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
+            <TextBlock Text="{Binding listMeasure.Count, StringFormat=Число измерений: \{0\}}" HorizontalAlignment="Left"/>
+        </StatusBar>
+        <Grid Margin="0,0,0,5" Width="422">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="127"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="Манипуляции со списком" Margin="10,0,11,0" Background="#FFE8E8E8">
+                <GroupBox.Effect>
+                    <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
+                </GroupBox.Effect>
+                <Grid Margin="0">
+                    <RadioButton x:Name="radioButton" Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <RadioButton Content="Среднее по годам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.YEAR}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
+                    <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
+                    <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
+                    <RadioButton Content="Летние значения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.SUMMER}" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
+                    <Button Margin="238,66,10,16" Command="{Binding RemoveDeviationCommand}" Content="Удалить отклонения"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Измеренные показания" Margin="10,0" Background="#FFE8E8E8" Grid.Row="1">
+                <GroupBox.Effect>
+                    <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
+                </GroupBox.Effect>
+                <local:DataGridSelected x:Name="dg" Margin="4" AutoGenerateColumns="false" IsReadOnly="True"
                     ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                     HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
                     CanUserAddRows="False" CanUserDeleteRows="False" 
-                    SelectedItemsList="{Binding SelectedMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
-
-                <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Удалить строку" Command="{Binding DeleteLineCommand}" 
-                                  CommandParameter="{Binding SelectedIndex, ElementName=dg, Mode=OneWayToSource}"/>
-                    </ContextMenu>
-                </DataGrid.ContextMenu>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
-                    <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
-                    <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
-                    <DataGridTextColumn Header="Потенц." Binding="{Binding SummPot, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
-                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
-                    <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
-                </DataGrid.Columns>
-            </local:DataGridSelected>
-        </GroupBox>
-        <GroupBox Header="Манипуляции со списком" Margin="21,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="116" Width="407" Background="#FFE8E8E8">
-            <GroupBox.Effect>
-                <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
-            </GroupBox.Effect>
-            <Grid Margin="0">
-                <RadioButton x:Name="radioButton" Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <RadioButton Content="Среднее по годам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.YEAR}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
-                <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
-                <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
-                <RadioButton Content="Летние значения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.SUMMER}" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
-                <Button Margin="265,62,10,9" Command="{Binding RemoveDeviationCommand}">Удалить отклонения</Button>
-            </Grid>
-        </GroupBox>
-        <GroupBox Header="Параметры расчета" Margin="1184,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="150" Width="227" Background="#FFE8E8E8">
-            <GroupBox.Effect>
-                <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
-            </GroupBox.Effect>
-            <Grid>
-                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
-                <TextBox Margin="172,9,-0.7,0" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
-                <TextBox Margin="172,32,0,0" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
-                <TextBox Margin="172,55,0,0" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
-                <RadioButton Content="Расчет по сопротивлению" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.Resist}" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}"/>
-                <RadioButton Content="Расчет по потенциалам" Command="{Binding KindCalcCommand}" CommandParameter="{x:Static vm:KindCalc.Potencial}" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
-            </Grid>
-        </GroupBox>
-        <GroupBox  HorizontalAlignment="Left" Height="634" Margin="1184,216,0,0" VerticalAlignment="Top" Width="216" Background="#FFE6E6E6">
-            <GroupBox.Effect>
-                <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
-            </GroupBox.Effect>
-            <Grid Margin="0">
-                <Button HorizontalAlignment="Left" Width="136" Margin="34,19,0,0" Command="{Binding FromExcelCommand}" Height="60" VerticalAlignment="Top">
-                    <StackPanel Orientation="Horizontal" RenderTransformOrigin="0.5,0.5">
-                        <StackPanel.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform/>
-                                <SkewTransform AngleY="0.296"/>
-                                <RotateTransform/>
-                                <TranslateTransform Y="-0.328"/>
-                            </TransformGroup>
-                        </StackPanel.RenderTransform>
-                        <Image Source="/ResourceAZ;component/Resources/Images/excel_imports.png" Stretch="None" Height="32" Margin="5"/>
-                        <TextBlock Text="Открыть Excel" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="5"/>
-                    </StackPanel>
-                </Button>
-                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="136" Height="60" Command="{Binding CloseApplicationCommand}" Margin="34,178,0,0">
-                    <StackPanel Orientation="Horizontal" >
-                        <Image Source="/ResourceAZ;component/Resources/Images/door.png" Width="32" Height="32" Margin="5"/>
-                        <TextBlock Margin="5" Text="Закрыть программу" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Width="79"/>
-                    </StackPanel>
-                </Button>
-                <Button HorizontalAlignment="Left" Margin="34,95,0,0" VerticalAlignment="Top" Width="136" Height="60" Command="{Binding CalculateCommand}">
-                    <StackPanel Orientation="Horizontal" Width="127" >
-                        <Image Source="/ResourceAZ;component/Resources/Images/calc.png" Width="32" Height="32" Margin="5"/>
-                        <TextBlock Margin="5" Text="Рассчитать" TextAlignment="Center" VerticalAlignment="Center" Width="73"/>
-                    </StackPanel>
-                </Button>
-            </Grid>
-        </GroupBox>
-        <TextBlock HorizontalAlignment="Left" Margin="23,14,0,0" Text="{Binding FileName}" VerticalAlignment="Top" FontWeight="Bold" FontSize="14"/>
-    </Grid>
+                    SelectedItemsList="{Binding SelectedMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    >
+                    <!--<DataGrid.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </DataGrid.ItemsPanel>-->
+                    <local:DataGridSelected.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Удалить строку" Command="{Binding DeleteLineCommand}" 
+                                CommandParameter="{Binding SelectedIndex, ElementName=dg, Mode=OneWayToSource}"/>
+                        </ContextMenu>
+                    </local:DataGridSelected.ContextMenu>
+                    <local:DataGridSelected.Columns>
+                        <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
+                        <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                        <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                        <DataGridTextColumn Header="Потенц." Binding="{Binding SummPot, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                        <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
+                        <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
+                    </local:DataGridSelected.Columns>
+                </local:DataGridSelected>
+            </GroupBox>
+        </Grid>
+        <Grid Margin="0" DockPanel.Dock="Right">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="157*"/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="Параметры расчета" VerticalAlignment="Top" Height="150" Background="#FFE8E8E8" Margin="10,0">
+                <GroupBox.Effect>
+                    <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
+                </GroupBox.Effect>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
+                    <TextBox Margin="172,9,-0.7,0" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
+                    <TextBox Margin="172,32,0,0" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
+                    <TextBox Margin="172,55,0,0" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
+                    <RadioButton Content="Расчет по сопротивлению" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}"/>
+                    <RadioButton Content="Расчет по потенциалам" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Margin="10,0" Background="#FFE6E6E6" Grid.Row="1">
+                <GroupBox.Effect>
+                    <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
+                </GroupBox.Effect>
+                <Grid Margin="0">
+                    <Button HorizontalAlignment="Center" Width="160" Margin="0,19,0,0" Command="{Binding FromExcelCommand}" Height="60" VerticalAlignment="Top">
+                        <StackPanel Orientation="Horizontal" RenderTransformOrigin="0.5,0.5">
+                            <Image Source="/ResourceAZ;component/Resources/Images/excel_imports.png" Stretch="None" Height="32" Margin="5"/>
+                            <TextBlock Text="Открыть Excel" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" VerticalAlignment="Top" Width="160" Height="60" Command="{Binding CloseApplicationCommand}" Margin="0,178,0,0">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/ResourceAZ;component/Resources/Images/door.png" Width="32" Height="32" Margin="5"/>
+                            <TextBlock Margin="5" Text="Закрыть программу" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Width="79"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" Margin="0,95,0,0" VerticalAlignment="Top" Width="160" Height="60" Command="{Binding CalculateCommand}">
+                        <StackPanel Orientation="Horizontal" Width="127" >
+                            <Image Source="/ResourceAZ;component/Resources/Images/calc.png" Width="32" Height="32" Margin="5"/>
+                            <TextBlock Margin="5" Text="Рассчитать" TextAlignment="Center" VerticalAlignment="Center" Width="73"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <Grid Margin="4,0,4,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <oxy:PlotView Model="{Binding ModelCurrent}" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Margin="0,0,0,5">
+                <oxy:PlotView.Effect>
+                    <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+                </oxy:PlotView.Effect>
+            </oxy:PlotView>
+            <oxy:PlotView Model="{Binding ModelNapr}" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="1">
+                <oxy:PlotView.Effect>
+                    <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+                </oxy:PlotView.Effect>
+            </oxy:PlotView>
+            <oxy:PlotView Model="{Binding ModelPot}" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="2">
+                <oxy:PlotView.Effect>
+                    <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+                </oxy:PlotView.Effect>
+            </oxy:PlotView>
+            <oxy:PlotView Model="{Binding ModelA}" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="3">
+                <oxy:PlotView.Effect>
+                    <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+                </oxy:PlotView.Effect>
+            </oxy:PlotView>
+            <oxy:PlotView Model="{Binding ModelR}" Margin="0,5,0,-1" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="4">
+                <oxy:PlotView.Effect>
+                    <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
+                </oxy:PlotView.Effect>
+            </oxy:PlotView>
+        </Grid>
+    </DockPanel>
 </Window>

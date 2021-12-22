@@ -3,6 +3,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using ResourceAZ.Models;
 using ResourceAZ.ViewModels.Base;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace ResourceAZ.ViewModels
@@ -10,9 +11,9 @@ namespace ResourceAZ.ViewModels
 
     internal partial class MainWindowViewModel : ViewModel
     {
-        public ObservableCollection<DataPoint> InitChart(PlotModel model, string title)
+        public List<DataPoint> InitChart(PlotModel model, string title)
         {
-            ObservableCollection<DataPoint>  dp = new ObservableCollection<DataPoint>();
+            List<DataPoint>  dp = new List<DataPoint>();
             LineSeries ls = new LineSeries();
             ls.ItemsSource = dp;
             model.Series.Add(ls);
@@ -71,9 +72,9 @@ namespace ResourceAZ.ViewModels
         //--------------------------------------------------------------------------------------------
         // расчет аппроксимации линии
         //--------------------------------------------------------------------------------------------
-        private ObservableCollection<DataPoint> CalcApproxLine(PlotModel model, ObservableCollection<DataPoint> dp, ref double[] Approx)
+        private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, ref double[] Approx)
         {
-            ObservableCollection<DataPoint> dpAvg = CalcDataPoint(dp, ref Approx);
+            List<DataPoint> dpAvg = CalcDataPoint(dp, ref Approx);
             if (model.Series.Count == 1)
             {
                 LineSeries ls = new LineSeries();

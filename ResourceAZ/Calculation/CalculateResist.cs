@@ -44,20 +44,14 @@ namespace ResourceAZ.Calculation
                 Measure meas = new Measure();
                 y = 0;
                 for (int i = 0; i < model.ApproxR.Length; i++)
-                {
                     y += model.ApproxR[i] * Math.Pow(EndDate.ToOADate(), i);
-                }
                 EndValueR = y;
 
-                //EndValueR -= deltaR;
                 if (EndValueR <= 0)
                     break;
                 EndDate = EndDate.AddYears(1);
                 if(EndDate.Year > 2260)
-                {
-
                     break;
-                }
 
                 meas.date = EndDate;
                 meas.Resist = EndValueR;

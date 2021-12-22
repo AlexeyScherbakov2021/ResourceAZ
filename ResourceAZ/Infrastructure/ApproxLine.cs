@@ -6,18 +6,19 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 using System;
 using MathNet.Numerics.LinearAlgebra.Double;
+using System.Collections.Generic;
 
 namespace ResourceAZ.ViewModels
 {
     internal partial class MainWindowViewModel : ViewModel
     {
 
-        private ObservableCollection<DataPoint> CalcDataPoint(ObservableCollection<DataPoint> dp, ref double[] Approx)
+        private List<DataPoint> CalcDataPoint(List<DataPoint> dp, ref double[] Approx)
         {
             if (dp.Count == 0)
                 return null;
 
-            ObservableCollection<DataPoint> dpApprox = new ObservableCollection<DataPoint>();
+            List<DataPoint> dpApprox = new List<DataPoint>();
 
             double X = 0;
             double X2 = 0;
