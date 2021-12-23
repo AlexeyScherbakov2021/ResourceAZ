@@ -29,6 +29,9 @@ namespace ResourceAZ.Calculation
             // рассчитываем среднее от 20 последних показаний тока
             int Last20Current = model.listMeasure.Count >= 20 ? model.listMeasure.Count - 20 : 0;
             double EndValueCurrent = model.listMeasure.Skip(Last20Current).Average(a => a.Current);
+
+            //EndValueCurrent = model.MaxCurrentSKZ;
+
             // получаем крайние даты
             DateTime EndDate = model.listMeasure[model.listMeasure.Count - 1].date;
             DateTime StartDate = model.listMeasure[0].date;

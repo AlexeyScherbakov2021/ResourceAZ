@@ -29,6 +29,17 @@ namespace ResourceAZ.ViewModels
         public double[] ApproxA;
         public double[] ApproxR;
 
+        private string _KoeffFunc;
+        public string KoeffFunc
+        {
+            get => _KoeffFunc; set { Set(ref _KoeffFunc, value); }
+        }
+        private string _ResistFunc;
+        public string ResistFunc
+        {
+            get => _ResistFunc; set { Set(ref _ResistFunc, value); }
+        }
+
         // оригинал полученного списка измерений
         private ObservableCollection<Measure> listMeasureOrig;
         // сгрупированный список измерений
@@ -42,8 +53,8 @@ namespace ResourceAZ.ViewModels
                 ModelToChart(listMeasure);
                 if (CalcPotencial)
                 {
-                    dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
-                    dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
+                    dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+                    dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
                 }
             }
         }
@@ -215,8 +226,8 @@ namespace ResourceAZ.ViewModels
             //}
 
             ModelToChart(listMeasure);
-            dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
-            dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
+            dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+            dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
         }
 
@@ -294,10 +305,16 @@ namespace ResourceAZ.ViewModels
             GroupNone = true;
             SelectGroup = KindGroup.NONE;
 
+            ModelCurrent.ResetAllAxes();
+            ModelNapr.ResetAllAxes();
+            ModelPot.ResetAllAxes();
+            ModelA.ResetAllAxes();
+            ModelR.ResetAllAxes();
+
             foreach (Measure m in listMeasureOrig)
             {
                 m.Koeff = m.SummPot / m.Current;
-                m.Resist = m.Napr / m.Current + m.Koeff;
+                m.Resist = m.Napr / m.Current;// + m.Koeff;
             }
 
             listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
@@ -305,8 +322,8 @@ namespace ResourceAZ.ViewModels
             // отмечаем на экране первый RadioButton
             GroupNone = true;
 
-            dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
-            dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
+            dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+            dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
         }
 
@@ -339,26 +356,26 @@ namespace ResourceAZ.ViewModels
                                 Napr = avgNapr,
                                 SummPot = avgPot,
                                 Koeff = avgPot / avgCurr,
-                                Resist = avgNapr / avgCurr + (avgPot / avgCurr)
+                                Resist = avgNapr / avgCurr// + (avgPot / avgCurr)
                             };
                     break;
 
                 case KindGroup.MONTH:
                     group = from Measure in listMeasureOrig
-                                     group Measure
-                                     by new { Measure.date.Year, Measure.date.Month }
+                            group Measure
+                            by new { Measure.date.Year, Measure.date.Month }
                                 into g
-                                     let avgCurr = g.Average(a => a.Current)
-                                     let avgNapr = g.Average(a => a.Napr)
-                                     let avgPot = g.Average(a => a.SummPot)
-                                     select new Measure
-                                     {
-                                         Current = avgCurr,
-                                         date = new DateTime(g.Key.Year, g.Key.Month, 1),
-                                         Napr = avgNapr,
-                                         SummPot = avgPot,
-                                         Koeff = avgPot / avgCurr,
-                                         Resist = avgNapr / avgCurr + (avgPot / avgCurr)
+                            let avgCurr = g.Average(a => a.Current)
+                            let avgNapr = g.Average(a => a.Napr)
+                            let avgPot = g.Average(a => a.SummPot)
+                            select new Measure
+                            {
+                                Current = avgCurr,
+                                date = new DateTime(g.Key.Year, g.Key.Month, 1),
+                                Napr = avgNapr,
+                                SummPot = avgPot,
+                                Koeff = avgPot / avgCurr,
+                                Resist = avgNapr / avgCurr// + (avgPot / avgCurr)
                                      };
                     break;
 
@@ -375,7 +392,7 @@ namespace ResourceAZ.ViewModels
                                 Napr = avgNapr,
                                 SummPot = avgPot,
                                 Koeff = avgPot / avgCurr,
-                                Resist = avgNapr / avgCurr + (avgPot / avgCurr)
+                                Resist = avgNapr / avgCurr// + (avgPot / avgCurr)
                             };
                     break;
 
@@ -395,15 +412,15 @@ namespace ResourceAZ.ViewModels
                                 Napr = avgNapr,
                                 SummPot = avgPot,
                                 Koeff = avgPot / avgCurr,
-                                Resist = avgNapr / avgCurr + (avgPot / avgCurr)
+                                Resist = avgNapr / avgCurr// + (avgPot / avgCurr)
                             };
                     break;
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());
 
-            dpAavg = CalcApproxLine(ModelA, dpA, ref ApproxA);
-            dpRavg = CalcApproxLine(ModelR, dpR, ref ApproxR);
+            dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+            dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
         }
 

@@ -19,7 +19,9 @@ namespace ResourceAZ.ViewModels
             model.Series.Add(ls);
             ls.Color = OxyColors.Blue;
             ls.MarkerType = MarkerType.Circle;
+            ls.MarkerSize = 3;
             ls.StrokeThickness = 2;
+
             var XAxis = new DateTimeAxis();
             XAxis.AxislineStyle = LineStyle.Dot;
             XAxis.StringFormat = "dd.MM.yyyy";
@@ -27,6 +29,7 @@ namespace ResourceAZ.ViewModels
             XAxis.MinorGridlineStyle = LineStyle.Dot;
             XAxis.FontSize = 11;
             model.Axes.Add(XAxis);
+
             var YAxis = new LinearAxis();
             YAxis.MajorGridlineStyle = LineStyle.Automatic;
             YAxis.MinorGridlineStyle = LineStyle.Dot;
@@ -72,9 +75,10 @@ namespace ResourceAZ.ViewModels
         //--------------------------------------------------------------------------------------------
         // расчет аппроксимации линии
         //--------------------------------------------------------------------------------------------
-        private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, ref double[] Approx)
+        //private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, ref double[] Approx)
+        private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, KindLineApprox kind)
         {
-            List<DataPoint> dpAvg = CalcDataPoint(dp, ref Approx);
+            List<DataPoint> dpAvg = CalcDataPoint(dp, kind);
             if (model.Series.Count == 1)
             {
                 LineSeries ls = new LineSeries();

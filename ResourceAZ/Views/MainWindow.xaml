@@ -21,8 +21,10 @@
     </Window.DataContext>
     <DockPanel>
         <TextBlock HorizontalAlignment="Center" Margin="0,12" Text="{Binding FileName}" VerticalAlignment="Top" FontWeight="Bold" DockPanel.Dock="Top" FontSize="16"/>
-        <StatusBar Height="24" VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
+        <StatusBar Height="32" VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
             <TextBlock Text="{Binding listMeasure.Count, StringFormat=Число измерений: \{0\}}" HorizontalAlignment="Left"/>
+            <TextBlock Text="{Binding KoeffFunc, StringFormat=Функция линии коэффициентов: \{0\}}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
+            <TextBlock Text="{Binding ResistFunc, StringFormat=Функция линии сопротивления: \{0\}}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
         </StatusBar>
         <Grid Margin="0,0,0,5" Width="422">
             <Grid.RowDefinitions>

@@ -13,12 +13,16 @@ namespace ResourceAZ.ViewModels
     internal partial class MainWindowViewModel : ViewModel
     {
 
-        private List<DataPoint> CalcDataPoint(List<DataPoint> dp, ref double[] Approx)
+        //private List<DataPoint> CalcDataPoint(List<DataPoint> dp, ref double[] Approx)
+        private List<DataPoint> CalcDataPoint(List<DataPoint> dp, KindLineApprox kind)
         {
             if (dp.Count == 0)
                 return null;
 
             List<DataPoint> dpApprox = new List<DataPoint>();
+            double[] Approx = null;
+            string Function = "";
+
 
             double X = 0;
             double X2 = 0;
@@ -50,7 +54,7 @@ namespace ResourceAZ.ViewModels
                     //    dpApprox.Add(dPoint);
                     //}
 
-                    Approx = Fit.Polynomial(aX, aY, order, DirectRegressionMethod.NormalEquations);
+                    Approx = Fit.Polynomial(aX, aY, order, DirectRegressionMethod.QR);
 
                     foreach (DataPoint d in dp)
                     {
@@ -70,6 +74,32 @@ namespace ResourceAZ.ViewModels
                 {
                 }
             }
+
+            for(int i = Approx.Length - 1; i > 0; i-- )
+            {
+                if(!string.IsNullOrEmpty(Function))
+                    Function += Approx[i] < 0 ? " - " : " + ";
+                if(Math.Abs(Approx[i]) > 0.001)
+                    Function += Math.Abs(Approx[i]).ToString("F2") + "x";
+                if(i > 1 && !string.IsNullOrEmpty(Function))
+                    Function += "^" + i.ToString();
+            }
+            if (!string.IsNullOrEmpty(Function))
+                Function += Approx[0] < 0 ? " - " : " + ";
+            Function += Math.Abs(Approx[0]).ToString("F2"); 
+
+
+            if (kind == KindLineApprox.KOEFF)
+            {
+                ApproxA = Approx;
+                KoeffFunc = Function;
+            }
+            else
+            {
+                ApproxR = Approx;
+                ResistFunc = Function;
+            }
+
             return dpApprox;
         }
 
