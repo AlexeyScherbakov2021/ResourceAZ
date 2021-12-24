@@ -28,8 +28,6 @@ namespace ResourceAZ.Chart
 
             rc.DrawRectangle(new OxyRect(minX, PlotArea.Top, maxX - minX, 
                 PlotArea.Height), OxyColor.FromArgb(70, 255,255,0), OxyColors.Gray, 1, EdgeRenderingMode.Automatic);
-            //rc.DrawRectangle(new OxyRect(Math.Max(minX, PlotArea.Left), PlotArea.Top, Math.Min(maxX, PlotArea.Right) - minX, 
-            //    PlotArea.Height), OxyColor.FromArgb(70, 255,255,0), OxyColors.Gray, 1, EdgeRenderingMode.Automatic);
         }
 
         protected override void OnMouseDown(object sender, OxyMouseDownEventArgs e)

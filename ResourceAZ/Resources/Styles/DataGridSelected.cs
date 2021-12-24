@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ResourceAZ//.Resources.Styles
 {
@@ -28,6 +29,19 @@ namespace ResourceAZ//.Resources.Styles
             set => throw new Exception("This property is read-only. To bind to it you must use 'Mode=OneWayToSource'.");
             //set { SetValue(SelectedItemsListProperty, value); }
         }
+
+
+       // public static readonly DependencyProperty AlternateBackgroundProperty =
+       //DependencyProperty.Register("AlternateBackground", typeof(Brush), typeof(DataGridSelected),
+       //    new PropertyMetadata(default(Brush)/*, OnSelectedItemsPropertyChanged*/));
+
+
+       // protected override void OnAlternationCountChanged(int oldAlternationCount, int newAlternationCount)
+       // {
+       //     base.OnAlternationCountChanged(oldAlternationCount, newAlternationCount);
+       //     SetValue(AlternateBackgroundProperty, base.AlternatingRowBackground);
+       // }
+
 
 
         //private static void OnSelectedItemsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

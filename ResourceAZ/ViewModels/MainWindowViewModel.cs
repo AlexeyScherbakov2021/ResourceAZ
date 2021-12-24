@@ -76,7 +76,7 @@ namespace ResourceAZ.ViewModels
             get => _SelectedMeasure;
             set
             {
-                _SelectedMeasure = value;
+                Set(ref _SelectedMeasure, value);
             }
         }
 
@@ -121,7 +121,11 @@ namespace ResourceAZ.ViewModels
         }
         public bool GroupYear { get; set; }
         public bool GroupMonth { get; set; }
-        public bool GroupDay { get; set; }
+        bool _GroupDay;
+        public bool GroupDay
+        {
+            get => _GroupDay; set { Set(ref _GroupDay, value); }
+        }
 
         public bool RemoveBadValue { get; set; }
 
@@ -216,6 +220,7 @@ namespace ResourceAZ.ViewModels
             return SelectedMeasure != null && SelectedMeasure?.Count > 0;
         }
 
+        // команда удаления строки из datagrid
         private void OnDeleteLineCommand(object p)
         {
             while (SelectedMeasure.Count > 0)
@@ -228,23 +233,12 @@ namespace ResourceAZ.ViewModels
                 listMeasure.Remove(selMeas);
             }
 
-            //foreach (Measure measure in SelectedMeasure)
-            //{
-            //    //Measure selMeas = SelectedMeasure[0] as Measure;
-            //    Measure meas = listMeasureOrig.Where(m => m.date == measure.date /*&& m.Current == selMeas.Current*/
-            //        && m.Resist == measure.Resist)
-            //        .FirstOrDefault();
-            //    listMeasureOrig.Remove(meas);
-            //    listMeasure.Remove(measure);
-            //}
-
             ModelToChart(listMeasure);
             dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
             dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
         }
 
-        // команда удаления строки из datagrid
         public ICommand RemoveDeviationCommand { get; }
         private bool CanRemoveDeviationCommand(object p)
         {
@@ -315,8 +309,8 @@ namespace ResourceAZ.ViewModels
 
         void OpenNewList()
         {
-            GroupNone = true;
-            SelectGroup = KindGroup.NONE;
+            //GroupNone = true;
+            SelectGroup = KindGroup.DAY;
 
             ModelCurrent.ResetAllAxes();
             ModelNapr.ResetAllAxes();
@@ -331,9 +325,10 @@ namespace ResourceAZ.ViewModels
             }
 
             listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
-
+            FormatListMeasure(SelectGroup);
+            
             // отмечаем на экране первый RadioButton
-            GroupNone = true;
+            GroupDay = true;
 
             dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
             dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
@@ -435,6 +430,19 @@ namespace ResourceAZ.ViewModels
             dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
             dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
+        }
+
+
+        public void SelectRangeDataGrid(DateTime dtFrom, DateTime dtTo)
+        {
+            List<Measure> meas = listMeasureOrig.Where(w => w.date >= dtFrom && w.date <= dtTo).ToList();
+            foreach (Measure m in meas)
+            {
+                DateTime temp = m.date;
+                m.date = DateTime.Now;
+                m.date = temp;
+            }
+                
         }
 
     }

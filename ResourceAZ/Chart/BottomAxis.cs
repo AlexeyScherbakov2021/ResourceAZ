@@ -1,4 +1,5 @@
 ﻿using OxyPlot.Axes;
+using ResourceAZ.Models;
 using ResourceAZ.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,6 @@ namespace ResourceAZ.Chart
 
             if (x1 > DataMaximum)
                 x1 = DataMaximum;
-
 
             if (viewModel.MinSelectedValue != DateTime.FromOADate(x0) || viewModel.MaxSelectedValue != DateTime.FromOADate(x1))
             {
@@ -69,6 +69,8 @@ namespace ResourceAZ.Chart
 
             //base.Zoom(x0, x1);
 
+            // выделение строк в datagrid
+            viewModel.SelectRangeDataGrid(DateTime.FromOADate(x0), DateTime.FromOADate(x1));
 
         }
 

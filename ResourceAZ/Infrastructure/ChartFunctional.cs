@@ -25,11 +25,13 @@ namespace ResourceAZ.ViewModels
 
             var XAxis = new BottomAxis(this);
             XAxis.AxislineStyle = LineStyle.Dot;
-            XAxis.StringFormat = "dd.MM.yyyy";
+            XAxis.StringFormat = "MM.yyyy";
             XAxis.MajorGridlineStyle = LineStyle.Automatic;
             XAxis.MinorGridlineStyle = LineStyle.Dot;
             XAxis.FontSize = 11;
             XAxis.IsPanEnabled = false;
+            //XAxis.IntervalLength = 40;
+            XAxis.IntervalType = DateTimeIntervalType.Months;
             model.Axes.Add(XAxis);
 
             var YAxis = new LinearAxis();
@@ -39,7 +41,10 @@ namespace ResourceAZ.ViewModels
             model.Title = title;
             YAxis.IsZoomEnabled = false;
             YAxis.IsPanEnabled = false;
+            YAxis.IntervalLength = 20;
+            YAxis.MinimumMajorStep = 0.1;
             model.Axes.Add(YAxis);
+
             model.TitleFontSize = 13;
             model.PlotMargins = new OxyThickness(20, 0, 5, 20);
 

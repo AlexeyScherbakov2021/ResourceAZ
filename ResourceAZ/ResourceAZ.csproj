@@ -111,6 +111,7 @@
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />
     <Compile Include="Infrastructure\DisplayRootRegistry.cs" />
     <Compile Include="Infrastructure\Enums.cs" />
+    <Compile Include="Infrastructure\RowToBrushConverter.cs" />
     <Compile Include="Models\Measure.cs" />
     <Compile Include="Repository\IMeasureData.cs" />
     <Compile Include="Repository\MeasureDataExcel.cs" />
