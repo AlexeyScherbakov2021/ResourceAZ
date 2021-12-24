@@ -20,6 +20,7 @@ using ResourceAZ.Views;
 using ResourceAZ.Calculation;
 using Microsoft.Win32;
 using System.Collections;
+using ResourceAZ.Chart;
 
 namespace ResourceAZ.ViewModels
 {
@@ -28,6 +29,18 @@ namespace ResourceAZ.ViewModels
     {
         public double[] ApproxA;
         public double[] ApproxR;
+
+        DateTime _MinSelectedValue;
+        public DateTime MinSelectedValue
+        {
+            get => _MinSelectedValue; set { Set(ref _MinSelectedValue, value); }
+        }
+        DateTime _MaxSelectedValue;
+        public DateTime MaxSelectedValue
+        {
+            get => _MaxSelectedValue; set { Set(ref _MaxSelectedValue, value); }
+        }
+
 
         private string _KoeffFunc;
         public string KoeffFunc
@@ -81,7 +94,7 @@ namespace ResourceAZ.ViewModels
 
         // ObservableCollection<DataPoint> dpRavg { get; set; }
         // модели для графиков
-        public PlotModel ModelCurrent { get; }
+        public MyPlotModel ModelCurrent { get; }
         public PlotModel ModelNapr { get; }
         public PlotModel ModelPot { get; }
         public PlotModel ModelA { get; }
@@ -277,11 +290,11 @@ namespace ResourceAZ.ViewModels
             RemoveDeviationCommand = new LambdaCommand(OnRemoveDeviationCommand, CanRemoveDeviationCommand);
 
             // подгтовка графиков для всех измерений
-            ModelCurrent = new PlotModel();
-            ModelNapr = new PlotModel();
-            ModelPot = new PlotModel();
-            ModelA = new PlotModel();
-            ModelR = new PlotModel();
+            ModelCurrent = new MyPlotModel(this);
+            ModelNapr = new MyPlotModel(this);
+            ModelPot = new MyPlotModel(this);
+            ModelA = new MyPlotModel(this);
+            ModelR = new MyPlotModel(this);
 
             dpCurrent = InitChart(ModelCurrent, "Выходной ток");
             dpNapr = InitChart(ModelNapr, "Напряжение");
@@ -396,25 +409,25 @@ namespace ResourceAZ.ViewModels
                             };
                     break;
 
-                case KindGroup.SUMMER:
-                    group = from Measure in listMeasureOrig
-                            where Measure.date.Month < 9 && Measure.date.Month > 5
-                            group Measure
-                            by new { Measure.date.Year, Measure.date.Month, Measure.date.Day }
-                                into g
-                            let avgCurr = g.Average(a => a.Current)
-                            let avgNapr = g.Average(a => a.Napr)
-                            let avgPot = g.Average(a => a.SummPot)
-                            select new Measure
-                            {
-                                Current = avgCurr,
-                                date = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day),
-                                Napr = avgNapr,
-                                SummPot = avgPot,
-                                Koeff = avgPot / avgCurr,
-                                Resist = avgNapr / avgCurr// + (avgPot / avgCurr)
-                            };
-                    break;
+                //case KindGroup.SUMMER:
+                //    group = from Measure in listMeasureOrig
+                //            where Measure.date.Month < 9 && Measure.date.Month > 5
+                //            group Measure
+                //            by new { Measure.date.Year, Measure.date.Month, Measure.date.Day }
+                //                into g
+                //            let avgCurr = g.Average(a => a.Current)
+                //            let avgNapr = g.Average(a => a.Napr)
+                //            let avgPot = g.Average(a => a.SummPot)
+                //            select new Measure
+                //            {
+                //                Current = avgCurr,
+                //                date = new DateTime(g.Key.Year, g.Key.Month, g.Key.Day),
+                //                Napr = avgNapr,
+                //                SummPot = avgPot,
+                //                Koeff = avgPot / avgCurr,
+                //                Resist = avgNapr / avgCurr// + (avgPot / avgCurr)
+                //            };
+                //    break;
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());

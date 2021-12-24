@@ -1,6 +1,7 @@
 ﻿using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using ResourceAZ.Chart;
 using ResourceAZ.Models;
 using ResourceAZ.ViewModels.Base;
 using System.Collections.Generic;
@@ -22,12 +23,13 @@ namespace ResourceAZ.ViewModels
             ls.MarkerSize = 3;
             ls.StrokeThickness = 2;
 
-            var XAxis = new DateTimeAxis();
+            var XAxis = new BottomAxis(this);
             XAxis.AxislineStyle = LineStyle.Dot;
             XAxis.StringFormat = "dd.MM.yyyy";
             XAxis.MajorGridlineStyle = LineStyle.Automatic;
             XAxis.MinorGridlineStyle = LineStyle.Dot;
             XAxis.FontSize = 11;
+            XAxis.IsPanEnabled = false;
             model.Axes.Add(XAxis);
 
             var YAxis = new LinearAxis();
@@ -35,12 +37,15 @@ namespace ResourceAZ.ViewModels
             YAxis.MinorGridlineStyle = LineStyle.Dot;
             YAxis.FontSize = 11;
             model.Title = title;
+            YAxis.IsZoomEnabled = false;
+            YAxis.IsPanEnabled = false;
             model.Axes.Add(YAxis);
             model.TitleFontSize = 13;
             model.PlotMargins = new OxyThickness(20, 0, 5, 20);
 
             return dp;
         }
+
 
         //--------------------------------------------------------------------------------------------
         // перенос данных а график
