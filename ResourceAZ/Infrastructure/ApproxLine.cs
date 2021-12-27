@@ -16,7 +16,7 @@ namespace ResourceAZ.ViewModels
         //private List<DataPoint> CalcDataPoint(List<DataPoint> dp, ref double[] Approx)
         private List<DataPoint> CalcDataPoint(List<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
         {
-            if (dp.Count == 0)
+            if (dp.Count <= 1)
                 return null;
 
             List<DataPoint> dpApprox = new List<DataPoint>();
@@ -101,6 +101,7 @@ namespace ResourceAZ.ViewModels
             }
 
             double StopX = dpApprox[dpApprox.Count - 1].X;
+            //EndRange = dpApprox.Count - 1;
 
             // если нужно дополнить прогнозное построение
             while (EndX > StopX)

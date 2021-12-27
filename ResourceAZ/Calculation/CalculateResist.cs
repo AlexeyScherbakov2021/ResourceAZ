@@ -21,25 +21,32 @@ namespace ResourceAZ.Calculation
 
         public ObservableCollection<Measure> Calc(MainWindowViewModel model)
         {
-            double deltaR;
+            //double deltaR;
+
+            IEnumerable<Measure> rangeList = model.RangeForCalc ?
+                model.listMeasure.Where(m => m.date >= model.MinSelectedValue && m.date <= model.MaxSelectedValue)
+                : model.listMeasure; 
+
+            int indexEnd = model.RangeForCalc ?
+                model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= model.MaxSelectedValue.ToOADate()).Last())
+                : model.dpRavg.Count - 1;
+
+
             double StartValueR = model.dpRavg[0].Y;
-            double EndValueR = model.dpRavg[model.dpRavg.Count - 1].Y;
-            double EndValueNapr = model.listMeasure[model.listMeasure.Count - 1].Napr;
+            double EndValueR = model.dpRavg[indexEnd].Y;
+            //double EndValueNapr = model.listMeasure[model.EndRange].Napr;
 
             // рассчитываем среднее от 20 последних показаний тока
-            int Last20Current = model.listMeasure.Count >= 20 ? model.listMeasure.Count - 20 : 0;
-            double EndValueCurrent = model.listMeasure.Skip(Last20Current).Average(a => a.Current);
-
-            //EndValueCurrent = model.MaxCurrentSKZ;
+            int Last20Current = rangeList.Count() >= 20 ? rangeList.Count() - 20 : 0;
+            double EndValueCurrent = rangeList.Skip(Last20Current).Average(a => a.Current);
 
             // получаем крайние даты
-            DateTime EndDate = model.listMeasure[model.listMeasure.Count - 1].date;
-            DateTime StartDate = model.listMeasure[0].date;
+            DateTime StartDate = DateTime.FromOADate(model.dpRavg[0].X);
+            DateTime EndDate = DateTime.FromOADate(model.dpRavg[indexEnd].X);
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;
 
-            //deltaR = (StartValueR - EndValueR) / Years;
             double y;
 
             do

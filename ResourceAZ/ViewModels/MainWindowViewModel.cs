@@ -30,6 +30,7 @@ namespace ResourceAZ.ViewModels
         public double[] ApproxA;
         public double[] ApproxR;
 
+        //public int EndRange;
         DateTime _MinSelectedValue;
         public DateTime MinSelectedValue
         {
@@ -195,12 +196,6 @@ namespace ResourceAZ.ViewModels
             double LastR = listMeasure[listMeasure.Count - 1].Resist;
             double LastA = listMeasure[listMeasure.Count - 1].Koeff;
 
-            //if(dpRavg[dpRavg.Count - 1].Y >= dpRavg[0].Y)
-            //{
-            //    MessageBox.Show("Расчет невозможен. \nСопротивление со временем должно уменьшаться.","Ошибка", MessageBoxButton.OK, MessageBoxImage.Error );
-            //    return;
-            //}
-
             CalcWindowViewModel vm = new CalcWindowViewModel(this);
             Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);
             win.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -273,12 +268,16 @@ namespace ResourceAZ.ViewModels
             foreach(Measure m in list)
                 listMeasure.Remove(m);
 
-            MinSelectedValue = DateTime.MinValue;
-            MaxSelectedValue = DateTime.MinValue;
+            //MinSelectedValue = DateTime.MinValue;
+            //MaxSelectedValue = DateTime.MinValue;
+            //RangeForCalc = false;
+
 
             ModelToChart(listMeasure);
-            dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-            dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+            //dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+            //dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+
+            OnDropRangeCommand(p);
         }
 
         // комнда принятия диапазона для равсчетов
@@ -307,6 +306,30 @@ namespace ResourceAZ.ViewModels
             ModelPot.InvalidatePlot(true);
         }
 
+        // команда снятия выделения
+        public ICommand DropRangeCommand { get; }
+        private bool CanDropRangeCalcCommand(object p)
+        {
+            return MinSelectedValue < MaxSelectedValue;
+        }
+        private void OnDropRangeCommand(object p)
+        {
+
+            MinSelectedValue = DateTime.MinValue;
+            MaxSelectedValue = DateTime.MinValue;
+            RangeForCalc = false;
+            foreach (Measure m in listMeasure)
+                m.SetColor = false;
+
+            dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+            dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+
+            // обновление точек графиков на экране для смены цвета фона
+            ModelCurrent.InvalidatePlot(true);
+            ModelNapr.InvalidatePlot(true);
+            ModelPot.InvalidatePlot(true);
+        }
+
         #endregion
 
         public MainWindowViewModel()
@@ -320,6 +343,7 @@ namespace ResourceAZ.ViewModels
             RemoveDeviationCommand = new LambdaCommand(OnRemoveDeviationCommand, CanRemoveDeviationCommand);
             RemoveSelectedValuesCommand = new LambdaCommand(OnRemoveSelectedValuesCommand, CanRemoveSelectedValuesCommand);
             SetRangeForCalcCommand = new LambdaCommand(OnSetRangeForCalcCommand, CanSetRangeForCalcCommand);
+            DropRangeCommand = new LambdaCommand(OnDropRangeCommand, CanDropRangeCalcCommand);
 
             // подгтовка графиков для всех измерений
             ModelCurrent = new MyPlotModel(this);

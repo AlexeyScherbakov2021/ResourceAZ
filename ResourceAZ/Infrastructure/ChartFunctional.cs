@@ -63,7 +63,7 @@ namespace ResourceAZ.ViewModels
             dpA.Clear();
             dpR.Clear();
 
-            // заполнение точками срисков для графиков
+            // заполнение точками списков для графиков
             foreach (Measure m in meas)
             {
                 dpCurrent.Add(new DataPoint(m.date.ToOADate(), m.Current));

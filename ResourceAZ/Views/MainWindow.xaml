@@ -175,6 +175,9 @@
                 <Button Command="{Binding RemoveSelectedValuesCommand}">
                     <Image Source="/ResourceAZ;component/Resources/Images/Cancel.png"/>
                 </Button>
+                <Button Command="{Binding DropRangeCommand}">
+                    <Image Source="/ResourceAZ;component/Resources/Images/calc.png"/>
+                </Button>
             </ToolBarPanel>
             <oxy:PlotView Model="{Binding ModelCurrent}" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="True" Margin="0,0,0,5" Grid.Column="1" Grid.Row="1">
                 <oxy:PlotView.Effect>
