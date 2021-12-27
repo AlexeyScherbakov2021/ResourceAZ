@@ -65,12 +65,14 @@ namespace ResourceAZ.Chart
                     viewModel.ModelR.Axes[0].Zoom(x0, x1);
                     viewModel.ModelR.InvalidatePlot(true);
                 }
+
+                // выделение строк в datagrid
+                viewModel.SelectRangeDataGrid(DateTime.FromOADate(x0), DateTime.FromOADate(x1));
             }
 
             //base.Zoom(x0, x1);
 
-            // выделение строк в datagrid
-            viewModel.SelectRangeDataGrid(DateTime.FromOADate(x0), DateTime.FromOADate(x1));
+
 
         }
 

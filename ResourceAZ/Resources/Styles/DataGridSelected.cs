@@ -31,19 +31,6 @@ namespace ResourceAZ//.Resources.Styles
         }
 
 
-       // public static readonly DependencyProperty AlternateBackgroundProperty =
-       //DependencyProperty.Register("AlternateBackground", typeof(Brush), typeof(DataGridSelected),
-       //    new PropertyMetadata(default(Brush)/*, OnSelectedItemsPropertyChanged*/));
-
-
-       // protected override void OnAlternationCountChanged(int oldAlternationCount, int newAlternationCount)
-       // {
-       //     base.OnAlternationCountChanged(oldAlternationCount, newAlternationCount);
-       //     SetValue(AlternateBackgroundProperty, base.AlternatingRowBackground);
-       // }
-
-
-
         //private static void OnSelectedItemsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         //{
         //    ((DataGridSelected)d).OnSelectedItemsChanged((IList)e.OldValue, (IList)e.NewValue);

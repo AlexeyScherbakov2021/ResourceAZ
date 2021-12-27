@@ -26,8 +26,12 @@ namespace ResourceAZ.Chart
             double minX = (viewModel.MinSelectedValue.ToOADate() - DefaultXAxis.Offset) * DefaultXAxis.Scale;
             double maxX = (viewModel.MaxSelectedValue.ToOADate() - DefaultXAxis.Offset) * DefaultXAxis.Scale;
 
+            OxyColor brush = viewModel.RangeForCalc ? OxyColor.FromArgb(70, 0, 255, 255) :
+                OxyColor.FromArgb(70, 255, 255, 0);
+
+
             rc.DrawRectangle(new OxyRect(minX, PlotArea.Top, maxX - minX, 
-                PlotArea.Height), OxyColor.FromArgb(70, 255,255,0), OxyColors.Gray, 1, EdgeRenderingMode.Automatic);
+                PlotArea.Height), brush, OxyColors.Gray, 1, EdgeRenderingMode.Automatic);
         }
 
         protected override void OnMouseDown(object sender, OxyMouseDownEventArgs e)

@@ -27,8 +27,12 @@ namespace ResourceAZ.Infrastructure
             //// RowType - тип элемента строки
             var date = (DateTime)value;
             if (date != null && date >= model.MinSelectedValue && date <= model.MaxSelectedValue)
-                return  new SolidColorBrush(Color.FromArgb(90, 255, 255, 0));
-
+            {
+                Brush brush = new SolidColorBrush(Color.FromArgb(90, 255, 255, 0));
+                //Brush brush = model.RangeForCalc ? new SolidColorBrush(Color.FromArgb(90, 0, 255, 255)) :
+                //    new SolidColorBrush(Color.FromArgb(90, 255, 255, 0));
+                return brush;
+            }
             return Brushes.Transparent;
         }
 

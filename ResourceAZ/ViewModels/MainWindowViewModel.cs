@@ -41,6 +41,7 @@ namespace ResourceAZ.ViewModels
             get => _MaxSelectedValue; set { Set(ref _MaxSelectedValue, value); }
         }
 
+        public bool RangeForCalc;
 
         private string _KoeffFunc;
         public string KoeffFunc
@@ -72,14 +73,14 @@ namespace ResourceAZ.ViewModels
             }
         }
         public IList _SelectedMeasure;
-        public IList SelectedMeasure {
+        public IList SelectedMeasure
+        {
             get => _SelectedMeasure;
             set
             {
                 Set(ref _SelectedMeasure, value);
             }
         }
-
 
         // измерения, преобраованные в списки точек для графика
         #region
@@ -90,7 +91,6 @@ namespace ResourceAZ.ViewModels
         public List<DataPoint> dpAavg { get; set; }
         List<DataPoint> dpR { get; set; }
         public List<DataPoint> dpRavg { get; set; }
-
 
         // ObservableCollection<DataPoint> dpRavg { get; set; }
         // модели для графиков
@@ -104,7 +104,6 @@ namespace ResourceAZ.ViewModels
         // база данных измерений
         //private IMeasureData repository = new MeasureDataGen();
         private IMeasureData repository = new MeasureDataExcel();
-
 
         public KindGroup SelectGroup;
 
@@ -149,7 +148,6 @@ namespace ResourceAZ.ViewModels
         #region Команды
         public ICommand CloseApplicationCommand { get; }
         private bool CanCloseApplicationCommand(object p) => true;
-
         private void OnCloseApplicationCommandExecuted(object p)
         {
             Application.Current.Shutdown();
@@ -183,7 +181,6 @@ namespace ResourceAZ.ViewModels
             KindGroup param = (KindGroup)p;
             FormatListMeasure(param);
             SelectGroup = param;
-
         }
 
         // команда на расчеты
@@ -192,7 +189,6 @@ namespace ResourceAZ.ViewModels
         {
             return listMeasure.Count > 1;
         }
-
         private void OnCalculateCommand(object p)
         {
             KindCalc kc = CalcPotencial ? KindCalc.Potencial : KindCalc.Resist;
@@ -216,21 +212,16 @@ namespace ResourceAZ.ViewModels
         public ICommand DeleteLineCommand { get; }
         private bool CanDeleteLineCommand(object p)
         {
-            //return true;
             return SelectedMeasure != null && SelectedMeasure?.Count > 0;
         }
-
         // команда удаления строки из datagrid
         private void OnDeleteLineCommand(object p)
         {
+            RemoveMeasureFromOrig(SelectedMeasure, SelectGroup);
+
             while (SelectedMeasure.Count > 0)
             {
-                Measure selMeas = SelectedMeasure[0] as Measure;
-                Measure meas = listMeasureOrig.Where(m => m.date == selMeas.date 
-                    && m.Resist == selMeas.Resist)
-                    .FirstOrDefault();
-                listMeasureOrig.Remove(meas);
-                listMeasure.Remove(selMeas);
+                listMeasure.Remove((Measure)SelectedMeasure[0]);
             }
 
             ModelToChart(listMeasure);
@@ -239,24 +230,19 @@ namespace ResourceAZ.ViewModels
 
         }
 
+        // команда на удаление недостоверных показаний
         public ICommand RemoveDeviationCommand { get; }
         private bool CanRemoveDeviationCommand(object p)
         {
             return listMeasureOrig?.Count > 3;
         }
-
         private void OnRemoveDeviationCommand(object p)
         {
             double AvgSumPot = listMeasureOrig.Average(a => a.SummPot);
-
             double AvgCurrent = listMeasureOrig.Average(a => a.Current);
-
             double AvgNapr = listMeasureOrig.Average(a => a.Napr);
-
             double AvgResist = listMeasureOrig.Average(a => a.Resist);
-
             double AvgKoef = listMeasureOrig.Average(a => a.Koeff);
-
 
             IEnumerable<Measure> list = listMeasureOrig.Where(w => w.SummPot > -0.05 || w.SummPot < AvgSumPot * 2 ||
                     w.Current < 0.01 || w.Current > AvgCurrent * 2 ||
@@ -271,6 +257,56 @@ namespace ResourceAZ.ViewModels
 
         }
 
+        // команда удаления выбранного диапазона
+        public ICommand RemoveSelectedValuesCommand { get; }
+        private bool CanRemoveSelectedValuesCommand(object p)
+        {
+            return listMeasure.Where(w => w.SetColor).Count() > 0;
+        }
+        private void OnRemoveSelectedValuesCommand(object p)
+        {
+
+            IList list = listMeasure.Where(w => w.SetColor).ToList();
+
+            RemoveMeasureFromOrig(list, SelectGroup);
+
+            foreach(Measure m in list)
+                listMeasure.Remove(m);
+
+            MinSelectedValue = DateTime.MinValue;
+            MaxSelectedValue = DateTime.MinValue;
+
+            ModelToChart(listMeasure);
+            dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+            dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+        }
+
+        // комнда принятия диапазона для равсчетов
+        public ICommand SetRangeForCalcCommand { get; }
+        private bool CanSetRangeForCalcCommand(object p)
+        {
+            return listMeasure.Where(w => w.SetColor).Count() > 0;
+        }
+        private void OnSetRangeForCalcCommand(object p)
+        {
+
+            RangeForCalc = true;
+
+            double minDate = MinSelectedValue.ToOADate();
+            double maxDate = MaxSelectedValue.ToOADate();
+
+            List<DataPoint> RangeA = dpA.Where(w => w.X >= minDate && w.X <= maxDate).ToList();
+            dpAavg = CalcApproxLine(ModelA, RangeA, KindLineApprox.KOEFF, dpA[dpA.Count-1].X, 10);
+
+            List<DataPoint> RangeR = dpR.Where(w => w.X >= minDate && w.X <= maxDate).ToList();
+            dpRavg = CalcApproxLine(ModelR, RangeR, KindLineApprox.RESIST, dpR[dpR.Count - 1].X, 10);
+
+            // обновление точек графиков на экране для смены цвета фона
+            ModelCurrent.InvalidatePlot(true);
+            ModelNapr.InvalidatePlot(true);
+            ModelPot.InvalidatePlot(true);
+        }
+
         #endregion
 
         public MainWindowViewModel()
@@ -282,6 +318,8 @@ namespace ResourceAZ.ViewModels
             GroupByCommand = new LambdaCommand(OnGroupByCommandExecuted, CanGroupByCommand);
             DeleteLineCommand = new LambdaCommand(OnDeleteLineCommand, CanDeleteLineCommand);
             RemoveDeviationCommand = new LambdaCommand(OnRemoveDeviationCommand, CanRemoveDeviationCommand);
+            RemoveSelectedValuesCommand = new LambdaCommand(OnRemoveSelectedValuesCommand, CanRemoveSelectedValuesCommand);
+            SetRangeForCalcCommand = new LambdaCommand(OnSetRangeForCalcCommand, CanSetRangeForCalcCommand);
 
             // подгтовка графиков для всех измерений
             ModelCurrent = new MyPlotModel(this);
@@ -295,11 +333,6 @@ namespace ResourceAZ.ViewModels
             dpPot = InitChart(ModelPot, "Потенциал");
             dpA = InitChart(ModelA, "Коэффициенты");
             dpR = InitChart(ModelR, "Сопротивление");
-
-            // получение списка значений
-            //listMeasureOrig = repository.GetAllData();
-
-            //OpenNewList();
 
             listMeasureOrig = new ObservableCollection<Measure>();
             listMeasure = new ObservableCollection<Measure>();
@@ -317,6 +350,9 @@ namespace ResourceAZ.ViewModels
             ModelPot.ResetAllAxes();
             ModelA.ResetAllAxes();
             ModelR.ResetAllAxes();
+
+            MinSelectedValue = DateTime.MinValue;
+            MaxSelectedValue = DateTime.MinValue;
 
             foreach (Measure m in listMeasureOrig)
             {
@@ -396,7 +432,7 @@ namespace ResourceAZ.ViewModels
                             select new Measure
                             {
                                 Current = avgCurr,
-                                date = new DateTime(g.Key, 7, 1),
+                                date = new DateTime(g.Key, 1, 1),
                                 Napr = avgNapr,
                                 SummPot = avgPot,
                                 Koeff = avgPot / avgCurr,
@@ -426,23 +462,63 @@ namespace ResourceAZ.ViewModels
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());
-
             dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
             dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
         }
 
-
+        // отметка цветом для выбранного времени
         public void SelectRangeDataGrid(DateTime dtFrom, DateTime dtTo)
         {
-            List<Measure> meas = listMeasureOrig.Where(w => w.date >= dtFrom && w.date <= dtTo).ToList();
-            foreach (Measure m in meas)
+            RangeForCalc = false;
+
+            foreach (Measure m in listMeasure)
+                m.SetColor = m.date <= dtTo && m.date >= dtFrom;
+
+            // обновление точек графиков на экране
+            ModelCurrent.InvalidatePlot(true);
+            ModelNapr.InvalidatePlot(true);
+            ModelPot.InvalidatePlot(true);
+            ModelA.InvalidatePlot(true);
+            ModelR.InvalidatePlot(true);
+
+        }
+
+
+        // удаление выбранных дат из оригинального списка
+        private void RemoveMeasureFromOrig(IList list, KindGroup kind)
+        {
+            IEnumerable<Measure> meas;
+
+            foreach (Measure selMeas in list)
             {
-                DateTime temp = m.date;
-                m.date = DateTime.Now;
-                m.date = temp;
+                switch(kind)
+                {
+                    case KindGroup.DAY:
+                        meas = listMeasureOrig.Where(m => m.date.Year == selMeas.date.Year 
+                                && m.date.Month == selMeas.date.Month
+                                && m.date.Day == selMeas.date.Day);
+                        break;
+
+                    case KindGroup.MONTH:
+                        meas = listMeasureOrig.Where(m => m.date.Year == selMeas.date.Year
+                                && m.date.Month == selMeas.date.Month);
+                        break;
+
+                    case KindGroup.YEAR:
+                        meas = listMeasureOrig.Where(m => m.date.Year == selMeas.date.Year);
+                        break;
+
+                    default:
+                        meas = listMeasureOrig.Where(m => m.date == selMeas.date  && m.Resist == selMeas.Resist);
+                        break;
+
+                }
+
+                while(meas.Count() > 0)
+                    listMeasureOrig.Remove(meas.First());
             }
-                
+
         }
 
     }

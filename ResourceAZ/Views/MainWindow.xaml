@@ -11,10 +11,17 @@
         mc:Ignorable="d"
         Title="Расчет остаточного ресурса Анодного заземлителя" Height="897.5" Width="1500" WindowStartupLocation="CenterScreen" Background="#FFE6E6E6">
     <Window.Resources>
+        <inf:RowToBrushConverter x:Key="RowToBrushConverter"/>
+
         <Style TargetType="DataGridCell" x:Key="CellRight">
             <Style.Setters>
                 <Setter Property="TextBlock.TextAlignment" Value="Right" />
             </Style.Setters>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding SetColor}" Value="True">
+                        <Setter Property="Background" Value="{Binding date, Converter={StaticResource RowToBrushConverter}}"/>
+                    </DataTrigger>
+                </Style.Triggers>
         </Style>
     </Window.Resources>
     <Window.DataContext>
@@ -51,7 +58,7 @@
                 <GroupBox.Effect>
                     <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
                 </GroupBox.Effect>
-                <local:DataGridSelected x:Name="dg" Margin="4" AutoGenerateColumns="false" IsReadOnly="True"
+                <local:DataGridSelected x:Name="dg" Margin="0,0,8,8" AutoGenerateColumns="false" IsReadOnly="True"
                     ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                     HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
                     CanUserAddRows="False" CanUserDeleteRows="False" 
@@ -70,16 +77,28 @@
                         <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
                         <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
                     </local:DataGridSelected.Columns>
-                    <local:DataGridSelected.Resources>
+                    <!--<local:DataGridSelected.Resources>
                         <inf:RowToBrushConverter x:Key="RowToBrushConverter"/>
-                    </local:DataGridSelected.Resources>
-                    <local:DataGridSelected.RowStyle>
+                    </local:DataGridSelected.Resources>-->
+                    <!--<local:DataGridSelected.RowStyle>
                         <Style TargetType="DataGridRow">
-                            <Setter Property="Background" 
-                                    Value="{Binding date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource RowToBrushConverter}}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SetColor}" Value="True">
+                                    <Setter Property="Background" Value="{Binding date, Converter={StaticResource RowToBrushConverter}}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
                         </Style>
-                    </local:DataGridSelected.RowStyle>
+                    </local:DataGridSelected.RowStyle>-->
 
+                        <local:DataGridSelected.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SetColor}" Value="True">
+                                    <Setter Property="Background" Value="{Binding date, Converter={StaticResource RowToBrushConverter}}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </local:DataGridSelected.CellStyle>
                         <!--<local:DataGridSelected.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Style.Triggers>
@@ -150,10 +169,10 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <ToolBarPanel Margin="0" Orientation="Horizontal" >
-                <Button >
+                <Button Command="{Binding SetRangeForCalcCommand}">
                     <Image Source="/ResourceAZ;component/Resources/Images/OK.png"/>
                 </Button>
-                <Button>
+                <Button Command="{Binding RemoveSelectedValuesCommand}">
                     <Image Source="/ResourceAZ;component/Resources/Images/Cancel.png"/>
                 </Button>
             </ToolBarPanel>

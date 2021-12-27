@@ -16,7 +16,7 @@ namespace ResourceAZ.Models
             get => _date;
             set {
                 _date = value;
-                OnPropertyChanged("date");
+                OnPropertyChanged();
             }
         }
         public double Current { get; set; }
@@ -26,7 +26,12 @@ namespace ResourceAZ.Models
         public double Resist { get; set; }
         public double ApprKoeff { get; set; }
         public double ApprResist { get; set; }
-        public bool SetColor { get; set; }
+        bool _SetColor;
+        public bool SetColor
+        {
+            get => _SetColor;
+            set { _SetColor = value; OnPropertyChanged(); }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

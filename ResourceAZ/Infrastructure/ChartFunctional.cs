@@ -80,15 +80,16 @@ namespace ResourceAZ.ViewModels
             ModelPot.InvalidatePlot(true);
             ModelA.InvalidatePlot(true);
             ModelR.InvalidatePlot(true);
+
         }
 
         //--------------------------------------------------------------------------------------------
         // расчет аппроксимации линии
+        // 
         //--------------------------------------------------------------------------------------------
-        //private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, ref double[] Approx)
-        private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, KindLineApprox kind)
+        private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
         {
-            List<DataPoint> dpAvg = CalcDataPoint(dp, kind);
+            List<DataPoint> dpAvg = CalcDataPoint(dp, kind, EndX, Step);
             if (model.Series.Count == 1)
             {
                 LineSeries ls = new LineSeries();
@@ -104,6 +105,30 @@ namespace ResourceAZ.ViewModels
 
             return dpAvg;
         }
+
+        //--------------------------------------------------------------------------------------------
+        // расчет аппроксимации линии для участка
+        //--------------------------------------------------------------------------------------------
+        //private List<DataPoint> CalcApproxLineRange(PlotModel model, List<DataPoint> dp, KindLineApprox kind)
+        //{
+
+        //    List<DataPoint> dpAvg = CalcDataPoint(dp, kind);
+        //    if (model.Series.Count == 1)
+        //    {
+        //        LineSeries ls = new LineSeries();
+        //        ls.Color = OxyColor.FromRgb(255, 0, 0);
+        //        ls.StrokeThickness = 3;
+        //        model.Series.Add(ls);
+
+        //    }
+        //    model.Series[1].IsVisible = true;
+        //    (model.Series[1] as LineSeries).ItemsSource = dpAvg;
+        //    model.InvalidatePlot(true);
+
+        //    return dpAvg;
+        //}
+
+
 
     }
 }
