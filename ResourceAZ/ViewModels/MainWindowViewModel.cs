@@ -110,6 +110,8 @@ namespace ResourceAZ.ViewModels
 
         // переменные связанные с экраннй формой
         #region
+        public int orderCalc { get; set; } = 4;
+
         bool _GroupNone;
         public bool GroupNone
         {
@@ -268,14 +270,7 @@ namespace ResourceAZ.ViewModels
             foreach(Measure m in list)
                 listMeasure.Remove(m);
 
-            //MinSelectedValue = DateTime.MinValue;
-            //MaxSelectedValue = DateTime.MinValue;
-            //RangeForCalc = false;
-
-
             ModelToChart(listMeasure);
-            //dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-            //dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
             OnDropRangeCommand(p);
         }
@@ -315,9 +310,10 @@ namespace ResourceAZ.ViewModels
         private void OnDropRangeCommand(object p)
         {
 
+            RangeForCalc = false;
             MinSelectedValue = DateTime.MinValue;
             MaxSelectedValue = DateTime.MinValue;
-            RangeForCalc = false;
+
             foreach (Measure m in listMeasure)
                 m.SetColor = false;
 
@@ -490,8 +486,6 @@ namespace ResourceAZ.ViewModels
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());
-            //dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-            //dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
         }
 
@@ -499,6 +493,8 @@ namespace ResourceAZ.ViewModels
         public void SelectRangeDataGrid(DateTime dtFrom, DateTime dtTo)
         {
             RangeForCalc = false;
+            //MinSelectedValue = DateTime.MinValue;
+            //MaxSelectedValue = DateTime.MinValue;
 
             foreach (Measure m in listMeasure)
                 m.SetColor = m.date <= dtTo && m.date >= dtFrom;

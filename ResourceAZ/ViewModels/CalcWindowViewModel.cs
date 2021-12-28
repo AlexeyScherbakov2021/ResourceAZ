@@ -21,9 +21,6 @@ namespace ResourceAZ.ViewModels
         private KindCalc SelectCalc;
         public double MinSummPot { get; set; }
         private ObservableCollection<Measure> InputMeasure;
-        //public double deltaA { get; set; }
-        //public double deltaR { get; set; }
-        //public string textResult { get; set; }
         public List<string> lbResult { get; set; }
 
         public PlotModel ModelCurrent { get; }
@@ -157,10 +154,6 @@ namespace ResourceAZ.ViewModels
             }
 
             model.Series.Add(ls);
-
-            //HighLowSeries hs = new HighLowSeries();
-            //hs.ItemsSource = dpMax;
-            //model.Series.Add(hs);
 
             return dp;
         }

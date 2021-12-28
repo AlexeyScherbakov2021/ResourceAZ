@@ -107,40 +107,11 @@ namespace ResourceAZ.ViewModels
                 model.Series.Add(ls);
 
             }
-            //model.Series[1].IsVisible = true;
-            //double max =  model.DefaultYAxis.Maximum;
-            //double min = model.DefaultYAxis.Minimum;
             (model.Series[1] as LineSeries).ItemsSource = dpAvg;
-            //model.DefaultYAxis.Maximum = max;
-            //model.DefaultYAxis.Minimum = min;
             model.InvalidatePlot(true);
 
             return dpAvg;
         }
-
-        //--------------------------------------------------------------------------------------------
-        // расчет аппроксимации линии для участка
-        //--------------------------------------------------------------------------------------------
-        //private List<DataPoint> CalcApproxLineRange(PlotModel model, List<DataPoint> dp, KindLineApprox kind)
-        //{
-
-        //    List<DataPoint> dpAvg = CalcDataPoint(dp, kind);
-        //    if (model.Series.Count == 1)
-        //    {
-        //        LineSeries ls = new LineSeries();
-        //        ls.Color = OxyColor.FromRgb(255, 0, 0);
-        //        ls.StrokeThickness = 3;
-        //        model.Series.Add(ls);
-
-        //    }
-        //    model.Series[1].IsVisible = true;
-        //    (model.Series[1] as LineSeries).ItemsSource = dpAvg;
-        //    model.InvalidatePlot(true);
-
-        //    return dpAvg;
-        //}
-
-
 
     }
 }
