@@ -66,11 +66,11 @@ namespace ResourceAZ.ViewModels
             {
                 Set(ref _listMeasure, value);
                 ModelToChart(listMeasure);
-                if (CalcPotencial)
-                {
-                    dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-                    dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
-                }
+                //if (CalcPotencial)
+                //{
+                //    dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+                //    dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+                //}
             }
         }
         public IList _SelectedMeasure;
@@ -369,6 +369,11 @@ namespace ResourceAZ.ViewModels
             //GroupNone = true;
             SelectGroup = KindGroup.DAY;
 
+            ModelR.DefaultYAxis.Maximum = double.NaN;
+            ModelR.DefaultYAxis.Minimum = double.NaN;
+            ModelA.DefaultYAxis.Maximum = double.NaN;
+            ModelA.DefaultYAxis.Minimum = double.NaN;
+
             ModelCurrent.ResetAllAxes();
             ModelNapr.ResetAllAxes();
             ModelPot.ResetAllAxes();
@@ -384,15 +389,14 @@ namespace ResourceAZ.ViewModels
                 m.Resist = m.Napr / m.Current;// + m.Koeff;
             }
 
-            listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
+            //listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
             FormatListMeasure(SelectGroup);
-            
+
             // отмечаем на экране первый RadioButton
             GroupDay = true;
 
             dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
             dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
-
         }
 
 
@@ -486,8 +490,8 @@ namespace ResourceAZ.ViewModels
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());
-            dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-            dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+            //dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
+            //dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
 
         }
 

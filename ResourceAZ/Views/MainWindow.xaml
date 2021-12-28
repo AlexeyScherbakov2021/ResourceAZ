@@ -17,11 +17,16 @@
             <Style.Setters>
                 <Setter Property="TextBlock.TextAlignment" Value="Right" />
             </Style.Setters>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding SetColor}" Value="True">
-                        <Setter Property="Background" Value="{Binding date, Converter={StaticResource RowToBrushConverter}}"/>
-                    </DataTrigger>
-                </Style.Triggers>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SetColor}" Value="True">
+                    <Setter Property="Background" Value="{Binding date, Converter={StaticResource RowToBrushConverter}}"/>
+                </DataTrigger>
+                <Trigger Property="DataGridCell.IsSelected" Value="True">
+                    <Setter Property="Background" Value="CornflowerBlue"/>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     <Window.DataContext>
@@ -96,6 +101,11 @@
                                 <DataTrigger Binding="{Binding SetColor}" Value="True">
                                     <Setter Property="Background" Value="{Binding date, Converter={StaticResource RowToBrushConverter}}"/>
                                 </DataTrigger>
+                                <Trigger Property="DataGridCell.IsSelected" Value="True">
+                                    <Setter Property="Background" Value="CornflowerBlue"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="Gray"/>
+                                </Trigger>
                             </Style.Triggers>
                         </Style>
                     </local:DataGridSelected.CellStyle>

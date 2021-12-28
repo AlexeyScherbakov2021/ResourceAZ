@@ -6,6 +6,7 @@ using ResourceAZ.Models;
 using ResourceAZ.ViewModels.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ResourceAZ.ViewModels
 {
@@ -81,6 +82,13 @@ namespace ResourceAZ.ViewModels
             ModelA.InvalidatePlot(true);
             ModelR.InvalidatePlot(true);
 
+            if (ModelR.DefaultYAxis != null)
+            {
+                ModelR.DefaultYAxis.Maximum = dpR.Max(m => m.Y);
+                ModelR.DefaultYAxis.Minimum = dpR.Min(m => m.Y);
+                ModelA.DefaultYAxis.Maximum = dpA.Max(m => m.Y);
+                ModelA.DefaultYAxis.Minimum = dpA.Min(m => m.Y);
+            }
         }
 
         //--------------------------------------------------------------------------------------------
@@ -99,8 +107,12 @@ namespace ResourceAZ.ViewModels
                 model.Series.Add(ls);
 
             }
-            model.Series[1].IsVisible = true;
+            //model.Series[1].IsVisible = true;
+            //double max =  model.DefaultYAxis.Maximum;
+            //double min = model.DefaultYAxis.Minimum;
             (model.Series[1] as LineSeries).ItemsSource = dpAvg;
+            //model.DefaultYAxis.Maximum = max;
+            //model.DefaultYAxis.Minimum = min;
             model.InvalidatePlot(true);
 
             return dpAvg;

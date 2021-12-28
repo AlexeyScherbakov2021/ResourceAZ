@@ -38,5 +38,8 @@ namespace ResourceAZ.Chart
         {
             base.OnMouseDown(sender, e);
         }
+
+
+
     }
 }
