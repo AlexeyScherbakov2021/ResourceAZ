@@ -50,27 +50,31 @@ namespace ResourceAZ.ViewModels
         {
             SelectGroup = model.SelectGroup;
             SelectCalc = model.CalcPotencial ? KindCalc.Potencial : KindCalc.Resist;
+            // список данных для расчета
             InputMeasure = model.listMeasure;
+            // минимальный суммарный потенциал для расчета по потенциалу
             MinSummPot = model.MinPotCalc;
-            ICalculateBase calc = null;
+            CalculateBase calc = null;
+            // максимальные параметры СКЗ
             double MaxCurrent = model.MaxCurrentSKZ;
             double MaxNapr = model.MaxNaprSKZ;
 
             if (SelectCalc == KindCalc.Potencial)
                 // расчет по линии потенциалам
-                calc = new CalculatePotencial();
+                calc = new CalculatePotencial(model);
 
             else if (SelectCalc == KindCalc.Resist)
             {
                 // расчет по сопротивлениям
-                calc = new CalculateResist();
+                calc = new CalculateResist(model);
                 MaxCurrent = -1;
             }
 
             if (calc == null)
-                throw new Exception("Не определен тип расчета.");
+                throw new ArgumentOutOfRangeException("Не определен тип расчета.");
 
-            listMeasure = calc.Calc(model);
+            // выполнение расчета
+            listMeasure = calc.Calc();
 
             if (listMeasure.Count > 0)
             {

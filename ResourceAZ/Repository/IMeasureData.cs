@@ -11,6 +11,7 @@ namespace ResourceAZ.Repository
     interface IMeasureData
     {
         ObservableCollection<Measure> GetAllData(string Source = null);
+        //ObservableCollection<Measure> GetAllDataAsync(string Source = null);
 
     }
 }

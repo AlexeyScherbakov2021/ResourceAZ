@@ -9,27 +9,24 @@ using ResourceAZ.ViewModels;
 
 namespace ResourceAZ.Calculation
 {
-    internal class CalculateResist : ICalculateBase
+    internal class CalculateResist : CalculateBase
     {
-        ObservableCollection<Measure> listCalcMeasure;
         int LimitYearNapr = 0;
 
-        public CalculateResist()
+        public CalculateResist(MainWindowViewModel model) : base(model)
         {
-            listCalcMeasure = new ObservableCollection<Measure>();
         }
 
-        public ObservableCollection<Measure> Calc(MainWindowViewModel model)
+        public override ObservableCollection<Measure> Calc(/*MainWindowViewModel model*/)
         {
-            //double deltaR;
 
-            IEnumerable<Measure> rangeList = model.RangeForCalc ?
-                model.listMeasure.Where(m => m.date >= model.MinSelectedValue && m.date <= model.MaxSelectedValue)
-                : model.listMeasure; 
+            //IEnumerable<Measure> rangeList = model.RangeForCalc ?
+            //    model.listMeasure.Where(m => m.date >= model.MinSelectedValue && m.date <= model.MaxSelectedValue)
+            //    : model.listMeasure; 
 
-            int indexEnd = model.RangeForCalc ?
-                model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= model.MaxSelectedValue.ToOADate()).Last())
-                : model.dpRavg.Count - 1;
+            //int indexEnd = model.RangeForCalc ?
+            //    model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= model.MaxSelectedValue.ToOADate()).Last())
+            //    : model.dpRavg.Count - 1;
 
 
             double StartValueR = model.dpRavg[0].Y;
@@ -41,8 +38,8 @@ namespace ResourceAZ.Calculation
             double EndValueCurrent = rangeList.Skip(Last20Current).Average(a => a.Current);
 
             // получаем крайние даты
-            DateTime StartDate = DateTime.FromOADate(model.dpRavg[0].X);
-            DateTime EndDate = DateTime.FromOADate(model.dpRavg[indexEnd].X);
+            //DateTime StartDate = DateTime.FromOADate(model.dpRavg[0].X);
+            //DateTime EndDate = DateTime.FromOADate(model.dpRavg[indexEnd].X);
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;
@@ -86,7 +83,7 @@ namespace ResourceAZ.Calculation
         //----------------------------------------------------------------------------------------------------
         // строка результата
         //----------------------------------------------------------------------------------------------------
-        public List<string> ResultText()
+        public override List<string> ResultText()
         {
             List<string> resList = new List<string>
             {

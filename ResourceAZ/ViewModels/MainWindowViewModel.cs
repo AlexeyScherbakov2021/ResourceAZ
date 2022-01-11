@@ -363,6 +363,7 @@ namespace ResourceAZ.ViewModels
         void OpenNewList()
         {
             //GroupNone = true;
+            RangeForCalc = false;
             SelectGroup = KindGroup.DAY;
 
             ModelR.DefaultYAxis.Maximum = double.NaN;

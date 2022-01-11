@@ -22,7 +22,6 @@ namespace ResourceAZ.ViewModels
             double[] Approx = null;
             string Function = "";
 
-
             double X = 0;
             double X2 = 0;
             double Y = 0;

@@ -9,34 +9,32 @@ using System.Threading.Tasks;
 
 namespace ResourceAZ.Calculation
 {
-    internal class CalculatePotencial : ICalculateBase
+    internal class CalculatePotencial : CalculateBase
     {
-        ObservableCollection<Measure> listCalcMeasure;
         int LimitYearCurr = 0;
         int LimitYearNapr = 0;
 
-        public CalculatePotencial()
+        public CalculatePotencial(MainWindowViewModel model) : base(model)
         {
-            listCalcMeasure = new ObservableCollection<Measure>();
         }
 
         //public ObservableCollection<Measure> Calc(ObservableCollection<Measure> listMeasure, double MinSummPot, double maxCur, double maxNapr)
-        public ObservableCollection<Measure> Calc(MainWindowViewModel model )
+        public override ObservableCollection<Measure> Calc( )
         {
             double deltaA;
             double deltaR;
             double StartValueA = model.dpAavg[0].Y;
-            double EndValueA = model.dpAavg[model.dpAavg.Count - 1].Y;
+            double EndValueA = model.dpAavg[indexEnd].Y;
             double StartValueR = model.dpRavg[0].Y;
-            double EndValueR = model.dpRavg[model.dpRavg.Count - 1].Y;
+            double EndValueR = model.dpRavg[indexEnd].Y;
 
             //double StartValueA = listMeasure[0].Koeff;
             //double EndValueA = listMeasure[listMeasure.Count - 1].Koeff;
             //double StartValueR = listMeasure[0].Resist;
             //double EndValueR = listMeasure[listMeasure.Count - 1].Resist;
 
-            DateTime EndDate = model.listMeasure[model.listMeasure.Count - 1].date;
-            DateTime StartDate = model.listMeasure[0].date;
+            //DateTime EndDate = model.listMeasure[model.listMeasure.Count - 1].date;
+            //DateTime StartDate = model.listMeasure[0].date;
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;
@@ -83,7 +81,7 @@ namespace ResourceAZ.Calculation
         //----------------------------------------------------------------------------------------------------
         // строка результата
         //----------------------------------------------------------------------------------------------------
-        public List<string> ResultText()
+        public override List<string> ResultText()
         {
             List<string> resList = new List<string>
             {
