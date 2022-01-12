@@ -13,12 +13,12 @@ namespace ResourceAZ.ViewModels
     internal partial class MainWindowViewModel : ViewModel
     {
 
-        private List<DataPoint> CalcDataPoint(List<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
+        private ObservableCollection<DataPoint> CalcDataPoint(ObservableCollection<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
         {
             if (dp.Count <= 1)
                 return null;
 
-            List<DataPoint> dpApprox = new List<DataPoint>();
+            ObservableCollection<DataPoint> dpApprox = new ObservableCollection<DataPoint>();
             double[] Approx = null;
             string Function = "";
 

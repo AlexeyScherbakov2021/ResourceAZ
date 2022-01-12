@@ -16,8 +16,8 @@ namespace ResourceAZ
     /// </summary>
     public partial class App : Application
     {
-        public static Window ActivedWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
-        public static Window FocusedWindow => Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsFocused);
+        public static Window ActivedWindow => Current.Windows?.Cast<Window>().FirstOrDefault(w => w.IsActive);
+        public static Window FocusedWindow => Current.Windows?.Cast<Window>().FirstOrDefault(w => w.IsFocused);
         public static Window CurrentAFWindow => FocusedWindow ?? ActivedWindow;
 
 

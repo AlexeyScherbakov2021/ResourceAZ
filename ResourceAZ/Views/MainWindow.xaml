@@ -64,7 +64,7 @@
                     <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
                 </GroupBox.Effect>
                 <local:DataGridSelected x:Name="dg" Margin="0,0,8,8" AutoGenerateColumns="false" IsReadOnly="True"
-                    ItemsSource="{Binding listMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    ItemsSource="{Binding listMeasure}" 
                     HorizontalGridLinesBrush="#FFD8D8D8" VerticalGridLinesBrush="#FFD8D8D8" AlternatingRowBackground="#FFE4E4E4" 
                     CanUserAddRows="False" CanUserDeleteRows="False" 
                     SelectedItemsList="{Binding SelectedMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >

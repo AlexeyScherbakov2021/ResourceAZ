@@ -12,6 +12,7 @@ namespace ResourceAZ.Repository
     {
         ObservableCollection<Measure> GetAllData(string Source = null);
         //ObservableCollection<Measure> GetAllDataAsync(string Source = null);
+        void GetAllDataAsync(string Source, ObservableCollection<Measure> list);
 
     }
 }

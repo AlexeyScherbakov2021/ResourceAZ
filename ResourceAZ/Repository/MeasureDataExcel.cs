@@ -17,7 +17,8 @@ namespace ResourceAZ.Repository
     {
         public ObservableCollection<Measure> GetAllData(string Source)
         {
-            App.CurrentAFWindow.Cursor = Cursors.Wait;
+            //App.CurrentAFWindow.Cursor = Cursors.Wait;
+            Mouse.OverrideCursor = Cursors.Wait;
 
             ObservableCollection<Measure> listM = new ObservableCollection<Measure>();
 
@@ -50,9 +51,62 @@ namespace ResourceAZ.Repository
 
             }
 
-            App.CurrentAFWindow.Cursor = null;
+            Mouse.OverrideCursor = null;
             return listM;
         }
+
+
+        public async void GetAllDataAsync(string Source, ObservableCollection<Measure> list)
+        {
+            App.CurrentAFWindow.Cursor = Cursors.Wait;
+            Task task = GetList(Source, list);
+            await task;
+            App.CurrentAFWindow.Cursor = null;
+
+        }
+
+        private Task GetList(string Source, ObservableCollection<Measure> list)
+        {
+            return Task.Run(() =>
+            {
+
+
+                list.Clear();
+
+                using (XLWorkbook wb = new XLWorkbook(Source))
+                {
+                    var ws = wb.Worksheets.Worksheet(1);
+
+                    for (int i = 2; i < 100000; i++)
+                    {
+
+                        DateTime dt = ToDateTime(ws.Cell("A" + i).Value);
+
+                        if (dt == DateTime.MinValue)
+                            break;
+
+                        Measure measure = new Measure();
+                        measure.date = dt;
+
+                        measure.Napr = ToDouble(ws.Cell("B" + i).Value);
+                        measure.Current = ToDouble(ws.Cell("C" + i).Value);
+                        measure.SummPot = ToDouble(ws.Cell("D" + i).Value);
+
+                        if (measure.Napr <= 0 || measure.Current <= 0 || measure.SummPot == 0 ||
+                            Double.IsNaN(measure.Napr) || Double.IsNaN(measure.Current) || Double.IsNaN(measure.SummPot))
+                            continue;
+
+                        list.Add(measure);
+
+                    }
+
+                }
+
+                
+            });
+        }
+
+
 
 
 
@@ -102,6 +156,7 @@ namespace ResourceAZ.Repository
                     return DateTime.MinValue;
 
             }
+
             DateTime.TryParse(obj.ToString(), out dt);
 
             return dt;

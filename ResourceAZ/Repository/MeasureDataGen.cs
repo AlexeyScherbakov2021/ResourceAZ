@@ -39,5 +39,9 @@ namespace ResourceAZ.Repository
             return listMeasure;
         }
 
+        public void GetAllDataAsync(string Source, ObservableCollection<Measure> list)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -66,6 +66,7 @@ namespace ResourceAZ.ViewModels
             {
                 Set(ref _listMeasure, value);
                 ModelToChart(listMeasure);
+
                 //if (CalcPotencial)
                 //{
                 //    dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
@@ -85,13 +86,13 @@ namespace ResourceAZ.ViewModels
 
         // измерения, преобраованные в списки точек для графика
         #region
-        public List<DataPoint> dpCurrent { get; set; }
-        List<DataPoint> dpNapr { get; set; }
-        List<DataPoint> dpPot { get; set; }
-        List<DataPoint> dpA { get; set; }
-        public List<DataPoint> dpAavg { get; set; }
-        List<DataPoint> dpR { get; set; }
-        public List<DataPoint> dpRavg { get; set; }
+        public ObservableCollection<DataPoint> dpCurrent { get; set; }
+        ObservableCollection<DataPoint> dpNapr { get; set; }
+        ObservableCollection<DataPoint> dpPot { get; set; }
+        ObservableCollection<DataPoint> dpA { get; set; }
+        public ObservableCollection<DataPoint> dpAavg { get; set; }
+        ObservableCollection<DataPoint> dpR { get; set; }
+        public ObservableCollection<DataPoint> dpRavg { get; set; }
 
         // ObservableCollection<DataPoint> dpRavg { get; set; }
         // модели для графиков
@@ -170,6 +171,7 @@ namespace ResourceAZ.ViewModels
             FileName = "";
 
             listMeasureOrig = repository.GetAllData(od.FileName);
+            //repository.GetAllDataAsync(od.FileName, listMeasureOrig);
 
             OpenNewList();
 
@@ -262,7 +264,6 @@ namespace ResourceAZ.ViewModels
         }
         private void OnRemoveSelectedValuesCommand(object p)
         {
-
             IList list = listMeasure.Where(w => w.SetColor).ToList();
 
             RemoveMeasureFromOrig(list, SelectGroup);
@@ -289,10 +290,10 @@ namespace ResourceAZ.ViewModels
             double minDate = MinSelectedValue.ToOADate();
             double maxDate = MaxSelectedValue.ToOADate();
 
-            List<DataPoint> RangeA = dpA.Where(w => w.X >= minDate && w.X <= maxDate).ToList();
+            ObservableCollection<DataPoint> RangeA = new ObservableCollection<DataPoint>( dpA.Where(w => w.X >= minDate && w.X <= maxDate));
             dpAavg = CalcApproxLine(ModelA, RangeA, KindLineApprox.KOEFF, dpA[dpA.Count-1].X, 10);
 
-            List<DataPoint> RangeR = dpR.Where(w => w.X >= minDate && w.X <= maxDate).ToList();
+            ObservableCollection<DataPoint> RangeR = new ObservableCollection<DataPoint>(dpR.Where(w => w.X >= minDate && w.X <= maxDate));
             dpRavg = CalcApproxLine(ModelR, RangeR, KindLineApprox.RESIST, dpR[dpR.Count - 1].X, 10);
 
             // обновление точек графиков на экране для смены цвета фона
@@ -362,6 +363,7 @@ namespace ResourceAZ.ViewModels
 
         void OpenNewList()
         {
+
             //GroupNone = true;
             RangeForCalc = false;
             SelectGroup = KindGroup.DAY;
@@ -404,7 +406,7 @@ namespace ResourceAZ.ViewModels
         {
             IEnumerable<Measure> group = null;
 
-            switch(kind)
+            switch (kind)
             {
                 case KindGroup.NONE:
                     listMeasure = new ObservableCollection<Measure>(listMeasureOrig);

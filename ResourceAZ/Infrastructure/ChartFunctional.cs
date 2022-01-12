@@ -7,15 +7,16 @@ using ResourceAZ.ViewModels.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace ResourceAZ.ViewModels
 {
 
     internal partial class MainWindowViewModel : ViewModel
     {
-        public List<DataPoint> InitChart(PlotModel model, string title)
+        public ObservableCollection<DataPoint> InitChart(PlotModel model, string title)
         {
-            List<DataPoint>  dp = new List<DataPoint>();
+            ObservableCollection<DataPoint>  dp = new ObservableCollection<DataPoint>();
             LineSeries ls = new LineSeries();
             ls.ItemsSource = dp;
             model.Series.Add(ls);
@@ -82,22 +83,23 @@ namespace ResourceAZ.ViewModels
             ModelA.InvalidatePlot(true);
             ModelR.InvalidatePlot(true);
 
-            if (ModelR.DefaultYAxis != null)
+            if (ModelR.DefaultYAxis != null && dpR.Count > 0 && dpA.Count > 0 )
             {
                 ModelR.DefaultYAxis.Maximum = dpR.Max(m => m.Y);
                 ModelR.DefaultYAxis.Minimum = dpR.Min(m => m.Y);
                 ModelA.DefaultYAxis.Maximum = dpA.Max(m => m.Y);
                 ModelA.DefaultYAxis.Minimum = dpA.Min(m => m.Y);
             }
+
         }
 
         //--------------------------------------------------------------------------------------------
         // расчет аппроксимации линии
         // 
         //--------------------------------------------------------------------------------------------
-        private List<DataPoint> CalcApproxLine(PlotModel model, List<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
+        private ObservableCollection<DataPoint> CalcApproxLine(PlotModel model, ObservableCollection<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
         {
-            List<DataPoint> dpAvg = CalcDataPoint(dp, kind, EndX, Step);
+            ObservableCollection<DataPoint> dpAvg = CalcDataPoint(dp, kind, EndX, Step);
             if (model.Series.Count == 1)
             {
                 LineSeries ls = new LineSeries();
