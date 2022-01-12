@@ -18,14 +18,14 @@ namespace ResourceAZ.Chart
         public BottomAxis(MainWindowViewModel model)
         {
             viewModel = model;
-            plotModels = new PlotModel[]
-            {
-                viewModel.ModelCurrent,
-                viewModel.ModelNapr,
-                viewModel.ModelPot,
-                viewModel.ModelA,
-                viewModel.ModelR
-            };
+            //plotModels = new PlotModel[]
+            //{
+            //    viewModel.ModelCurrent,
+            //    viewModel.ModelNapr,
+            //    viewModel.ModelPot,
+            //    viewModel.ModelA,
+            //    viewModel.ModelR
+            //};
 
         }
 

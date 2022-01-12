@@ -29,8 +29,8 @@ namespace ResourceAZ.Calculation
             //    : model.dpRavg.Count - 1;
 
 
-            double StartValueR = model.dpRavg[0].Y;
-            double EndValueR = model.dpRavg[indexEnd].Y;
+            //double StartValueR = model.dpRavg[0].Y;
+            //double EndValueR = model.dpRavg[indexEnd].Y;
             //double EndValueNapr = model.listMeasure[model.EndRange].Napr;
 
             // рассчитываем среднее от 20 последних показаний тока
@@ -52,16 +52,16 @@ namespace ResourceAZ.Calculation
                 y = 0;
                 for (int i = 0; i < model.ApproxR.Length; i++)
                     y += model.ApproxR[i] * Math.Pow(EndDate.ToOADate(), i);
-                EndValueR = y;
+                //EndValueR = y;
 
-                if (EndValueR <= 0)
-                    break;
+                //if (EndValueR <= 0)
+                //    break;
                 EndDate = EndDate.AddYears(1);
                 if(EndDate.Year > 2260)
                     break;
 
                 meas.date = EndDate;
-                meas.Resist = EndValueR;
+                //meas.Resist = EndValueR;
 
                 meas.Current = EndValueCurrent;
                 meas.Napr = EndValueCurrent * meas.Resist;

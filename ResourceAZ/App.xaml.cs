@@ -19,6 +19,7 @@ namespace ResourceAZ
         public static Window ActivedWindow => Current.Windows?.Cast<Window>().FirstOrDefault(w => w.IsActive);
         public static Window FocusedWindow => Current.Windows?.Cast<Window>().FirstOrDefault(w => w.IsFocused);
         public static Window CurrentAFWindow => FocusedWindow ?? ActivedWindow;
+        public static MainWindow mainWindow => Current.MainWindow as MainWindow;
 
 
         public DisplayRootRegistry displayRootRegistry = new DisplayRootRegistry();

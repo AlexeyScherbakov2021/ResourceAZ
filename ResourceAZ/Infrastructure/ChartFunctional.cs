@@ -59,37 +59,37 @@ namespace ResourceAZ.ViewModels
         //--------------------------------------------------------------------------------------------
         private void ModelToChart(ObservableCollection<Measure> meas)
         {
-            dpCurrent.Clear();
-            dpNapr.Clear();
-            dpPot.Clear();
-            dpA.Clear();
-            dpR.Clear();
+            //dpCurrent.Clear();
+            //dpNapr.Clear();
+            //dpPot.Clear();
+            //dpA.Clear();
+            //dpR.Clear();
 
             // заполнение точками списков для графиков
             foreach (Measure m in meas)
             {
-                dpCurrent.Add(new DataPoint(m.date.ToOADate(), m.Current));
-                dpNapr.Add(new DataPoint(m.date.ToOADate(), m.Napr));
-                dpPot.Add(new DataPoint(m.date.ToOADate(), m.SummPot));
-                dpA.Add(new DataPoint(m.date.ToOADate(), m.Koeff));
-                dpR.Add(new DataPoint(m.date.ToOADate(), m.Resist));
+                //dpCurrent.Add(new DataPoint(m.date.ToOADate(), m.Current));
+                //dpNapr.Add(new DataPoint(m.date.ToOADate(), m.Napr));
+                //dpPot.Add(new DataPoint(m.date.ToOADate(), m.SummPot));
+                //dpA.Add(new DataPoint(m.date.ToOADate(), m.Koeff));
+                //dpR.Add(new DataPoint(m.date.ToOADate(), m.Resist));
 
             }
 
             // обновление точек графиков на экране
-            ModelCurrent.InvalidatePlot(true);
-            ModelNapr.InvalidatePlot(true);
-            ModelPot.InvalidatePlot(true);
-            ModelA.InvalidatePlot(true);
-            ModelR.InvalidatePlot(true);
+            //ModelCurrent.InvalidatePlot(true);
+            //ModelNapr.InvalidatePlot(true);
+            //ModelPot.InvalidatePlot(true);
+            //ModelA.InvalidatePlot(true);
+            //ModelR.InvalidatePlot(true);
 
-            if (ModelR.DefaultYAxis != null && dpR.Count > 0 && dpA.Count > 0 )
-            {
-                ModelR.DefaultYAxis.Maximum = dpR.Max(m => m.Y);
-                ModelR.DefaultYAxis.Minimum = dpR.Min(m => m.Y);
-                ModelA.DefaultYAxis.Maximum = dpA.Max(m => m.Y);
-                ModelA.DefaultYAxis.Minimum = dpA.Min(m => m.Y);
-            }
+            //if (ModelR.DefaultYAxis != null && dpR.Count > 0 && dpA.Count > 0 )
+            //{
+            //    ModelR.DefaultYAxis.Maximum = dpR.Max(m => m.Y);
+            //    ModelR.DefaultYAxis.Minimum = dpR.Min(m => m.Y);
+            //    ModelA.DefaultYAxis.Maximum = dpA.Max(m => m.Y);
+            //    ModelA.DefaultYAxis.Minimum = dpA.Min(m => m.Y);
+            //}
 
         }
 

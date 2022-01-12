@@ -31,17 +31,17 @@ namespace ResourceAZ.Calculation
             {
                 rangeList = model.listMeasure.Where(m => m.date >= MinDateValue && m.date <= MaxDateValue);
                 //indexStart = model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= model.MinSelectedValue.ToOADate()).First());
-                indexEnd = model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= MaxDateValue.ToOADate()).Last());
+                //indexEnd = model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= MaxDateValue.ToOADate()).Last());
             }
             else
             {
                 //indexStart = 0;
                 rangeList = model.listMeasure;
-                indexEnd = model.dpRavg.Count - 1;
+                //indexEnd = model.dpRavg.Count - 1;
             }
 
-            StartDate = DateTime.FromOADate(model.dpRavg[0].X);
-            EndDate = DateTime.FromOADate(model.dpRavg[indexEnd].X);
+            //StartDate = DateTime.FromOADate(model.dpRavg[0].X);
+            //EndDate = DateTime.FromOADate(model.dpRavg[indexEnd].X);
 
 
             listCalcMeasure = new ObservableCollection<Measure>();

@@ -191,31 +191,31 @@
                     <Image Source="/ResourceAZ;component/Resources/Images/calc.png"/>
                 </Button>
             </ToolBarPanel>
-            <oxy:PlotView Model="{Binding ModelCurrent}" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="True" Margin="0,0,0,5" Grid.Column="1" Grid.Row="1">
-                <oxy:PlotView.Effect>
+            <WpfPlot x:Name="PlotCurrent" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="True" Margin="0,0,0,5" Grid.Column="1" Grid.Row="1">
+                <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-                </oxy:PlotView.Effect>
-            </oxy:PlotView>
-            <oxy:PlotView Model="{Binding ModelNapr}" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="2" Grid.Column="1">
-                <oxy:PlotView.Effect>
+                </WpfPlot.Effect>
+            </WpfPlot>
+            <WpfPlot x:Name="PlotNapr" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="2" Grid.Column="1">
+                <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-                </oxy:PlotView.Effect>
-            </oxy:PlotView>
-            <oxy:PlotView Model="{Binding ModelPot}" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="3" Grid.Column="1">
-                <oxy:PlotView.Effect>
+                </WpfPlot.Effect>
+            </WpfPlot>
+            <WpfPlot x:Name="PlotPot" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="3" Grid.Column="1">
+                <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-                </oxy:PlotView.Effect>
-            </oxy:PlotView>
-            <oxy:PlotView Model="{Binding ModelA}" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="4" Grid.Column="1">
-                <oxy:PlotView.Effect>
+                </WpfPlot.Effect>
+            </WpfPlot>
+            <WpfPlot x:Name="PlotKoeff" Margin="0,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="4" Grid.Column="1">
+                <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-                </oxy:PlotView.Effect>
-            </oxy:PlotView>
-            <oxy:PlotView Model="{Binding ModelR}" Margin="0,5,0,-1" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="5" Grid.Column="1">
-                <oxy:PlotView.Effect>
+                </WpfPlot.Effect>
+            </WpfPlot>
+            <WpfPlot x:Name="PlotResist" Margin="0,5,0,-1" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="5" Grid.Column="1">
+                <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-                </oxy:PlotView.Effect>
-            </oxy:PlotView>
+                </WpfPlot.Effect>
+            </WpfPlot>
         </Grid>
     </DockPanel>
 </Window>
