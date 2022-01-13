@@ -13,12 +13,12 @@ namespace ResourceAZ.ViewModels
     internal partial class MainWindowViewModel : ViewModel
     {
 
-        private ObservableCollection<DataPoint> CalcDataPoint(ObservableCollection<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
+        private double[] CalcDataPoint(double[] dp, KindLineApprox kind, double EndX = -1, double Step = 10)
         {
-            if (dp.Count <= 1)
+            if (dp.Length <= 1)
                 return null;
 
-            ObservableCollection<DataPoint> dpApprox = new ObservableCollection<DataPoint>();
+            double[] dpApprox = new double[dates.Length];
             double[] Approx = null;
             string Function = "";
 
@@ -26,15 +26,15 @@ namespace ResourceAZ.ViewModels
             double X2 = 0;
             double Y = 0;
             double XY = 0;
-            double N = dp.Count;
-            double[] aX = new double[dp.Count];
-            double[] aY = new double[dp.Count];
+            double N = dates.Length;
+            //double[] aX = new double[dates.Length];
+            //double[] aY = new double[dates.Length];
 
-            for(int i = 0; i < dp.Count; i++)
-            {
-                aX[i] = dp[i].X;
-                aY[i] = dp[i].Y;
-            }
+            //for(int i = 0; i < dates.Length; i++)
+            //{
+            //    aX[i] = dp[i].X;
+            //    aY[i] = dp[i];
+            //}
 
             for (int order = orderCalc; order > 0; order--)
             {
@@ -52,17 +52,17 @@ namespace ResourceAZ.ViewModels
                     //    dpApprox.Add(dPoint);
                     //}
 
-                    Approx = Fit.Polynomial(aX, aY, order, DirectRegressionMethod.QR);
+                    Approx = Fit.Polynomial(dates, dp, order, DirectRegressionMethod.QR);
 
-                    foreach (DataPoint d in dp)
+                    for(int index = 0; index < dpApprox.Length; index++)
                     {
                         double y = 0;
                         for (int i = 0; i < Approx.Length; i++)
                         {
-                            y += Approx[i] * Math.Pow(d.X, i);
+                            y += Approx[i] * Math.Pow(dates[index], i);
                         }
-                        DataPoint dPoint = new DataPoint(d.X, y);
-                        dpApprox.Add(dPoint);
+                        //DataPoint dPoint = new DataPoint(d.X, y);
+                        dpApprox[index] = y;
                     }
 
                     break;
@@ -98,21 +98,21 @@ namespace ResourceAZ.ViewModels
                 ResistFunc = Function;
             }
 
-            double StopX = dpApprox[dpApprox.Count - 1].X;
+            double StopX = dates[dates.Length - 1];
             //EndRange = dpApprox.Count - 1;
 
             // если нужно дополнить прогнозное построение
-            while (EndX > StopX)
-            {
-                double y = 0;
-                for (int i = 0; i < Approx.Length; i++)
-                {
-                    y += Approx[i] * Math.Pow(StopX, i);
-                }
-                DataPoint dPoint = new DataPoint(StopX, y);
-                dpApprox.Add(dPoint);
-                StopX += Step;
-            }
+            //while (EndX > StopX)
+            //{
+            //    double y = 0;
+            //    for (int i = 0; i < Approx.Length; i++)
+            //    {
+            //        y += Approx[i] * Math.Pow(StopX, i);
+            //    }
+            //    DataPoint dPoint = new DataPoint(StopX, y);
+            //    dpApprox.Add(dPoint);
+            //    StopX += Step;
+            //}
 
 
             return dpApprox;

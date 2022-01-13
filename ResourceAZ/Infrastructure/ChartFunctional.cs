@@ -3,6 +3,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using ResourceAZ.Chart;
 using ResourceAZ.Models;
+using ResourceAZ.ScottChart;
 using ResourceAZ.ViewModels.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -65,18 +66,39 @@ namespace ResourceAZ.ViewModels
             //dpA.Clear();
             //dpR.Clear();
 
+            dates = new double[meas.Count];
+            currents = new double[meas.Count];
+            naprs = new double[meas.Count];
+            sumpots = new double[meas.Count];
+            koeffs = new double[meas.Count];
+            resists = new double[meas.Count];
+
+            int i = 0;
             // заполнение точками списков для графиков
             foreach (Measure m in meas)
             {
+                dates[i] = m.date.ToOADate();
+                currents[i] = m.Current;
+                naprs[i] = m.Napr;
+                sumpots[i] = m.SummPot;
+                koeffs[i] = m.Koeff;
+                resists[i] = m.Resist;
+
                 //dpCurrent.Add(new DataPoint(m.date.ToOADate(), m.Current));
                 //dpNapr.Add(new DataPoint(m.date.ToOADate(), m.Napr));
                 //dpPot.Add(new DataPoint(m.date.ToOADate(), m.SummPot));
                 //dpA.Add(new DataPoint(m.date.ToOADate(), m.Koeff));
                 //dpR.Add(new DataPoint(m.date.ToOADate(), m.Resist));
-
+                i++;
             }
 
             // обновление точек графиков на экране
+            chartCurrent.AddSeriesOrUpdate(dates, currents, "Выходной ток");
+            chartNapr.AddSeriesOrUpdate(dates, naprs, "Напряжение");
+            chartPot.AddSeriesOrUpdate(dates, sumpots, "Потенциал");
+            chartKoeff.AddSeriesOrUpdate(dates, koeffs, "Коэффициенты");
+            chartResist.AddSeriesOrUpdate(dates, resists, "Сопротивление");
+
             //ModelCurrent.InvalidatePlot(true);
             //ModelNapr.InvalidatePlot(true);
             //ModelPot.InvalidatePlot(true);
@@ -97,20 +119,22 @@ namespace ResourceAZ.ViewModels
         // расчет аппроксимации линии
         // 
         //--------------------------------------------------------------------------------------------
-        private ObservableCollection<DataPoint> CalcApproxLine(PlotModel model, ObservableCollection<DataPoint> dp, KindLineApprox kind, double EndX = -1, double Step = 10)
+        private double[] CalcApproxLine(scottChart chart, double[] dp, KindLineApprox kind, double EndX = -1, double Step = 10)
         {
-            ObservableCollection<DataPoint> dpAvg = CalcDataPoint(dp, kind, EndX, Step);
-            if (model.Series.Count == 1)
-            {
-                LineSeries ls = new LineSeries();
-                ls.Color = OxyColor.FromRgb(255, 0, 0);
-                //ls.MarkerType = MarkerType.Circle;
-                ls.StrokeThickness = 3;
-                model.Series.Add(ls);
+            double[] dpAvg = CalcDataPoint(dp, kind, EndX, Step);
 
-            }
-            (model.Series[1] as LineSeries).ItemsSource = dpAvg;
-            model.InvalidatePlot(true);
+            chart.AddSeriesOrUpdateApprox(dates, dpAvg);
+            //if (model.Series.Count == 1)
+            //{
+            //    LineSeries ls = new LineSeries();
+            //    ls.Color = OxyColor.FromRgb(255, 0, 0);
+            //    //ls.MarkerType = MarkerType.Circle;
+            //    ls.StrokeThickness = 3;
+            //    model.Series.Add(ls);
+
+            //}
+            //(model.Series[1] as LineSeries).ItemsSource = dpAvg;
+            //model.InvalidatePlot(true);
 
             return dpAvg;
         }

@@ -66,7 +66,8 @@ namespace ResourceAZ.ViewModels
             set
             {
                 Set(ref _listMeasure, value);
-                ModelToChart(listMeasure);
+                if(_listMeasure.Count > 1)
+                    ModelToChart(listMeasure);
 
                 //if (CalcPotencial)
                 //{
@@ -97,8 +98,12 @@ namespace ResourceAZ.ViewModels
         public double[] dates;
         public double[] currents;
         public double[] naprs;
+        public double[] sumpots;
         public double[] koeffs;
         public double[] resists;
+
+        public double[] Aavg;
+        public double[] Ravg;
 
 
         // ObservableCollection<DataPoint> dpRavg { get; set; }
@@ -109,7 +114,7 @@ namespace ResourceAZ.ViewModels
         //public PlotModel ModelA { get; }
         //public PlotModel ModelR { get; }
 
-        scottChart chartCurrent { get; set; }
+        scottChart chartCurrent;
         scottChart chartNapr;
         scottChart chartPot;
         scottChart chartKoeff;
@@ -340,6 +345,18 @@ namespace ResourceAZ.ViewModels
             //ModelPot.InvalidatePlot(true);
         }
 
+        public ICommand CommandLoaded { get; }
+        private bool CanCommandLoadedCommand(object p) => true;
+
+        private void OnCommandLoadedCommand(object p)
+        {
+            chartCurrent = new scottChart(App.mainWindow.PlotCurrent);
+            chartNapr = new scottChart(App.mainWindow.PlotNapr);
+            chartPot = new scottChart(App.mainWindow.PlotPot);
+            chartKoeff = new scottChart(App.mainWindow.PlotKoeff);
+            chartResist = new scottChart(App.mainWindow.PlotResist);
+        }
+
         #endregion
 
         public MainWindowViewModel()
@@ -354,19 +371,12 @@ namespace ResourceAZ.ViewModels
             RemoveSelectedValuesCommand = new LambdaCommand(OnRemoveSelectedValuesCommand, CanRemoveSelectedValuesCommand);
             SetRangeForCalcCommand = new LambdaCommand(OnSetRangeForCalcCommand, CanSetRangeForCalcCommand);
             DropRangeCommand = new LambdaCommand(OnDropRangeCommand, CanDropRangeCalcCommand);
+            CommandLoaded = new LambdaCommand(OnCommandLoadedCommand, CanCommandLoadedCommand);
 
             // подгтовка графиков для всех измерений
 
-            chartCurrent = new scottChart(App.mainWindow.PlotCurrent);
-            chartNapr = new scottChart(App.mainWindow.PlotNapr);
-            chartPot = new scottChart(App.mainWindow.PlotPot);
-            chartKoeff = new scottChart(App.mainWindow.PlotKoeff);
-            chartResist = new scottChart(App.mainWindow.PlotResist);
-
             dates = new double[0];
             currents = new double[0];
-
-            chartCurrent.AddSeriesOrUpdate(dates, currents, "Выходной ток");
 
             //ModelCurrent = new MyPlotModel(this);
             //ModelNapr = new MyPlotModel(this);
@@ -388,7 +398,6 @@ namespace ResourceAZ.ViewModels
 
         void OpenNewList()
         {
-
             //GroupNone = true;
             RangeForCalc = false;
             SelectGroup = KindGroup.DAY;
@@ -419,8 +428,8 @@ namespace ResourceAZ.ViewModels
             // отмечаем на экране первый RadioButton
             GroupDay = true;
 
-            //dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-            //dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+            Aavg = CalcApproxLine(chartKoeff, koeffs, KindLineApprox.KOEFF);
+            Ravg = CalcApproxLine(chartResist, resists, KindLineApprox.RESIST);
         }
 
 

@@ -20,17 +20,17 @@ namespace ResourceAZ.Calculation
         public override ObservableCollection<Measure> Calc(/*MainWindowViewModel model*/)
         {
 
-            //IEnumerable<Measure> rangeList = model.RangeForCalc ?
-            //    model.listMeasure.Where(m => m.date >= model.MinSelectedValue && m.date <= model.MaxSelectedValue)
-            //    : model.listMeasure; 
+            IEnumerable<Measure> rangeList = model.RangeForCalc ?
+                model.listMeasure.Where(m => m.date >= model.MinSelectedValue && m.date <= model.MaxSelectedValue)
+                : model.listMeasure;
 
-            //int indexEnd = model.RangeForCalc ?
-            //    model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= model.MaxSelectedValue.ToOADate()).Last())
-            //    : model.dpRavg.Count - 1;
+            int indexEnd =/*model.RangeForCalc ?
+                model.Ravg.IndexOf(model.Ravg.Where(a => a <= model.MaxSelectedValue.ToOADate()).Last())
+                :*/ model.Ravg.Length - 1;
 
 
-            //double StartValueR = model.dpRavg[0].Y;
-            //double EndValueR = model.dpRavg[indexEnd].Y;
+            double StartValueR = model.Ravg[0];
+            double EndValueR = model.Ravg[indexEnd];
             //double EndValueNapr = model.listMeasure[model.EndRange].Napr;
 
             // рассчитываем среднее от 20 последних показаний тока
@@ -38,8 +38,8 @@ namespace ResourceAZ.Calculation
             double EndValueCurrent = rangeList.Skip(Last20Current).Average(a => a.Current);
 
             // получаем крайние даты
-            //DateTime StartDate = DateTime.FromOADate(model.dpRavg[0].X);
-            //DateTime EndDate = DateTime.FromOADate(model.dpRavg[indexEnd].X);
+            DateTime StartDate = DateTime.FromOADate(model.dates[0]);
+            DateTime EndDate = DateTime.FromOADate(model.dates[indexEnd]);
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;
@@ -52,16 +52,16 @@ namespace ResourceAZ.Calculation
                 y = 0;
                 for (int i = 0; i < model.ApproxR.Length; i++)
                     y += model.ApproxR[i] * Math.Pow(EndDate.ToOADate(), i);
-                //EndValueR = y;
+                EndValueR = y;
 
-                //if (EndValueR <= 0)
-                //    break;
+                if (EndValueR <= 0)
+                    break;
                 EndDate = EndDate.AddYears(1);
                 if(EndDate.Year > 2260)
                     break;
 
                 meas.date = EndDate;
-                //meas.Resist = EndValueR;
+                meas.Resist = EndValueR;
 
                 meas.Current = EndValueCurrent;
                 meas.Napr = EndValueCurrent * meas.Resist;
