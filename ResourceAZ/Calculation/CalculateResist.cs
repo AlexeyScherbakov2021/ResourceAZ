@@ -21,25 +21,16 @@ namespace ResourceAZ.Calculation
         {
 
             IEnumerable<Measure> rangeList = model.RangeForCalc ?
-                model.listMeasure.Where(m => m.date >= model.MinSelectedValue && m.date <= model.MaxSelectedValue)
+                model.listMeasure.Where(m => m.date >= StartDate && m.date <= EndDate)
                 : model.listMeasure;
-
-            int indexEnd =/*model.RangeForCalc ?
-                model.Ravg.IndexOf(model.Ravg.Where(a => a <= model.MaxSelectedValue.ToOADate()).Last())
-                :*/ model.Ravg.Length - 1;
 
 
             double StartValueR = model.Ravg[0];
             double EndValueR = model.Ravg[indexEnd];
-            //double EndValueNapr = model.listMeasure[model.EndRange].Napr;
 
             // рассчитываем среднее от 20 последних показаний тока
             int Last20Current = rangeList.Count() >= 20 ? rangeList.Count() - 20 : 0;
             double EndValueCurrent = rangeList.Skip(Last20Current).Average(a => a.Current);
-
-            // получаем крайние даты
-            DateTime StartDate = DateTime.FromOADate(model.dates[0]);
-            DateTime EndDate = DateTime.FromOADate(model.dates[indexEnd]);
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;

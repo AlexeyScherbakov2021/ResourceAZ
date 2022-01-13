@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:ResourceAZ.ViewModels"
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
-        Title="Расчет остаточного ресурса Анодного заземлителя" Height="897.5" Width="1500" WindowStartupLocation="CenterScreen" Background="#FFE6E6E6">
+        Title="{Binding FileName}" Height="897.5" Width="1500" WindowStartupLocation="CenterScreen" Background="#FFE6E6E6">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding CommandLoaded}"/>
@@ -37,8 +37,8 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <DockPanel>
-        <TextBlock HorizontalAlignment="Center" Margin="0,12" Text="{Binding FileName}" VerticalAlignment="Top" FontWeight="Bold" DockPanel.Dock="Top" FontSize="16"/>
+    <DockPanel Margin="0,11,0,0">
+        <!--<TextBlock HorizontalAlignment="Center" Margin="0,12" Text="{Binding FileName}" VerticalAlignment="Top" FontWeight="Bold" DockPanel.Dock="Top" FontSize="16"/>-->
         <StatusBar Height="32" VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
             <TextBlock Text="{Binding listMeasure.Count, StringFormat=Число измерений: \{0\}}" HorizontalAlignment="Left"/>
             <TextBlock Text="{Binding KoeffFunc, StringFormat=Функция линии коэффициентов: \{0\}}" HorizontalAlignment="Left" Margin="23,0,0,0" Visibility="Collapsed"/>
@@ -185,14 +185,15 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <ToolBarPanel Margin="0" Orientation="Horizontal" >
-                <Button Command="{Binding SetRangeForCalcCommand}">
+            <ToolBarPanel Margin="5,0,0,0" Orientation="Horizontal" >
+                <ToggleButton Command="{Binding SetRangeForCalcCommand}" ToolTip="Задать диапазон" Margin="5,0,0,0" Width="48"
+                              IsChecked="{Binding SetSelectedRange, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                     <Image Source="/ResourceAZ;component/Resources/Images/OK.png"/>
-                </Button>
-                <Button Command="{Binding RemoveSelectedValuesCommand}">
+                </ToggleButton>
+                <Button Command="{Binding RemoveSelectedValuesCommand}" ToolTip="Удалить данные в диапазоне" Margin="5,0,0,0" Width="48">
                     <Image Source="/ResourceAZ;component/Resources/Images/Cancel.png"/>
                 </Button>
-                <Button Command="{Binding DropRangeCommand}">
+                <Button Command="{Binding DropRangeCommand}" Margin="5,0,0,0" Width="48">
                     <Image Source="/ResourceAZ;component/Resources/Images/calc.png"/>
                 </Button>
             </ToolBarPanel>

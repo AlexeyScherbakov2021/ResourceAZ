@@ -16,7 +16,7 @@ namespace ResourceAZ.Calculation
         protected DateTime MinDateValue;
         protected DateTime MaxDateValue;
         protected MainWindowViewModel model;
-        //protected int indexStart;
+        protected int indexStart;
         protected int indexEnd;
         protected DateTime StartDate;
         protected DateTime EndDate;
@@ -24,25 +24,28 @@ namespace ResourceAZ.Calculation
         public CalculateBase(MainWindowViewModel model)
         {
             this.model = model;
-            MinDateValue = model.MinSelectedValue;
-            MaxDateValue = model.MaxSelectedValue;
+            MinDateValue = double.IsNaN(model.X1) ? DateTime.FromOADate(model.dates[0]) : DateTime.FromOADate(model.X1);
+            MaxDateValue = double.IsNaN(model.X2) 
+                ? DateTime.FromOADate(model.dates[model.dates.Length - 1]) 
+                : DateTime.FromOADate(model.X2);
 
             if(model.RangeForCalc)
             {
                 rangeList = model.listMeasure.Where(m => m.date >= MinDateValue && m.date <= MaxDateValue);
                 //indexStart = model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= model.MinSelectedValue.ToOADate()).First());
+                indexStart = Array.IndexOf(model.dates, model.dates.FirstOrDefault(n => n >= model.X1));
                 //indexEnd = model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= MaxDateValue.ToOADate()).Last());
-            }
+                indexEnd = Array.IndexOf(model.dates, model.dates.LastOrDefault(n => n <= model.X2));
+             }
             else
             {
                 //indexStart = 0;
                 rangeList = model.listMeasure;
-                //indexEnd = model.dpRavg.Count - 1;
+                indexEnd = model.Ravg.Length - 1;
             }
 
-            //StartDate = DateTime.FromOADate(model.dpRavg[0].X);
-            //EndDate = DateTime.FromOADate(model.dpRavg[indexEnd].X);
-
+            StartDate = DateTime.FromOADate(model.dates[indexStart]);
+            EndDate = DateTime.FromOADate(model.dates[indexEnd]);
 
             listCalcMeasure = new ObservableCollection<Measure>();
             //listMeasure = model.RangeForCalc 

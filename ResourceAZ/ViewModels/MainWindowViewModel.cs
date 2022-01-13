@@ -9,10 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-//using OxyPlot;
-//using OxyPlot.Series;
-//using LiveCharts;
-//using LiveCharts.Wpf;
 using System.Windows.Media;
 using OxyPlot.Axes;
 using System.Collections.ObjectModel;
@@ -22,14 +18,48 @@ using Microsoft.Win32;
 using System.Collections;
 using ResourceAZ.Chart;
 using ResourceAZ.ScottChart;
+using ScottPlot;
 
 namespace ResourceAZ.ViewModels
 {
 
-     internal partial class MainWindowViewModel : ViewModel
+    internal partial class MainWindowViewModel : ViewModel
     {
         public double[] ApproxA;
         public double[] ApproxR;
+
+        public List<scottChart> listPlot;
+        public int indexX1 = -1;
+        public int indexX2 = -1;
+
+        private double _X1 = double.NaN;
+        public double X1
+        {
+            get => _X1;
+            set
+            {
+                _X1 = value;
+                if(!double.IsNaN(_X1))
+                    indexX1 = Array.IndexOf(dates, dates.FirstOrDefault(n => n >= _X1));
+                else
+                    indexX1 = 0;
+            }
+        }
+
+
+        private double _X2 = double.NaN;
+        public double X2
+        {
+            get => _X2;
+            set
+            {
+                _X2 = value;
+                if (!double.IsNaN(_X2))
+                    indexX2 = Array.IndexOf(dates, dates.LastOrDefault(n => n <= _X2));
+                else
+                    indexX2 = dates.Length - 1;
+            }
+        }
 
         //public int EndRange;
         DateTime _MinSelectedValue;
@@ -88,13 +118,6 @@ namespace ResourceAZ.ViewModels
 
         // измерения, преобраованные в списки точек для графика
         #region
-        //public ObservableCollection<DataPoint> dpCurrent { get; set; }
-        //ObservableCollection<DataPoint> dpNapr { get; set; }
-        //ObservableCollection<DataPoint> dpPot { get; set; }
-        //ObservableCollection<DataPoint> dpA { get; set; }
-        //public ObservableCollection<DataPoint> dpAavg { get; set; }
-        //ObservableCollection<DataPoint> dpR { get; set; }
-        //public ObservableCollection<DataPoint> dpRavg { get; set; }
         public double[] dates;
         public double[] currents;
         public double[] naprs;
@@ -106,14 +129,7 @@ namespace ResourceAZ.ViewModels
         public double[] Ravg;
 
 
-        // ObservableCollection<DataPoint> dpRavg { get; set; }
         // модели для графиков
-        //public MyPlotModel ModelCurrent { get; }
-        //public PlotModel ModelNapr { get; }
-        //public PlotModel ModelPot { get; }
-        //public PlotModel ModelA { get; }
-        //public PlotModel ModelR { get; }
-
         scottChart chartCurrent;
         scottChart chartNapr;
         scottChart chartPot;
@@ -155,15 +171,17 @@ namespace ResourceAZ.ViewModels
         public double MinPotCalc { get; set; } = -0.9;
         public double MaxCurrentSKZ { get; set; } = 15.0;
         public double MaxNaprSKZ { get; set; } = 48.0;
-        private string _FileName;
+        private string _FileName = "Расчет ресурса Анодного заземлителя";
         public string FileName
         {
             get => _FileName;
             set
             {
-                Set(ref _FileName, value);
+                Set(ref _FileName, "Расчет ресурса Анодного заземлителя : " + value);
             }
         }
+        public bool _SetSelectedRange;
+        public bool SetSelectedRange { get => _SetSelectedRange; set { Set(ref _SetSelectedRange, value); } }
 
         #endregion
 
@@ -189,7 +207,6 @@ namespace ResourceAZ.ViewModels
             FileName = "";
 
             listMeasureOrig = repository.GetAllData(od.FileName);
-            //repository.GetAllDataAsync(od.FileName, listMeasureOrig);
 
             OpenNewList();
 
@@ -242,8 +259,8 @@ namespace ResourceAZ.ViewModels
             }
 
             ModelToChart(listMeasure);
-            //dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-            //dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+            Aavg = CalcApproxLine(chartKoeff, koeffs, KindLineApprox.KOEFF);
+            Ravg = CalcApproxLine(chartResist, resists, KindLineApprox.RESIST);
 
         }
 
@@ -291,70 +308,82 @@ namespace ResourceAZ.ViewModels
 
             ModelToChart(listMeasure);
 
-            OnDropRangeCommand(p);
+            //OnDropRangeCommand(p);
         }
 
         // комнда принятия диапазона для равсчетов
         public ICommand SetRangeForCalcCommand { get; }
         private bool CanSetRangeForCalcCommand(object p)
         {
-            return listMeasure.Where(w => w.SetColor).Count() > 0;
+            //return listMeasure.Where(w => w.SetColor).Count() > 0;
+            return listMeasure.Count() > 0;
         }
         private void OnSetRangeForCalcCommand(object p)
         {
 
             RangeForCalc = true;
 
-            double minDate = MinSelectedValue.ToOADate();
-            double maxDate = MaxSelectedValue.ToOADate();
+            //double minDate = MinSelectedValue.ToOADate();
+            //double maxDate = MaxSelectedValue.ToOADate();
 
-            //ObservableCollection<DataPoint> RangeA = new ObservableCollection<DataPoint>( dpA.Where(w => w.X >= minDate && w.X <= maxDate));
-            //dpAavg = CalcApproxLine(ModelA, RangeA, KindLineApprox.KOEFF, dpA[dpA.Count-1].X, 10);
-
-            //ObservableCollection<DataPoint> RangeR = new ObservableCollection<DataPoint>(dpR.Where(w => w.X >= minDate && w.X <= maxDate));
-            //dpRavg = CalcApproxLine(ModelR, RangeR, KindLineApprox.RESIST, dpR[dpR.Count - 1].X, 10);
-
-            //// обновление точек графиков на экране для смены цвета фона
-            //ModelCurrent.InvalidatePlot(true);
-            //ModelNapr.InvalidatePlot(true);
-            //ModelPot.InvalidatePlot(true);
+            if (double.IsNaN(X1))
+            {
+                X1 = dates[0] + (dates[dates.Length - 1] - dates[0]) / 3;
+                X2 = X1 + (dates[dates.Length - 1] - dates[0]) / 3;
+            }
+            chartCurrent.SetSelectedRange(SetSelectedRange, X1, X2);
         }
 
         // команда снятия выделения
         public ICommand DropRangeCommand { get; }
         private bool CanDropRangeCalcCommand(object p)
         {
-            return MinSelectedValue < MaxSelectedValue;
+            return true;
         }
         private void OnDropRangeCommand(object p)
         {
+            if(RangeForCalc)
+            {
+                double[] rangeKoeff = new double[indexX2 - indexX1 + 1];
+                for (int i = 0, n = indexX1; i < rangeKoeff.Length; i++, n++)
+                    rangeKoeff[i] = koeffs[n];
 
-            RangeForCalc = false;
-            MinSelectedValue = DateTime.MinValue;
-            MaxSelectedValue = DateTime.MinValue;
+                double[] rangeResist = new double[indexX2 - indexX1 + 1];
+                for (int i = 0, n = indexX1; i < rangeResist.Length; i++, n++)
+                    rangeResist[i] = resists[n];
 
-            foreach (Measure m in listMeasure)
-                m.SetColor = false;
 
-            //dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-            //dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
+                Aavg = CalcApproxLine(chartKoeff, rangeKoeff, KindLineApprox.KOEFF, dates[dates.Length - 1]);
+                Ravg = CalcApproxLine(chartResist, rangeResist, KindLineApprox.RESIST, dates[dates.Length - 1]);
+            }
+            else
+            {
+                Aavg = CalcApproxLine(chartKoeff, koeffs, KindLineApprox.KOEFF);
+                Ravg = CalcApproxLine(chartResist, resists, KindLineApprox.RESIST);
+            }
 
-            // обновление точек графиков на экране для смены цвета фона
-            //ModelCurrent.InvalidatePlot(true);
-            //ModelNapr.InvalidatePlot(true);
-            //ModelPot.InvalidatePlot(true);
+
+            //RangeForCalc = false;
+            //MinSelectedValue = DateTime.MinValue;
+            //MaxSelectedValue = DateTime.MinValue;
+
+            //foreach (Measure m in listMeasure)
+            //    m.SetColor = false;
+
         }
 
+
+        // событие после загрузки главного окна
         public ICommand CommandLoaded { get; }
         private bool CanCommandLoadedCommand(object p) => true;
 
         private void OnCommandLoadedCommand(object p)
         {
-            chartCurrent = new scottChart(App.mainWindow.PlotCurrent);
-            chartNapr = new scottChart(App.mainWindow.PlotNapr);
-            chartPot = new scottChart(App.mainWindow.PlotPot);
-            chartKoeff = new scottChart(App.mainWindow.PlotKoeff);
-            chartResist = new scottChart(App.mainWindow.PlotResist);
+            chartCurrent = new scottChart(App.mainWindow.PlotCurrent, this);
+            chartNapr = new scottChart(App.mainWindow.PlotNapr, this);
+            chartPot = new scottChart(App.mainWindow.PlotPot, this);
+            chartKoeff = new scottChart(App.mainWindow.PlotKoeff, this);
+            chartResist = new scottChart(App.mainWindow.PlotResist, this);
         }
 
         #endregion
@@ -375,20 +404,10 @@ namespace ResourceAZ.ViewModels
 
             // подгтовка графиков для всех измерений
 
+            listPlot = new List<scottChart>();
+
             dates = new double[0];
             currents = new double[0];
-
-            //ModelCurrent = new MyPlotModel(this);
-            //ModelNapr = new MyPlotModel(this);
-            //ModelPot = new MyPlotModel(this);
-            //ModelA = new MyPlotModel(this);
-            //ModelR = new MyPlotModel(this);
-
-            //dpCurrent = InitChart(ModelCurrent, "Выходной ток");
-            //dpNapr = InitChart(ModelNapr, "Напряжение");
-            //dpPot = InitChart(ModelPot, "Потенциал");
-            //dpA = InitChart(ModelA, "Коэффициенты");
-            //dpR = InitChart(ModelR, "Сопротивление");
 
             listMeasureOrig = new ObservableCollection<Measure>();
             listMeasure = new ObservableCollection<Measure>();
@@ -398,20 +417,12 @@ namespace ResourceAZ.ViewModels
 
         void OpenNewList()
         {
-            //GroupNone = true;
             RangeForCalc = false;
             SelectGroup = KindGroup.DAY;
+            X1 = X2 = double.NaN;
 
-            //ModelR.DefaultYAxis.Maximum = double.NaN;
-            //ModelR.DefaultYAxis.Minimum = double.NaN;
-            //ModelA.DefaultYAxis.Maximum = double.NaN;
-            //ModelA.DefaultYAxis.Minimum = double.NaN;
-
-            //ModelCurrent.ResetAllAxes();
-            //ModelNapr.ResetAllAxes();
-            //ModelPot.ResetAllAxes();
-            //ModelA.ResetAllAxes();
-            //ModelR.ResetAllAxes();
+            SetSelectedRange = false;
+            chartCurrent.SetSelectedRange(false);
 
             MinSelectedValue = DateTime.MinValue;
             MaxSelectedValue = DateTime.MinValue;
@@ -422,7 +433,6 @@ namespace ResourceAZ.ViewModels
                 m.Resist = m.Napr / m.Current;// + m.Koeff;
             }
 
-            //listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
             FormatListMeasure(SelectGroup);
 
             // отмечаем на экране первый RadioButton
@@ -530,18 +540,11 @@ namespace ResourceAZ.ViewModels
         public void SelectRangeDataGrid(DateTime dtFrom, DateTime dtTo)
         {
             RangeForCalc = false;
-            //MinSelectedValue = DateTime.MinValue;
-            //MaxSelectedValue = DateTime.MinValue;
+            MinSelectedValue = DateTime.MinValue;
+            MaxSelectedValue = DateTime.MinValue;
 
             foreach (Measure m in listMeasure)
                 m.SetColor = m.date <= dtTo && m.date >= dtFrom;
-
-            // обновление точек графиков на экране
-            //ModelCurrent.InvalidatePlot(true);
-            //ModelNapr.InvalidatePlot(true);
-            //ModelPot.InvalidatePlot(true);
-            //ModelA.InvalidatePlot(true);
-            //ModelR.InvalidatePlot(true);
 
         }
 

@@ -1,4 +1,5 @@
-﻿using ScottPlot;
+﻿using ResourceAZ.ViewModels;
+using ScottPlot;
 using ScottPlot.Plottable;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,14 @@ namespace ResourceAZ.ScottChart
         private WpfPlot _chart;
         ScatterPlot mainPlot;
         ScatterPlot apprPlot;
+        HSpan span;
+        private readonly MainWindowViewModel _vm;
 
-        public scottChart(WpfPlot chart)
+        public scottChart(WpfPlot chart, MainWindowViewModel vm)
         {
             _chart = chart;
+            _vm = vm;
+            _vm.listPlot.Add(this);
             //_chart.Plot.XAxis.Label("Время");
             _chart.Plot.XAxis.DateTimeFormat(true);
             _chart.Plot.XAxis.Grid(true);
@@ -28,7 +33,11 @@ namespace ResourceAZ.ScottChart
             //_chart.Plot.YAxis.Layout(0.1f);
             //_chart.Plot.Layout(0,0,0,0, -8);
             _chart.Plot.Grid(true, Color.LightGray);
-            
+
+            span = _chart.Plot.AddHorizontalSpan(0, 0, Color.FromArgb(140, 0, 255, 255), "ggg");
+            span.Dragged += Span_Dragged;
+            span.IsVisible = false;
+
         }
 
         public void AddSeriesOrUpdate(double[] X, double[] Y, string Name = "")
@@ -66,7 +75,38 @@ namespace ResourceAZ.ScottChart
             else
                 apprPlot.Update(X, Y);
 
+            _chart.Plot.AxisAuto();
             _chart.Refresh();
         }
+
+
+        public void SetSelectedRange(bool enable, double X1 = 0,  double X2 = 40000 )
+        {
+            foreach (scottChart plot in _vm.listPlot)
+            {
+                plot.span.X1 = X1;
+                plot.span.X2 = X2;
+                plot.span.IsVisible = enable;
+                plot.span.DragEnabled = enable;
+                plot._chart.Refresh();
+            }
+
+        }
+
+        private void Span_Dragged(object sender, EventArgs e)
+        {
+            foreach(scottChart plot in _vm.listPlot)
+            {
+                if (plot == this) continue;
+
+                plot.span.X1 = span.X1;
+                plot.span.X2 = span.X2;
+                plot._chart.Refresh();
+            }
+
+            _vm.X1 = span.X1;
+            _vm.X2 = span.X2;
+        }
+
     }
 }

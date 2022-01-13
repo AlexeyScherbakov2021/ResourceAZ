@@ -18,7 +18,7 @@ namespace ResourceAZ.ViewModels
             if (dp.Length <= 1)
                 return null;
 
-            double[] dpApprox = new double[dates.Length];
+            double[] dpApprox = new double[dp.Length];
             double[] Approx = null;
             string Function = "";
 
@@ -27,14 +27,6 @@ namespace ResourceAZ.ViewModels
             double Y = 0;
             double XY = 0;
             double N = dates.Length;
-            //double[] aX = new double[dates.Length];
-            //double[] aY = new double[dates.Length];
-
-            //for(int i = 0; i < dates.Length; i++)
-            //{
-            //    aX[i] = dp[i].X;
-            //    aY[i] = dp[i];
-            //}
 
             for (int order = orderCalc; order > 0; order--)
             {
