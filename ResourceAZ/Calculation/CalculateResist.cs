@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ResourceAZ.Chart;
 using ResourceAZ.Models;
 using ResourceAZ.ViewModels;
 
@@ -12,12 +13,14 @@ namespace ResourceAZ.Calculation
     internal class CalculateResist : CalculateBase
     {
         int LimitYearNapr = 0;
+        double[] ApproxR;
 
         public CalculateResist(MainWindowViewModel model) : base(model)
         {
+            ApproxR = model.ApproxR.GetY();
         }
 
-        public override ObservableCollection<Measure> Calc(/*MainWindowViewModel model*/)
+        public override ObservableCollection<Measure> Calc()
         {
 
             IEnumerable<Measure> rangeList = model.RangeForCalc ?
@@ -41,8 +44,8 @@ namespace ResourceAZ.Calculation
             {
                 Measure meas = new Measure();
                 y = 0;
-                for (int i = 0; i < model.ApproxR.Length; i++)
-                    y += model.ApproxR[i] * Math.Pow(EndDate.ToOADate(), i);
+                for (int i = 0; i < ApproxR.Length; i++)
+                    y += ApproxR[i] * Math.Pow(EndDate.ToOADate(), i);
                 EndValueR = y;
 
                 if (EndValueR <= 0)

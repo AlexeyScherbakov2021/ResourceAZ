@@ -14,12 +14,14 @@ namespace ResourceAZ.Calculation
         int LimitYearCurr = 0;
         int LimitYearNapr = 0;
 
+
+
         public CalculatePotencial(MainWindowViewModel model) : base(model)
         {
         }
 
         //public ObservableCollection<Measure> Calc(ObservableCollection<Measure> listMeasure, double MinSummPot, double maxCur, double maxNapr)
-        public override ObservableCollection<Measure> Calc( )
+        public override ObservableCollection<Measure> Calc()
         {
             double deltaA;
             double deltaR;

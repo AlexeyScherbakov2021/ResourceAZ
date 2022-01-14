@@ -93,13 +93,13 @@ namespace ResourceAZ.ViewModels
         // расчет аппроксимации линии
         // 
         //--------------------------------------------------------------------------------------------
-        private double[] CalcApproxLine(scottChart chart, double[] dp, KindLineApprox kind, double EndX = -1, double Step = 10)
-        {
-            double[] dpAvg = CalcDataPoint(dp, kind, EndX, Step);
+        //private double[] CalcApproxLine(scottChart chart, double[] dp, double[] datesRange, KindLineApprox kind, double EndX = -1, double Step = 10)
+        //{
+        //    double[] dpAvg = CalcDataPoint(dp, datesRange, kind, EndX, Step);
 
-            chart.AddSeriesOrUpdateApprox(dates, dpAvg);
-            return dpAvg;
-        }
+        //    chart.AddSeriesOrUpdateApprox(datesRange, dpAvg);
+        //    return dpAvg;
+        //}
 
     }
 }

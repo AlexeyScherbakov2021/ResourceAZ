@@ -1,4 +1,5 @@
-﻿using ResourceAZ.Models;
+﻿using ResourceAZ.Chart;
+using ResourceAZ.Models;
 using ResourceAZ.ViewModels;
 using System;
 using System.Collections.Generic;

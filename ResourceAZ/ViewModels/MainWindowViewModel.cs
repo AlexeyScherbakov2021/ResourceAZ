@@ -25,8 +25,11 @@ namespace ResourceAZ.ViewModels
 
     internal partial class MainWindowViewModel : ViewModel
     {
-        public double[] ApproxA;
-        public double[] ApproxR;
+        //public double[] ApproxA;
+        //public double[] ApproxR;
+
+        public ApproxLine ApproxA;
+        public ApproxLine ApproxR;
 
         public List<scottChart> listPlot;
         public int indexX1 = -1;
@@ -259,10 +262,11 @@ namespace ResourceAZ.ViewModels
             }
 
             ModelToChart(listMeasure);
-            Aavg = CalcApproxLine(chartKoeff, koeffs, KindLineApprox.KOEFF);
-            Ravg = CalcApproxLine(chartResist, resists, KindLineApprox.RESIST);
+
+            CalculateApproximate();
 
         }
+
 
         // команда на удаление недостоверных показаний
         public ICommand RemoveDeviationCommand { get; }
@@ -321,7 +325,7 @@ namespace ResourceAZ.ViewModels
         private void OnSetRangeForCalcCommand(object p)
         {
 
-            RangeForCalc = true;
+            RangeForCalc = SetSelectedRange;
 
             //double minDate = MinSelectedValue.ToOADate();
             //double maxDate = MaxSelectedValue.ToOADate();
@@ -334,11 +338,11 @@ namespace ResourceAZ.ViewModels
             chartCurrent.SetSelectedRange(SetSelectedRange, X1, X2);
         }
 
-        // команда снятия выделения
+        // команда перерасчета линии аппроксимации
         public ICommand DropRangeCommand { get; }
         private bool CanDropRangeCalcCommand(object p)
         {
-            return true;
+            return listMeasure.Count() > 0;
         }
         private void OnDropRangeCommand(object p)
         {
@@ -352,23 +356,43 @@ namespace ResourceAZ.ViewModels
                 for (int i = 0, n = indexX1; i < rangeResist.Length; i++, n++)
                     rangeResist[i] = resists[n];
 
+                double[] datesRange = new double[indexX2 - indexX1 + 1];
+                for (int i = 0, n = indexX1; i < datesRange.Length; i++, n++)
+                    datesRange[i] = dates[n];
 
-                Aavg = CalcApproxLine(chartKoeff, rangeKoeff, KindLineApprox.KOEFF, dates[dates.Length - 1]);
-                Ravg = CalcApproxLine(chartResist, rangeResist, KindLineApprox.RESIST, dates[dates.Length - 1]);
+
+                Aavg = ApproxA.CalcDataPoint(rangeKoeff, datesRange, orderCalc);
+                if (ApproxA.CalcAddRange(dates.Last()))
+                {
+                    Aavg = ApproxA.GetY();
+                    double[] d = ApproxA.GetX();
+                    chartKoeff.AddSeriesOrUpdateApprox(d, Aavg);
+                }
+
+                //chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
+
+                Ravg = ApproxR.CalcDataPoint(rangeResist, datesRange, orderCalc);
+                if (ApproxR.CalcAddRange(dates.Last()))
+                {
+                    Ravg = ApproxR.GetY();
+                    double[] d = ApproxR.GetX();
+                    chartResist.AddSeriesOrUpdateApprox(d, Ravg);
+                    ResistFunc = ApproxR.GetStringFunction();
+                }
+
+                //Aavg = CalcApproxLine(chartKoeff, rangeKoeff, datesRange, KindLineApprox.KOEFF, dates[dates.Length - 1]);
+                //Ravg = CalcApproxLine(chartResist, rangeResist, datesRange, KindLineApprox.RESIST, dates[dates.Length - 1]);
             }
             else
             {
-                Aavg = CalcApproxLine(chartKoeff, koeffs, KindLineApprox.KOEFF);
-                Ravg = CalcApproxLine(chartResist, resists, KindLineApprox.RESIST);
+                CalculateApproximate();
+
+                //Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);
+                //chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
+
+                //Ravg = ApproxR.CalcDataPoint(resists, dates, orderCalc);
+                //chartResist.AddSeriesOrUpdateApprox(dates, Ravg);
             }
-
-
-            //RangeForCalc = false;
-            //MinSelectedValue = DateTime.MinValue;
-            //MaxSelectedValue = DateTime.MinValue;
-
-            //foreach (Measure m in listMeasure)
-            //    m.SetColor = false;
 
         }
 
@@ -403,6 +427,8 @@ namespace ResourceAZ.ViewModels
             CommandLoaded = new LambdaCommand(OnCommandLoadedCommand, CanCommandLoadedCommand);
 
             // подгтовка графиков для всех измерений
+            ApproxA = new ApproxLine();
+            ApproxR = new ApproxLine();
 
             listPlot = new List<scottChart>();
 
@@ -438,8 +464,16 @@ namespace ResourceAZ.ViewModels
             // отмечаем на экране первый RadioButton
             GroupDay = true;
 
-            Aavg = CalcApproxLine(chartKoeff, koeffs, KindLineApprox.KOEFF);
-            Ravg = CalcApproxLine(chartResist, resists, KindLineApprox.RESIST);
+            CalculateApproximate();
+
+            //Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);
+            //chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
+
+            //Ravg = ApproxR.CalcDataPoint(resists, dates);
+            //chartResist.AddSeriesOrUpdateApprox(dates, Ravg);
+
+            //Aavg = CalcApproxLine(chartKoeff, koeffs, dates, KindLineApprox.KOEFF);
+            //Ravg = CalcApproxLine(chartResist, resists, dates, KindLineApprox.RESIST);
         }
 
 
@@ -585,5 +619,15 @@ namespace ResourceAZ.ViewModels
 
         }
 
+        void CalculateApproximate()
+        {
+            Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);
+            chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
+
+            Ravg = ApproxR.CalcDataPoint(resists, dates, orderCalc);
+            chartResist.AddSeriesOrUpdateApprox(dates, Ravg);
+
+            ResistFunc = ApproxR.GetStringFunction();
+        }
     }
 }
