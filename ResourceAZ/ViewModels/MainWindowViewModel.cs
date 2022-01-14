@@ -25,9 +25,6 @@ namespace ResourceAZ.ViewModels
 
     internal partial class MainWindowViewModel : ViewModel
     {
-        //public double[] ApproxA;
-        //public double[] ApproxR;
-
         public ApproxLine ApproxA;
         public ApproxLine ApproxR;
 
@@ -76,7 +73,7 @@ namespace ResourceAZ.ViewModels
             get => _MaxSelectedValue; set { Set(ref _MaxSelectedValue, value); }
         }
 
-        public bool RangeForCalc;
+        //public bool RangeForCalc { get; set; }
 
         private string _KoeffFunc;
         public string KoeffFunc
@@ -102,11 +99,6 @@ namespace ResourceAZ.ViewModels
                 if(_listMeasure.Count > 1)
                     ModelToChart(listMeasure);
 
-                //if (CalcPotencial)
-                //{
-                //    dpAavg = CalcApproxLine(ModelA, dpA, KindLineApprox.KOEFF);
-                //    dpRavg = CalcApproxLine(ModelR, dpR, KindLineApprox.RESIST);
-                //}
             }
         }
         public IList _SelectedMeasure;
@@ -325,10 +317,7 @@ namespace ResourceAZ.ViewModels
         private void OnSetRangeForCalcCommand(object p)
         {
 
-            RangeForCalc = SetSelectedRange;
-
-            //double minDate = MinSelectedValue.ToOADate();
-            //double maxDate = MaxSelectedValue.ToOADate();
+            //RangeForCalc = SetSelectedRange;
 
             if (double.IsNaN(X1))
             {
@@ -346,7 +335,7 @@ namespace ResourceAZ.ViewModels
         }
         private void OnDropRangeCommand(object p)
         {
-            if(RangeForCalc)
+            if(SetSelectedRange)
             {
                 double[] rangeKoeff = new double[indexX2 - indexX1 + 1];
                 for (int i = 0, n = indexX1; i < rangeKoeff.Length; i++, n++)
@@ -380,18 +369,10 @@ namespace ResourceAZ.ViewModels
                     ResistFunc = ApproxR.GetStringFunction();
                 }
 
-                //Aavg = CalcApproxLine(chartKoeff, rangeKoeff, datesRange, KindLineApprox.KOEFF, dates[dates.Length - 1]);
-                //Ravg = CalcApproxLine(chartResist, rangeResist, datesRange, KindLineApprox.RESIST, dates[dates.Length - 1]);
             }
             else
             {
                 CalculateApproximate();
-
-                //Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);
-                //chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
-
-                //Ravg = ApproxR.CalcDataPoint(resists, dates, orderCalc);
-                //chartResist.AddSeriesOrUpdateApprox(dates, Ravg);
             }
 
         }
@@ -443,7 +424,7 @@ namespace ResourceAZ.ViewModels
 
         void OpenNewList()
         {
-            RangeForCalc = false;
+            SetSelectedRange = false;
             SelectGroup = KindGroup.DAY;
             X1 = X2 = double.NaN;
 
@@ -466,14 +447,6 @@ namespace ResourceAZ.ViewModels
 
             CalculateApproximate();
 
-            //Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);
-            //chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
-
-            //Ravg = ApproxR.CalcDataPoint(resists, dates);
-            //chartResist.AddSeriesOrUpdateApprox(dates, Ravg);
-
-            //Aavg = CalcApproxLine(chartKoeff, koeffs, dates, KindLineApprox.KOEFF);
-            //Ravg = CalcApproxLine(chartResist, resists, dates, KindLineApprox.RESIST);
         }
 
 
@@ -573,7 +546,7 @@ namespace ResourceAZ.ViewModels
         // отметка цветом для выбранного времени
         public void SelectRangeDataGrid(DateTime dtFrom, DateTime dtTo)
         {
-            RangeForCalc = false;
+            SetSelectedRange = false;
             MinSelectedValue = DateTime.MinValue;
             MaxSelectedValue = DateTime.MinValue;
 

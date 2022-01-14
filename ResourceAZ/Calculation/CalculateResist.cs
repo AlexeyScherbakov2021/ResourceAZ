@@ -17,13 +17,13 @@ namespace ResourceAZ.Calculation
 
         public CalculateResist(MainWindowViewModel model) : base(model)
         {
-            ApproxR = model.ApproxR.GetY();
+            ApproxR = model.ApproxR.ApproxDigit;
         }
 
         public override ObservableCollection<Measure> Calc()
         {
 
-            IEnumerable<Measure> rangeList = model.RangeForCalc ?
+            IEnumerable<Measure> rangeList = model.SetSelectedRange ?
                 model.listMeasure.Where(m => m.date >= StartDate && m.date <= EndDate)
                 : model.listMeasure;
 

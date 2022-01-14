@@ -12,12 +12,15 @@ namespace ResourceAZ.Chart
     {
         private double[] _x;
         private double[] _y;
-        private double[] ApproxDigit;
+        public double[] ApproxDigit;
+        public int endIndex;
 
         public double[] CalcDataPoint(double[] y, double[] x, int orderCalc = 3 )
         {
             if (x.Length <= 1)
                 return null;
+
+            endIndex = y.Length - 1;
 
             _y = new double[y.Length];
             _x = new double[x.Length];

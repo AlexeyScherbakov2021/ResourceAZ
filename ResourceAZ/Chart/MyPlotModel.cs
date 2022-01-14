@@ -26,7 +26,7 @@ namespace ResourceAZ.Chart
             double minX = (viewModel.MinSelectedValue.ToOADate() - DefaultXAxis.Offset) * DefaultXAxis.Scale;
             double maxX = (viewModel.MaxSelectedValue.ToOADate() - DefaultXAxis.Offset) * DefaultXAxis.Scale;
 
-            OxyColor brush = viewModel.RangeForCalc ? OxyColor.FromArgb(70, 0, 255, 255) :
+            OxyColor brush = viewModel.SetSelectedRange ? OxyColor.FromArgb(70, 0, 255, 255) :
                 OxyColor.FromArgb(70, 255, 255, 0);
 
 
