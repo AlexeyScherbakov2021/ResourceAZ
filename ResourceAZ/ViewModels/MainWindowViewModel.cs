@@ -254,6 +254,7 @@ namespace ResourceAZ.ViewModels
 
             CalcWindowViewModel vm = new CalcWindowViewModel(this);
             Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);
+            vm.view = (CalcWindow)win;
             win.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             win.Show();
 

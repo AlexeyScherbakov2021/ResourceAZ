@@ -24,6 +24,7 @@ namespace ResourceAZ.Views
         public CalcWindow()
         {
             InitializeComponent();
+            //(DataContext as CalcWindowViewModel).view = this;
         }
 
     }

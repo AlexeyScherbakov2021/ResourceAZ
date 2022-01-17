@@ -126,8 +126,6 @@
     <Compile Include="Calculation\CalculateResist.cs" />
     <Compile Include="Chart\ApproxLine.cs" />
     <Compile Include="Chart\ScottChart.cs" />
-    <Compile Include="Chart\IChart.cs" />
-    <Compile Include="Chart\MyPlotModel.cs" />
     <Compile Include="Infrastructure\ChartFunctional.cs" />
     <Compile Include="Infrastructure\Commands\Base\Command.cs" />
     <Compile Include="Infrastructure\Commands\LambdaCommand.cs" />

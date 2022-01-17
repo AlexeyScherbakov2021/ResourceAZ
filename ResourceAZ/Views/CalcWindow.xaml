@@ -5,10 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResourceAZ.Views"
         xmlns:vm="clr-namespace:ResourceAZ.ViewModels"
-        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-         Background="#FFE6E6E6"
+        Background="#FFE6E6E6"
         Title="CalcWindow" Height="749.196" Width="1397.823" WindowStartupLocation="CenterScreen">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding CommandLoaded}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Window.Resources>
         <Style TargetType="DataGridCell" x:Key="CellRight">
             <Style.Setters>
@@ -22,9 +27,9 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vm:CalcWindowViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
     <Grid>
         <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="389" Background="#FFE8E8E8" VerticalAlignment="Top" Height="525">
             <GroupBox.Effect>
@@ -52,16 +57,16 @@
 
             </DataGrid>
         </GroupBox>
-        <oxy:PlotView Model="{Binding ModelCurrent}" Margin="439,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
-            <oxy:PlotView.Effect>
+        <WpfPlot x:Name="PlotCurrent"  Margin="439,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
+            <WpfPlot.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-            </oxy:PlotView.Effect>
-        </oxy:PlotView>
-        <oxy:PlotView Model="{Binding ModelNapr}" Margin="903,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
-            <oxy:PlotView.Effect>
+            </WpfPlot.Effect>
+        </WpfPlot>
+        <WpfPlot x:Name="PlotNapr"  Margin="903,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
+            <WpfPlot.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
-            </oxy:PlotView.Effect>
-        </oxy:PlotView>
+            </WpfPlot.Effect>
+        </WpfPlot>
         <GroupBox HorizontalAlignment="Left" Height="219" Margin="439,355,0,0" VerticalAlignment="Top" Width="904" Background="#FFF9F9F9">
             <GroupBox.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
