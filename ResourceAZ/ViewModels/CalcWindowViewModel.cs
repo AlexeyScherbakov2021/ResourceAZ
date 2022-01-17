@@ -159,24 +159,24 @@ namespace ResourceAZ.ViewModels
                 i++;
             }
 
-            ScatterPlot plotCurr = view.PlotCurrent.Plot.AddScatter(dates, currents);
+            view.PlotCurrent.Plot.AddHorizontalLine(MaxCurrent, Color.Red, 3, LineStyle.Solid);
+            ScatterPlot plotCurr = view.PlotCurrent.Plot.AddScatter(dates, currents, Color.Blue);
             view.PlotCurrent.Plot.Title($"Выходной ток, максимальный: {MaxCurrent}", false);
             view.PlotCurrent.Plot.XAxis.DateTimeFormat(true);
             view.PlotCurrent.Plot.XAxis.Grid(true);
             view.PlotCurrent.Plot.Layout(0, 0, 0, 0, -3);
             view.PlotCurrent.Plot.Grid(true, Color.LightGray);
             plotCurr.LineWidth = 3;
-            view.PlotCurrent.Plot.AddHorizontalLine(MaxCurrent, Color.Red, 3, LineStyle.Dash, "Макс. ток");
             view.PlotCurrent.Refresh();
 
-            ScatterPlot plotNapr = view.PlotNapr.Plot.AddScatter(dates, naprs);
+            view.PlotNapr.Plot.AddHorizontalLine(MaxNapr, Color.Red, 3, LineStyle.Solid);
+            ScatterPlot plotNapr = view.PlotNapr.Plot.AddScatter(dates, naprs, Color.Blue);
             view.PlotNapr.Plot.Title($"Напряжение, максимальное: {MaxNapr}", false);
             plotNapr.LineWidth = 3;
             view.PlotNapr.Plot.XAxis.DateTimeFormat(true);
             view.PlotNapr.Plot.XAxis.Grid(true);
             view.PlotNapr.Plot.Layout(0, 0, 0, 0, -3);
             view.PlotNapr.Plot.Grid(true, Color.LightGray);
-            view.PlotNapr.Plot.AddHorizontalLine(MaxNapr, Color.Red, 3, LineStyle.Dash, "Макс. напряжение");
             view.PlotNapr.Refresh();
         }
 

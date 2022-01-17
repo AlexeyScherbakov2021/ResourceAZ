@@ -175,7 +175,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\Images\chart_curve.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Cancel.png" />
     <Resource Include="Resources\Images\excel_imports.png" />
@@ -187,6 +189,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\calc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\table_select_column.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

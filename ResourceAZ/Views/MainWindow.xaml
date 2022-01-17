@@ -188,13 +188,13 @@
             <ToolBarPanel Margin="5,0,0,0" Orientation="Horizontal" >
                 <ToggleButton Command="{Binding SetRangeForCalcCommand}" ToolTip="Задать диапазон" Margin="5,0,0,0" Width="48"
                               IsChecked="{Binding SetSelectedRange, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-                    <Image Source="/ResourceAZ;component/Resources/Images/OK.png"/>
+                    <Image Source="/ResourceAZ;component/Resources/Images/table_select_column.png"/>
                 </ToggleButton>
                 <Button Command="{Binding RemoveSelectedValuesCommand}" ToolTip="Удалить данные в диапазоне" Margin="5,0,0,0" Width="48">
                     <Image Source="/ResourceAZ;component/Resources/Images/Cancel.png"/>
                 </Button>
-                <Button Command="{Binding CalcApproxCommand}" Margin="5,0,0,0" Width="48">
-                    <Image Source="/ResourceAZ;component/Resources/Images/calc.png"/>
+                <Button Command="{Binding CalcApproxCommand}" Margin="5,0,0,0" Width="48" ToolTip="Пересчитать линии усреднения">
+                    <Image Source="/ResourceAZ;component/Resources/Images/chart_curve.png"/>
                 </Button>
             </ToolBarPanel>
             <WpfPlot x:Name="PlotCurrent" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="True" Margin="5,5" Grid.Column="1" Grid.Row="1">
