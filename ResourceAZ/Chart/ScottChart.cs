@@ -104,8 +104,11 @@ namespace ResourceAZ.ScottChart
                 plot._chart.Refresh();
             }
 
-            _vm.X1 = span.X1;
-            _vm.X2 = span.X2;
+            _vm.X1 = Math.Min(span.X1, span.X2);
+            _vm.X2 = Math.Max(span.X1, span.X2);
+
+            _vm.SelectRangeDataGrid(DateTime.FromOADate(_vm.X1), DateTime.FromOADate(_vm.X2));
+
         }
 
     }

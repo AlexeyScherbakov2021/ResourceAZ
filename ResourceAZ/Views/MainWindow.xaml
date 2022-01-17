@@ -193,7 +193,7 @@
                 <Button Command="{Binding RemoveSelectedValuesCommand}" ToolTip="Удалить данные в диапазоне" Margin="5,0,0,0" Width="48">
                     <Image Source="/ResourceAZ;component/Resources/Images/Cancel.png"/>
                 </Button>
-                <Button Command="{Binding DropRangeCommand}" Margin="5,0,0,0" Width="48">
+                <Button Command="{Binding CalcApproxCommand}" Margin="5,0,0,0" Width="48">
                     <Image Source="/ResourceAZ;component/Resources/Images/calc.png"/>
                 </Button>
             </ToolBarPanel>

@@ -33,31 +33,23 @@ namespace ResourceAZ.Calculation
             if(model.SetSelectedRange)
             {
                 rangeList = model.listMeasure.Where(m => m.date >= MinDateValue && m.date <= MaxDateValue);
-                //indexStart = model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= model.MinSelectedValue.ToOADate()).First());
-                //indexStart = Array.IndexOf(model.dates, model.dates.FirstOrDefault(n => n >= model.X1));
-                //indexEnd = model.dpRavg.IndexOf(model.dpRavg.Where(a => a.X <= MaxDateValue.ToOADate()).Last());
-                //indexEnd = Array.IndexOf(model.dates, model.dates.LastOrDefault(n => n <= model.X2));
              }
             else
             {
-                //indexStart = 0;
                 rangeList = model.listMeasure;
-                //indexEnd = model.Ravg.Length - 1;
             }
 
             indexEnd = model.ApproxR.endIndex;
 
-            StartDate = DateTime.FromOADate(model.dates[Array.IndexOf(model.dates, model.dates.FirstOrDefault(n => n >= model.X1))]);
-            EndDate = DateTime.FromOADate(model.dates[Array.IndexOf(model.dates, model.dates.LastOrDefault(n => n <= model.X2))]);
+            StartDate = DateTime.FromOADate(model.dates[Array.IndexOf(model.dates, 
+                model.dates.FirstOrDefault(n => n >= (double.IsNaN(model.X1) ? 0 : model.X1)))]);
+            EndDate = DateTime.FromOADate(model.dates[Array.IndexOf(model.dates, 
+                model.dates.LastOrDefault(n => n <= (double.IsNaN(model.X2) ? double.MaxValue : model.X2)))]);
 
             listCalcMeasure = new ObservableCollection<Measure>();
-            //listMeasure = model.RangeForCalc 
-            //    ? model.listMeasure.Where(m => m.date >= MinDateValue && m.date <= MaxDateValue)
-            //    : model.listMeasure;
         }
 
-        //ObservableCollection<Measure> Calc(ObservableCollection<Measure> listMeasure, double MinSummPot, double maxCur, double maxNapr);
-        public abstract ObservableCollection<Measure> Calc(/*MainWindowViewModel model*/);
+        public abstract ObservableCollection<Measure> Calc();
 
         public abstract List<string> ResultText();
 

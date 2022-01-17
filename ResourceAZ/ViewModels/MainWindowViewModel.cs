@@ -39,13 +39,18 @@ namespace ResourceAZ.ViewModels
             set
             {
                 _X1 = value;
-                if(!double.IsNaN(_X1))
+                if (!double.IsNaN(_X1))
+                {
                     indexX1 = Array.IndexOf(dates, dates.FirstOrDefault(n => n >= _X1));
+                    MinSelectedValue = DateTime.FromOADate(_X1);
+                }
                 else
+                {
                     indexX1 = 0;
+                    MinSelectedValue = DateTime.MinValue;
+                }
             }
         }
-
 
         private double _X2 = double.NaN;
         public double X2
@@ -55,9 +60,15 @@ namespace ResourceAZ.ViewModels
             {
                 _X2 = value;
                 if (!double.IsNaN(_X2))
+                {
                     indexX2 = Array.IndexOf(dates, dates.LastOrDefault(n => n <= _X2));
+                    MaxSelectedValue = DateTime.FromOADate(_X2);
+                }
                 else
+                {
                     indexX2 = dates.Length - 1;
+                    MaxSelectedValue = DateTime.MinValue;
+                }
             }
         }
 
@@ -161,8 +172,8 @@ namespace ResourceAZ.ViewModels
 
         public bool RemoveBadValue { get; set; }
 
-        public bool CalcPotencial { get; set; } = true;
-        public bool CalcResist { get; set; }
+        public bool CalcPotencial { get; set; }
+        public bool CalcResist { get; set; } = true;
         public double MinPotCalc { get; set; } = -0.9;
         public double MaxCurrentSKZ { get; set; } = 15.0;
         public double MaxNaprSKZ { get; set; } = 48.0;
@@ -181,6 +192,9 @@ namespace ResourceAZ.ViewModels
         #endregion
 
         #region Команды
+        //----------------------------------------------------------------------------------------------
+        // команда закрытия программы
+        //----------------------------------------------------------------------------------------------
         public ICommand CloseApplicationCommand { get; }
         private bool CanCloseApplicationCommand(object p) => true;
         private void OnCloseApplicationCommandExecuted(object p)
@@ -188,6 +202,9 @@ namespace ResourceAZ.ViewModels
             Application.Current.Shutdown();
         }
 
+        //----------------------------------------------------------------------------------------------
+        // команда загрузки из Excel
+        //----------------------------------------------------------------------------------------------
         public ICommand FromExcelCommand { get; }
         private bool CanFromExcelCommand(object p) => true;
         private void OnFromExcelCommandExecuted(object p)
@@ -209,6 +226,9 @@ namespace ResourceAZ.ViewModels
 
         }
 
+        //----------------------------------------------------------------------------------------------
+        // команада группировки измерений
+        //----------------------------------------------------------------------------------------------
         public ICommand GroupByCommand { get; }
         private bool CanGroupByCommand(object p) => true;
         private void OnGroupByCommandExecuted(object p)
@@ -218,7 +238,9 @@ namespace ResourceAZ.ViewModels
             SelectGroup = param;
         }
 
+        //----------------------------------------------------------------------------------------------
         // команда на расчеты
+        //----------------------------------------------------------------------------------------------
         public ICommand CalculateCommand { get; }
         private bool CanCalculateCommand(object p)
         {
@@ -237,13 +259,18 @@ namespace ResourceAZ.ViewModels
 
         }
 
+        //----------------------------------------------------------------------------------------------
         // команда удаления строки из datagrid
+        //----------------------------------------------------------------------------------------------
         public ICommand DeleteLineCommand { get; }
         private bool CanDeleteLineCommand(object p)
         {
             return SelectedMeasure != null && SelectedMeasure?.Count > 0;
         }
-        // команда удаления строки из datagrid
+
+        //----------------------------------------------------------------------------------------------
+        // команда удаления строк из datagrid
+        //----------------------------------------------------------------------------------------------
         private void OnDeleteLineCommand(object p)
         {
             RemoveMeasureFromOrig(SelectedMeasure, SelectGroup);
@@ -260,7 +287,9 @@ namespace ResourceAZ.ViewModels
         }
 
 
+        //----------------------------------------------------------------------------------------------
         // команда на удаление недостоверных показаний
+        //----------------------------------------------------------------------------------------------
         public ICommand RemoveDeviationCommand { get; }
         private bool CanRemoveDeviationCommand(object p)
         {
@@ -287,7 +316,9 @@ namespace ResourceAZ.ViewModels
 
         }
 
+        //----------------------------------------------------------------------------------------------
         // команда удаления выбранного диапазона
+        //----------------------------------------------------------------------------------------------
         public ICommand RemoveSelectedValuesCommand { get; }
         private bool CanRemoveSelectedValuesCommand(object p)
         {
@@ -307,7 +338,9 @@ namespace ResourceAZ.ViewModels
             //OnDropRangeCommand(p);
         }
 
-        // комнда принятия диапазона для равсчетов
+        //----------------------------------------------------------------------------------------------
+        // комнда принятия диапазона для расчетов
+        //----------------------------------------------------------------------------------------------
         public ICommand SetRangeForCalcCommand { get; }
         private bool CanSetRangeForCalcCommand(object p)
         {
@@ -319,21 +352,30 @@ namespace ResourceAZ.ViewModels
 
             //RangeForCalc = SetSelectedRange;
 
-            if (double.IsNaN(X1))
+            if (SetSelectedRange)
             {
-                X1 = dates[0] + (dates[dates.Length - 1] - dates[0]) / 3;
-                X2 = X1 + (dates[dates.Length - 1] - dates[0]) / 3;
+                X1 = dates[0] + (dates.Last() - dates.First()) / 3;
+                X2 = X1 + (dates.Last() - dates.First()) / 3;
+            }
+            else
+            {
+                X1 = double.NaN;
+                X2 = double.NaN;
             }
             chartCurrent.SetSelectedRange(SetSelectedRange, X1, X2);
+            SelectRangeDataGrid(MinSelectedValue, MaxSelectedValue);
+            OnCalcApproxCommand(p);
         }
 
+        //----------------------------------------------------------------------------------------------
         // команда перерасчета линии аппроксимации
-        public ICommand DropRangeCommand { get; }
-        private bool CanDropRangeCalcCommand(object p)
+        //----------------------------------------------------------------------------------------------
+        public ICommand CalcApproxCommand { get; }
+        private bool CanCalcApproxCommand(object p)
         {
             return listMeasure.Count() > 0;
         }
-        private void OnDropRangeCommand(object p)
+        private void OnCalcApproxCommand(object p)
         {
             if(SetSelectedRange)
             {
@@ -378,7 +420,9 @@ namespace ResourceAZ.ViewModels
         }
 
 
+        //----------------------------------------------------------------------------------------------
         // событие после загрузки главного окна
+        //----------------------------------------------------------------------------------------------
         public ICommand CommandLoaded { get; }
         private bool CanCommandLoadedCommand(object p) => true;
 
@@ -404,7 +448,7 @@ namespace ResourceAZ.ViewModels
             RemoveDeviationCommand = new LambdaCommand(OnRemoveDeviationCommand, CanRemoveDeviationCommand);
             RemoveSelectedValuesCommand = new LambdaCommand(OnRemoveSelectedValuesCommand, CanRemoveSelectedValuesCommand);
             SetRangeForCalcCommand = new LambdaCommand(OnSetRangeForCalcCommand, CanSetRangeForCalcCommand);
-            DropRangeCommand = new LambdaCommand(OnDropRangeCommand, CanDropRangeCalcCommand);
+            CalcApproxCommand = new LambdaCommand(OnCalcApproxCommand, CanCalcApproxCommand);
             CommandLoaded = new LambdaCommand(OnCommandLoadedCommand, CanCommandLoadedCommand);
 
             // подгтовка графиков для всех измерений
@@ -424,9 +468,8 @@ namespace ResourceAZ.ViewModels
 
         void OpenNewList()
         {
-            SetSelectedRange = false;
+            //SetSelectedRange = false;
             SelectGroup = KindGroup.DAY;
-            X1 = X2 = double.NaN;
 
             SetSelectedRange = false;
             chartCurrent.SetSelectedRange(false);
@@ -446,6 +489,8 @@ namespace ResourceAZ.ViewModels
             GroupDay = true;
 
             CalculateApproximate();
+            X1 = listMeasure.First().date.ToOADate();
+            X2 = listMeasure.Last().date.ToOADate();
 
         }
 
@@ -543,12 +588,16 @@ namespace ResourceAZ.ViewModels
 
         }
 
+        //----------------------------------------------------------------------------------------------
         // отметка цветом для выбранного времени
+        //----------------------------------------------------------------------------------------------
         public void SelectRangeDataGrid(DateTime dtFrom, DateTime dtTo)
         {
-            SetSelectedRange = false;
-            MinSelectedValue = DateTime.MinValue;
-            MaxSelectedValue = DateTime.MinValue;
+            //SetSelectedRange = false;
+            //MinSelectedValue = DateTime.MinValue;
+            //MaxSelectedValue = DateTime.MinValue;
+            //MinSelectedValue = dtFrom;
+            //MaxSelectedValue = dtTo;
 
             foreach (Measure m in listMeasure)
                 m.SetColor = m.date <= dtTo && m.date >= dtFrom;
@@ -556,7 +605,9 @@ namespace ResourceAZ.ViewModels
         }
 
 
+        //----------------------------------------------------------------------------------------------
         // удаление выбранных дат из оригинального списка
+        //----------------------------------------------------------------------------------------------
         private void RemoveMeasureFromOrig(IList list, KindGroup kind)
         {
             IEnumerable<Measure> meas;
@@ -592,6 +643,10 @@ namespace ResourceAZ.ViewModels
 
         }
 
+
+        //----------------------------------------------------------------------------------------------
+        // расчет средних линий для сопротивления и коэффициентов
+        //----------------------------------------------------------------------------------------------
         void CalculateApproximate()
         {
             Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);

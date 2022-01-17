@@ -125,7 +125,6 @@
     <Compile Include="Calculation\CalculatePotencial.cs" />
     <Compile Include="Calculation\CalculateResist.cs" />
     <Compile Include="Chart\ApproxLine.cs" />
-    <Compile Include="Chart\BottomAxis.cs" />
     <Compile Include="Chart\ScottChart.cs" />
     <Compile Include="Chart\IChart.cs" />
     <Compile Include="Chart\MyPlotModel.cs" />

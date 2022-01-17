@@ -15,44 +15,44 @@ namespace ResourceAZ.ViewModels
 
     internal partial class MainWindowViewModel : ViewModel
     {
-        public ObservableCollection<DataPoint> InitChart(PlotModel model, string title)
-        {
-            ObservableCollection<DataPoint>  dp = new ObservableCollection<DataPoint>();
-            LineSeries ls = new LineSeries();
-            ls.ItemsSource = dp;
-            model.Series.Add(ls);
-            ls.Color = OxyColors.Blue;
-            ls.MarkerType = MarkerType.Circle;
-            ls.MarkerSize = 3;
-            ls.StrokeThickness = 2;
+        //public ObservableCollection<DataPoint> InitChart(PlotModel model, string title)
+        //{
+        //    ObservableCollection<DataPoint>  dp = new ObservableCollection<DataPoint>();
+        //    LineSeries ls = new LineSeries();
+        //    ls.ItemsSource = dp;
+        //    model.Series.Add(ls);
+        //    ls.Color = OxyColors.Blue;
+        //    ls.MarkerType = MarkerType.Circle;
+        //    ls.MarkerSize = 3;
+        //    ls.StrokeThickness = 2;
 
-            var XAxis = new BottomAxis(this);
-            XAxis.AxislineStyle = LineStyle.Dot;
-            XAxis.StringFormat = "MM.yyyy";
-            XAxis.MajorGridlineStyle = LineStyle.Automatic;
-            XAxis.MinorGridlineStyle = LineStyle.Dot;
-            XAxis.FontSize = 11;
-            XAxis.IsPanEnabled = false;
-            //XAxis.IntervalLength = 40;
-            XAxis.IntervalType = DateTimeIntervalType.Months;
-            model.Axes.Add(XAxis);
+        //    var XAxis = new BottomAxis(this);
+        //    XAxis.AxislineStyle = LineStyle.Dot;
+        //    XAxis.StringFormat = "MM.yyyy";
+        //    XAxis.MajorGridlineStyle = LineStyle.Automatic;
+        //    XAxis.MinorGridlineStyle = LineStyle.Dot;
+        //    XAxis.FontSize = 11;
+        //    XAxis.IsPanEnabled = false;
+        //    //XAxis.IntervalLength = 40;
+        //    XAxis.IntervalType = DateTimeIntervalType.Months;
+        //    model.Axes.Add(XAxis);
 
-            var YAxis = new LinearAxis();
-            YAxis.MajorGridlineStyle = LineStyle.Automatic;
-            YAxis.MinorGridlineStyle = LineStyle.Dot;
-            YAxis.FontSize = 11;
-            model.Title = title;
-            YAxis.IsZoomEnabled = false;
-            YAxis.IsPanEnabled = false;
-            YAxis.IntervalLength = 20;
-            YAxis.MinimumMajorStep = 0.1;
-            model.Axes.Add(YAxis);
+        //    var YAxis = new LinearAxis();
+        //    YAxis.MajorGridlineStyle = LineStyle.Automatic;
+        //    YAxis.MinorGridlineStyle = LineStyle.Dot;
+        //    YAxis.FontSize = 11;
+        //    model.Title = title;
+        //    YAxis.IsZoomEnabled = false;
+        //    YAxis.IsPanEnabled = false;
+        //    YAxis.IntervalLength = 20;
+        //    YAxis.MinimumMajorStep = 0.1;
+        //    model.Axes.Add(YAxis);
 
-            model.TitleFontSize = 13;
-            model.PlotMargins = new OxyThickness(20, 0, 5, 20);
+        //    model.TitleFontSize = 13;
+        //    model.PlotMargins = new OxyThickness(20, 0, 5, 20);
 
-            return dp;
-        }
+        //    return dp;
+        //}
 
 
         //--------------------------------------------------------------------------------------------
