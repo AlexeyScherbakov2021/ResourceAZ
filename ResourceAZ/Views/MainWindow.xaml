@@ -47,7 +47,7 @@
             <TextBlock Text="{Binding MaxSelectedValue, StringFormat=Максимальная дата: dd.MM.yyyy}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
             <TextBlock Text="{Binding ResistFunc, StringFormat=Функция линии сопротивления: \{0\}}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
         </StatusBar>
-        <Grid Margin="0,0,0,5" Width="422">
+        <Grid Margin="0" Width="422">
             <Grid.RowDefinitions>
                 <RowDefinition Height="127"/>
                 <RowDefinition/>
@@ -133,7 +133,7 @@
                 <RowDefinition Height="40*"/>
                 <RowDefinition Height="157*"/>
             </Grid.RowDefinitions>
-            <GroupBox Header="Параметры расчета" VerticalAlignment="Top" Height="174" Background="#FFE8E8E8" Margin="10,0,10,0" Grid.RowSpan="2">
+            <GroupBox Header="Параметры расчета" VerticalAlignment="Top" Height="264" Background="#FFE8E8E8" Margin="10,0,10,0" Grid.RowSpan="2">
                 <GroupBox.Effect>
                     <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
                 </GroupBox.Effect>
@@ -144,13 +144,15 @@
                     <TextBox Margin="172,32,0,0" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
                     <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
                     <TextBox Margin="172,55,0,0" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
-                    <RadioButton Content="Расчет по сопротивлению" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}"/>
-                    <RadioButton Content="Расчет по потенциалам" HorizontalAlignment="Left" Margin="10,107,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
+                    <RadioButton Content="Расчет по сопротивлению" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}"/>
+                    <RadioButton Content="Расчет по потенциалам" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
                     <TextBlock HorizontalAlignment="Left" Margin="10,79,0,0" TextWrapping="Wrap" Text="Степень для расчета" VerticalAlignment="Top"/>
-                    <TextBox Margin="172,78,8,0" VerticalAlignment="Top" Text="{Binding orderCalc}"/>
+                    <TextBox Margin="172,78,0,0" VerticalAlignment="Top" Text="{Binding orderCalc}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="31,171,0,0" TextWrapping="Wrap" Text="Ток для расчета" VerticalAlignment="Top"/>
+                    <TextBox Margin="172,171,0,0" VerticalAlignment="Top" Text="{Binding AvgCurrent, FallbackValue=null, StringFormat=F1, TargetNullValue=''}"/>
                 </Grid>
             </GroupBox>
-            <GroupBox Margin="10,26,10,0" Background="#FFE6E6E6" Grid.Row="1">
+            <GroupBox Margin="10,120,10,0" Background="#FFE6E6E6" Grid.Row="1">
                 <GroupBox.Effect>
                     <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
                 </GroupBox.Effect>
@@ -176,7 +178,7 @@
                 </Grid>
             </GroupBox>
         </Grid>
-        <Grid Margin="0,0,4,12">
+        <Grid Margin="0,0,4,1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>
                 <RowDefinition Height="*"/>

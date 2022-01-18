@@ -14,11 +14,14 @@ namespace ResourceAZ.Calculation
     {
         int LimitYearNapr = 0;
         double[] ApproxR;
+        double EndValueCurrent;
 
         public CalculateResist(MainWindowViewModel model) : base(model)
         {
             ApproxR = model.ApproxR.ApproxDigit;
         }
+
+
 
         public override ObservableCollection<Measure> Calc()
         {
@@ -28,12 +31,17 @@ namespace ResourceAZ.Calculation
                 : model.listMeasure;
 
 
-            double StartValueR = model.Ravg[0];
-            double EndValueR = model.Ravg[indexEnd];
+            //double StartValueR = model.Ravg[0];
+            double EndValueR = model.Ravg[indexEndR];
 
-            // рассчитываем среднее от 20 последних показаний тока
-            int Last20Current = rangeList.Count() >= 20 ? rangeList.Count() - 20 : 0;
-            double EndValueCurrent = rangeList.Skip(Last20Current).Average(a => a.Current);
+            if (model.AvgCurrent is null)
+            {
+                // рассчитываем среднее от 20 последних показаний тока
+                int Last20Current = rangeList.Count() >= 20 ? rangeList.Count() - 20 : 0;
+                EndValueCurrent = rangeList.Skip(Last20Current).Average(a => a.Current);
+            }
+            else
+                EndValueCurrent = model.AvgCurrent.Value;
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;
@@ -82,6 +90,7 @@ namespace ResourceAZ.Calculation
             List<string> resList = new List<string>
             {
                 "Тип расчета:  По сопротивлению",
+                $"Выходной ток для расчета {EndValueCurrent:F2}",
                 $"Предельный режим СКЗ для анодного заземлителя будет достигнут в { LimitYearNapr} году.",
             };
 

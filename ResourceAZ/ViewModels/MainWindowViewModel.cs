@@ -122,6 +122,13 @@ namespace ResourceAZ.ViewModels
             }
         }
 
+        // база данных измерений
+        //private IMeasureData repository = new MeasureDataGen();
+        private IMeasureData repository = new MeasureDataExcel();
+
+        public KindGroup SelectGroup;
+
+
         // измерения, преобраованные в списки точек для графика
         #region
         public double[] dates;
@@ -143,16 +150,9 @@ namespace ResourceAZ.ViewModels
         scottChart chartResist;
         #endregion
 
-        // база данных измерений
-        //private IMeasureData repository = new MeasureDataGen();
-        private IMeasureData repository = new MeasureDataExcel();
-
-        public KindGroup SelectGroup;
-
         // переменные связанные с экраннй формой
         #region
         public int orderCalc { get; set; } = 4;
-
         bool _GroupNone;
         public bool GroupNone
         {
@@ -169,9 +169,7 @@ namespace ResourceAZ.ViewModels
         {
             get => _GroupDay; set { Set(ref _GroupDay, value); }
         }
-
         public bool RemoveBadValue { get; set; }
-
         public bool CalcPotencial { get; set; }
         public bool CalcResist { get; set; } = true;
         public double MinPotCalc { get; set; } = -0.9;
@@ -188,7 +186,12 @@ namespace ResourceAZ.ViewModels
         }
         public bool _SetSelectedRange;
         public bool SetSelectedRange { get => _SetSelectedRange; set { Set(ref _SetSelectedRange, value); } }
-
+        private double? _AvgCurrent;
+        public double? AvgCurrent
+        {
+            get => _AvgCurrent;
+            set => Set(ref _AvgCurrent, value);
+        }
         #endregion
 
         #region Команды
@@ -248,10 +251,15 @@ namespace ResourceAZ.ViewModels
         }
         private void OnCalculateCommand(object p)
         {
+            // предварительный равсет средних линий
+            OnCalcApproxCommand(p);
+            // получение типа расчета
             KindCalc kc = CalcPotencial ? KindCalc.Potencial : KindCalc.Resist;
+            // последние значения сопротивления и коэффициента
             double LastR = listMeasure[listMeasure.Count - 1].Resist;
             double LastA = listMeasure[listMeasure.Count - 1].Koeff;
 
+            // открыть окно расчета
             CalcWindowViewModel vm = new CalcWindowViewModel(this);
             Window win = (Application.Current as App).displayRootRegistry.CreateWindowWithVM(vm);
             vm.view = (CalcWindow)win;
@@ -298,22 +306,29 @@ namespace ResourceAZ.ViewModels
         }
         private void OnRemoveDeviationCommand(object p)
         {
-            double AvgSumPot = listMeasureOrig.Average(a => a.SummPot);
-            double AvgCurrent = listMeasureOrig.Average(a => a.Current);
-            double AvgNapr = listMeasureOrig.Average(a => a.Napr);
-            double AvgResist = listMeasureOrig.Average(a => a.Resist);
-            double AvgKoef = listMeasureOrig.Average(a => a.Koeff);
+            //double AvgSumPot = listMeasureOrig.Average(a => a.SummPot);
+            //double AvgCurrent = listMeasureOrig.Average(a => a.Current);
+            //double AvgNapr = listMeasureOrig.Average(a => a.Napr);
+            //double AvgResist = listMeasureOrig.Average(a => a.Resist);
+            //double AvgKoef = listMeasureOrig.Average(a => a.Koeff);
 
-            IEnumerable<Measure> list = listMeasureOrig.Where(w => w.SummPot > -0.05 || w.SummPot < AvgSumPot * 2 ||
-                    w.Current < 0.01 || w.Current > AvgCurrent * 2 ||
-                    w.Napr < 0.01 || w.Napr > AvgNapr * 2 ||
-                    w.Resist < 0.1 || w.Resist > 50 ||
-                    w.Koeff > -0.1 || w.Koeff < AvgKoef * 2);
+            Mouse.OverrideCursor = Cursors.Wait;
+
+            IEnumerable<Measure> list = listMeasureOrig.Where(w => w.SummPot > 2 || w.SummPot < -6 
+                    || w.Current < 0.4 || w.Current > 80 
+                    || w.Napr < 1 || w.Napr > 100 
+                    || w.Resist < 0.3 || w.Resist > 90 
+                    //|| w.Koeff > -0.1 || w.Koeff < AvgKoef * 2
+                    );
 
             while (list.Count() > 0)
                 listMeasureOrig.Remove(list.First());
 
             FormatListMeasure(SelectGroup);
+            CalculateApproximate();
+
+
+            Mouse.OverrideCursor = null;
 
         }
 
@@ -327,6 +342,8 @@ namespace ResourceAZ.ViewModels
         }
         private void OnRemoveSelectedValuesCommand(object p)
         {
+            Mouse.OverrideCursor = Cursors.Wait;
+
             IList list = listMeasure.Where(w => w.SetColor).ToList();
 
             RemoveMeasureFromOrig(list, SelectGroup);
@@ -336,16 +353,21 @@ namespace ResourceAZ.ViewModels
 
             ModelToChart(listMeasure);
 
+            // переасчет средних линий
+
+            CalculateApproximate();
+
+            Mouse.OverrideCursor = null;
+
             //OnDropRangeCommand(p);
         }
 
         //----------------------------------------------------------------------------------------------
-        // комнда принятия диапазона для расчетов
+        // комнда установки-снятия диапазона
         //----------------------------------------------------------------------------------------------
         public ICommand SetRangeForCalcCommand { get; }
         private bool CanSetRangeForCalcCommand(object p)
         {
-            //return listMeasure.Where(w => w.SetColor).Count() > 0;
             return listMeasure.Count() > 0;
         }
         private void OnSetRangeForCalcCommand(object p)
@@ -355,8 +377,10 @@ namespace ResourceAZ.ViewModels
 
             if (SetSelectedRange)
             {
-                X1 = dates[0] + (dates.Last() - dates.First()) / 3;
-                X2 = X1 + (dates.Last() - dates.First()) / 3;
+                X1 = dates.First();
+                X2 = dates.Last();
+                //X1 = dates[0] + (dates.Last() - dates.First()) / 3;
+                //X2 = X1 + (dates.Last() - dates.First()) / 3;
             }
             else
             {
@@ -380,6 +404,9 @@ namespace ResourceAZ.ViewModels
         {
             if(SetSelectedRange)
             {
+                // если был выбран диапазон
+
+                // получаем точки, попавшие в диапазон
                 double[] rangeKoeff = new double[indexX2 - indexX1 + 1];
                 for (int i = 0, n = indexX1; i < rangeKoeff.Length; i++, n++)
                     rangeKoeff[i] = koeffs[n];
@@ -392,23 +419,27 @@ namespace ResourceAZ.ViewModels
                 for (int i = 0, n = indexX1; i < datesRange.Length; i++, n++)
                     datesRange[i] = dates[n];
 
-
+                // рассчитываем среднюю линию коэффициентов для диапазона 
                 Aavg = ApproxA.CalcDataPoint(rangeKoeff, datesRange, orderCalc);
+                // добавление расчетных точек
                 if (ApproxA.CalcAddRange(dates.Last()))
                 {
+                    // если добавленные точки есть, добавляем их в график
                     Aavg = ApproxA.GetY();
                     double[] d = ApproxA.GetX();
                     chartKoeff.AddSeriesOrUpdateApprox(d, Aavg);
                 }
 
-                //chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
-
+                // рассчитываем среднюю линию сопротивлений для диапазона 
                 Ravg = ApproxR.CalcDataPoint(rangeResist, datesRange, orderCalc);
+                // добавление расчетных точек
                 if (ApproxR.CalcAddRange(dates.Last()))
                 {
+                    // если добавленные точки есть, добавляем их в график
                     Ravg = ApproxR.GetY();
                     double[] d = ApproxR.GetX();
                     chartResist.AddSeriesOrUpdateApprox(d, Ravg);
+                    // получение рассчитанной функции в виде строки
                     ResistFunc = ApproxR.GetStringFunction();
                 }
 
@@ -441,16 +472,16 @@ namespace ResourceAZ.ViewModels
         public MainWindowViewModel()
         {
             // инициализация команд
-            CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecuted, CanCloseApplicationCommand);
+            CommandLoaded = new LambdaCommand(OnCommandLoadedCommand, CanCommandLoadedCommand);
+            GroupByCommand = new LambdaCommand(OnGroupByCommandExecuted, CanGroupByCommand);
             CalculateCommand = new LambdaCommand(OnCalculateCommand, CanCalculateCommand);
             FromExcelCommand = new LambdaCommand(OnFromExcelCommandExecuted, CanFromExcelCommand);
-            GroupByCommand = new LambdaCommand(OnGroupByCommandExecuted, CanGroupByCommand);
             DeleteLineCommand = new LambdaCommand(OnDeleteLineCommand, CanDeleteLineCommand);
-            RemoveDeviationCommand = new LambdaCommand(OnRemoveDeviationCommand, CanRemoveDeviationCommand);
-            RemoveSelectedValuesCommand = new LambdaCommand(OnRemoveSelectedValuesCommand, CanRemoveSelectedValuesCommand);
-            SetRangeForCalcCommand = new LambdaCommand(OnSetRangeForCalcCommand, CanSetRangeForCalcCommand);
             CalcApproxCommand = new LambdaCommand(OnCalcApproxCommand, CanCalcApproxCommand);
-            CommandLoaded = new LambdaCommand(OnCommandLoadedCommand, CanCommandLoadedCommand);
+            RemoveDeviationCommand = new LambdaCommand(OnRemoveDeviationCommand, CanRemoveDeviationCommand);
+            SetRangeForCalcCommand = new LambdaCommand(OnSetRangeForCalcCommand, CanSetRangeForCalcCommand);
+            CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecuted, CanCloseApplicationCommand);
+            RemoveSelectedValuesCommand = new LambdaCommand(OnRemoveSelectedValuesCommand, CanRemoveSelectedValuesCommand);
 
             // подгтовка графиков для всех измерений
             ApproxA = new ApproxLine();
@@ -506,7 +537,9 @@ namespace ResourceAZ.ViewModels
             switch (kind)
             {
                 case KindGroup.NONE:
+                    Mouse.OverrideCursor = Cursors.Wait;
                     listMeasure = new ObservableCollection<Measure>(listMeasureOrig);
+                    Mouse.OverrideCursor = null;
                     return;
 
                 case KindGroup.DAY:

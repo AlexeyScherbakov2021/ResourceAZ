@@ -108,7 +108,7 @@ namespace ResourceAZ.ViewModels
             {
                 // расчет по сопротивлениям
                 calc = new CalculateResist(model);
-                MaxCurrent = -1;
+                //MaxCurrent = -1;
             }
 
             if (calc == null)

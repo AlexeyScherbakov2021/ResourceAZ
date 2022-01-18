@@ -30,33 +30,30 @@ namespace ResourceAZ.Calculation
             //double StartValueR = model.dpRavg[0].Y;
             //double EndValueR = model.dpRavg[indexEnd].Y;
 
-            //double StartValueA = listMeasure[0].Koeff;
-            //double EndValueA = listMeasure[listMeasure.Count - 1].Koeff;
-            //double StartValueR = listMeasure[0].Resist;
-            //double EndValueR = listMeasure[listMeasure.Count - 1].Resist;
-
-            //DateTime EndDate = model.listMeasure[model.listMeasure.Count - 1].date;
-            //DateTime StartDate = model.listMeasure[0].date;
+            double StartValueA = rangeList.First().Koeff;
+            double EndValueA = rangeList.Last().Koeff;
+            double StartValueR = rangeList.First().Resist;
+            double EndValueR = rangeList.Last().Resist;
 
             TimeSpan dateSub = EndDate.Subtract(StartDate);
             double Years = dateSub.Days / 365.0;
 
-            //deltaA = (StartValueA - EndValueA) / Years;
-            //deltaR = (StartValueR - EndValueR) / Years;
+            deltaA = (StartValueA - EndValueA) / Years;
+            deltaR = (StartValueR - EndValueR) / Years;
 
             do
             {
                 Measure meas = new Measure();
-                //EndValueA -= deltaA;
-                //EndValueR -= deltaR;
-                //if (EndValueR <= 0.05)
-                //    EndValueR = 0.05;
-                //if (EndValueA >= -0.05)
-                //    EndValueA = -0.05;
-                //EndDate = EndDate.AddYears(1);
-                //meas.date = EndDate;
-                //meas.Koeff = EndValueA;
-                //meas.Resist = EndValueR;
+                EndValueA -= deltaA;
+                EndValueR -= deltaR;
+                if (EndValueR <= 0.05)
+                    EndValueR = 0.05;
+                if (EndValueA >= -0.05)
+                    EndValueA = -0.05;
+                EndDate = EndDate.AddYears(1);
+                meas.date = EndDate;
+                meas.Koeff = EndValueA;
+                meas.Resist = EndValueR;
                 meas.Current = model.MinPotCalc / meas.Koeff;
                 meas.Napr = meas.Current * meas.Resist;
                 listCalcMeasure.Add(meas);
