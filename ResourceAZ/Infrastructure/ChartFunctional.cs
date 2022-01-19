@@ -1,7 +1,4 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using ResourceAZ.Chart;
+﻿using ResourceAZ.Chart;
 using ResourceAZ.Models;
 using ResourceAZ.ScottChart;
 using ResourceAZ.ViewModels.Base;

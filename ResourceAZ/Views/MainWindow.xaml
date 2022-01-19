@@ -7,7 +7,6 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:inf="clr-namespace:ResourceAZ.Infrastructure"
         xmlns:vm="clr-namespace:ResourceAZ.ViewModels"
-        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
         Title="{Binding FileName}" Height="897.5" Width="1500" WindowStartupLocation="CenterScreen" Background="#FFE6E6E6">
     <i:Interaction.Triggers>

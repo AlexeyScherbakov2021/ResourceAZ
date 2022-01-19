@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using OxyPlot.Axes;
 using System.Collections.ObjectModel;
 using ResourceAZ.Views;
 using ResourceAZ.Calculation;
@@ -325,7 +324,7 @@ namespace ResourceAZ.ViewModels
                 listMeasureOrig.Remove(list.First());
 
             FormatListMeasure(SelectGroup);
-            CalculateApproximate();
+            //CalculateApproximate();
 
 
             Mouse.OverrideCursor = null;
@@ -619,6 +618,7 @@ namespace ResourceAZ.ViewModels
             }
 
             listMeasure = new ObservableCollection<Measure> (group.ToList());
+            CalculateApproximate();
 
         }
 
