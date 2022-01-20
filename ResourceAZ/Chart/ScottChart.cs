@@ -1,4 +1,5 @@
-﻿using ResourceAZ.ViewModels;
+﻿using Microsoft.Win32;
+using ResourceAZ.ViewModels;
 using ScottPlot;
 using ScottPlot.Plottable;
 using System;
@@ -7,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace ResourceAZ.ScottChart
 {
@@ -23,6 +25,9 @@ namespace ResourceAZ.ScottChart
             _chart = chart;
             _vm = vm;
             _vm.listPlot.Add(this);
+            _chart.RightClicked -= _chart.DefaultRightClickEvent;
+            _chart.RightClicked += DefaultRightClickEvent;
+
             //_chart.Plot.XAxis.Label("Время");
             _chart.Plot.XAxis.DateTimeFormat(true);
             _chart.Plot.XAxis.Grid(true);
@@ -38,7 +43,55 @@ namespace ResourceAZ.ScottChart
             span.Dragged += Span_Dragged;
             span.IsVisible = false;
 
+            double[] x = new double[1] { 0 };
+            AddSeriesOrUpdate(x, x);
+
         }
+
+
+        // Контекстное меню
+        public void DefaultRightClickEvent(object sender, EventArgs e)
+        {
+            var cm = new ContextMenu();
+
+            MenuItem SaveImageMenuItem = new MenuItem() { Header = "Сохранить изображение" };
+            SaveImageMenuItem.Click += RightClickMenu_SaveImage_Click;
+            cm.Items.Add(SaveImageMenuItem);
+
+            //MenuItem CopyImageMenuItem = new MenuItem() { Header = "Скопировать изображение" };
+            //CopyImageMenuItem.Click += RightClickMenu_Copy_Click;
+            //cm.Items.Add(CopyImageMenuItem);
+
+            MenuItem AutoAxisMenuItem = new MenuItem() { Header = "Вместить данные в окно" };
+            AutoAxisMenuItem.Click += RightClickMenu_AutoAxis_Click;
+            cm.Items.Add(AutoAxisMenuItem);
+
+            MenuItem OpenInNewWindowMenuItem = new MenuItem() { Header = "Открыть в новом окне" };
+            OpenInNewWindowMenuItem.Click += RightClickMenu_OpenInNewWindow_Click;
+            cm.Items.Add(OpenInNewWindowMenuItem);
+
+            cm.IsOpen = true;
+        }
+
+        //private void RightClickMenu_Copy_Click(object sender, EventArgs e) => 
+        //    System.Windows.Clipboard.SetImage(BmpImageFromBmp(Backend.GetLatestBitmap()));
+        private void RightClickMenu_OpenInNewWindow_Click(object sender, EventArgs e) => new WpfPlotViewer(_chart.Plot).Show();
+        private void RightClickMenu_AutoAxis_Click(object sender, EventArgs e) { _chart.Plot.AxisAuto(); _chart.Refresh(); }
+        private void RightClickMenu_SaveImage_Click(object sender, EventArgs e)
+        {
+            var sfd = new SaveFileDialog
+            {
+                FileName = "ScottPlot.png",
+                Filter = "PNG Files (*.png)|*.png;*.png" +
+                         "|JPG Files (*.jpg, *.jpeg)|*.jpg;*.jpeg" +
+                         "|BMP Files (*.bmp)|*.bmp;*.bmp" +
+                         "|All files (*.*)|*.*"
+            };
+
+            if (sfd.ShowDialog() is true)
+                _chart.Plot.SaveFig(sfd.FileName);
+        }
+
 
         public void AddSeriesOrUpdate(double[] X, double[] Y, string Name = "")
         {

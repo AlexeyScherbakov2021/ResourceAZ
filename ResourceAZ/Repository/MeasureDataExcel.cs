@@ -17,7 +17,6 @@ namespace ResourceAZ.Repository
     {
         public ObservableCollection<Measure> GetAllData(string Source)
         {
-            //App.CurrentAFWindow.Cursor = Cursors.Wait;
             Mouse.OverrideCursor = Cursors.Wait;
 
             ObservableCollection<Measure> listM = new ObservableCollection<Measure>();
@@ -41,14 +40,15 @@ namespace ResourceAZ.Repository
                     measure.Current = ToDouble(ws.Cell("C" + i).Value);
                     measure.SummPot = ToDouble(ws.Cell("D" + i).Value);
 
+                    //if (double.IsNaN(measure.SummPot))
+                    //    measure.SummPot = 0;
+
                     if (measure.Napr <= 0 || measure.Current <= 0 || measure.SummPot == 0 ||
                         Double.IsNaN(measure.Napr) || Double.IsNaN(measure.Current) ||  Double.IsNaN(measure.SummPot))
                         continue;
 
                     listM.Add(measure);
-
                 } 
-
             }
 
             Mouse.OverrideCursor = null;
@@ -92,7 +92,7 @@ namespace ResourceAZ.Repository
                         measure.Current = ToDouble(ws.Cell("C" + i).Value);
                         measure.SummPot = ToDouble(ws.Cell("D" + i).Value);
 
-                        if (measure.Napr <= 0 || measure.Current <= 0 || measure.SummPot == 0 ||
+                        if (measure.Napr <= 0 || measure.Current <= 0 /*|| measure.SummPot == 0*/ ||
                             Double.IsNaN(measure.Napr) || Double.IsNaN(measure.Current) || Double.IsNaN(measure.SummPot))
                             continue;
 

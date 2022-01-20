@@ -8,7 +8,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Background="#FFE6E6E6"
-        Title="CalcWindow" Height="749.196" Width="1397.823" WindowStartupLocation="CenterScreen">
+        Title="Расчет по сопротивлению" Height="629.196" Width="1156.323" WindowStartupLocation="CenterScreen">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding CommandLoaded}"/>
@@ -31,7 +31,15 @@
         <vm:CalcWindowViewModel/>
     </Window.DataContext>-->
     <Grid>
-        <GroupBox Header="Измеренные показания" Margin="19,49,0,0" HorizontalAlignment="Left" Width="389" Background="#FFE8E8E8" VerticalAlignment="Top" Height="525">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="171*"/>
+            <RowDefinition Height="128*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="424*"/>
+            <ColumnDefinition Width="725*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Измеренные показания" Margin="19,20,10,19" Background="#FFE8E8E8" Grid.RowSpan="2">
             <GroupBox.Effect>
                 <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
             </GroupBox.Effect>
@@ -41,7 +49,7 @@
                     <DataGridTextColumn Header="Дата" Binding="{Binding date, StringFormat=dd.MM.yyyy HH:mm}" />
                     <DataGridTextColumn Header="Вых.Ток" Binding="{Binding Current, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
                     <DataGridTextColumn Header="Напряж" Binding="{Binding Napr, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
-                    <DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>
+                    <!--<DataGridTextColumn Header="Коэфф." Binding="{Binding Koeff, StringFormat=F3}" CellStyle="{StaticResource CellRight}"/>-->
                     <DataGridTextColumn Header="Сопр." Binding="{Binding Resist, StringFormat=F2}" CellStyle="{StaticResource CellRight}"/>
                 </DataGrid.Columns>
                 <DataGrid.CellStyle>
@@ -57,23 +65,23 @@
 
             </DataGrid>
         </GroupBox>
-        <WpfPlot x:Name="PlotCurrent"  Margin="439,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
+        <WpfPlot x:Name="PlotCurrent"  Margin="16,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440" Visibility="Hidden" Grid.Column="1">
             <WpfPlot.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </WpfPlot.Effect>
         </WpfPlot>
-        <WpfPlot x:Name="PlotNapr"  Margin="903,49,0,0" BorderBrush="Black" VerticalAlignment="Top" Height="290" HorizontalAlignment="Left" Width="440">
+        <WpfPlot x:Name="PlotNapr"  Margin="16,19,15,12" BorderBrush="Black" Grid.Column="1">
             <WpfPlot.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </WpfPlot.Effect>
         </WpfPlot>
-        <GroupBox HorizontalAlignment="Left" Height="219" Margin="439,355,0,0" VerticalAlignment="Top" Width="904" Background="#FFF9F9F9">
+        <GroupBox Margin="16,12,15,19" Background="#FFF9F9F9" Grid.Column="1" Grid.Row="1">
             <GroupBox.Effect>
                 <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
             </GroupBox.Effect>
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Результаты расчета" VerticalAlignment="Top" FontSize="16"/>
-                <ListBox Padding="10" HorizontalAlignment="Left" Height="167" Margin="10,36,0,0" VerticalAlignment="Top" Width="872" Background="{x:Null}" ItemsSource="{Binding lbResult}" Focusable="False" IsTextSearchEnabled="False">
+                <ListBox Padding="10" Margin="10,36,10,10" Background="{x:Null}" ItemsSource="{Binding lbResult}" Focusable="False" IsTextSearchEnabled="False">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Template">

@@ -15,8 +15,8 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
-       
-        
+
+
         <inf:RowToBrushConverter x:Key="RowToBrushConverter"/>
 
         <Style TargetType="DataGridCell" x:Key="CellRight">
@@ -111,8 +111,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
+
+
         <Style TargetType="{x:Type Button}">
             <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
             <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
@@ -180,7 +180,7 @@
 
             <TextBlock Text="{Binding MinSelectedValue, StringFormat=Минимальная дата: dd.MM.yyyy}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
             <TextBlock Text="{Binding MaxSelectedValue, StringFormat=Максимальная дата: dd.MM.yyyy}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
-            <TextBlock Text="{Binding ResistFunc, StringFormat=Функция линии сопротивления: \{0\}}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
+            <TextBlock Text="{Binding ResistFunc, StringFormat=Функция линии сопротивления: \{0\}}" HorizontalAlignment="Left" Margin="23,0,0,0" Visibility="Hidden"/>
         </StatusBar>
         <Grid Margin="0" Width="422">
             <Grid.RowDefinitions>
@@ -192,11 +192,41 @@
                     <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
                 </GroupBox.Effect>
                 <Grid Margin="0">
-                    <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}"/>
-                    <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}"/>
-                    <RadioButton Content="Среднее по годам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.YEAR}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}"/>
-                    <RadioButton Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone}"/>
-                    <Button Margin="238,66,10,16" Command="{Binding RemoveDeviationCommand}" Content="Удалить отклонения"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="113*"/>
+                        <ColumnDefinition Width="85*"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton Content="Среднее по дням" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.DAY}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupDay}" Height="15" Width="114"/>
+                    <RadioButton Content="Среднее по месяцам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.MONTH}" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupMonth}" Height="15" Width="134"/>
+                    <RadioButton Content="Среднее по годам" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.YEAR}" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupYear}" Height="15" Width="119"/>
+                    <RadioButton Content="Все измерения" Command="{Binding GroupByCommand}" CommandParameter="{x:Static vm:KindGroup.NONE}" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top" IsChecked="{Binding GroupNone}" Height="15" Width="101"/>
+                    <TextBox Margin="0" Grid.Column="1" Text="{Binding MinCurrentRemove}" HorizontalAlignment="Left" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+                    <TextBox Margin="0,18,0,0" Grid.Column="1" Text="{Binding MinNaprRemove}" HorizontalAlignment="Left" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+                    <TextBox Margin="0,36,0,0" Grid.Column="1" Text="{Binding MinPotRemove}" HorizontalAlignment="Left" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+                    <TextBox Margin="0,54,0,0" Grid.Column="1" Text="{Binding MinResistRemove}" HorizontalAlignment="Left" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,0,0,0" Height="16" Width="8"/>
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,18,0,0" Height="16" Width="8"/>
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,36,0,0" Height="16" Width="8"/>
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,53,0,0" Height="16" Width="8"/>
+
+                    <TextBlock Text="выходной ток" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="47,0" Height="16" Width="76"/>
+                    <TextBlock Text="напряжение" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="51,18,51,0" Height="16" Width="68"/>
+                    <TextBlock Text="потенциал" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="55,36,55,0" Height="16" Width="60"/>
+                    <TextBlock Text="сопротивление" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="43,53,43,0" Height="16" Width="84"/>
+
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,33,0" Height="16" Width="8"/>
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,18,33,0" Height="16" Width="8"/>
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,36,33,0" Height="16" Width="8"/>
+                    <TextBlock Text="&lt;" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,53,33,0" Height="16" Width="8"/>
+
+                    <TextBox Margin="0" Grid.Column="1" Text="{Binding MaxCurrentRemove}" HorizontalAlignment="Right" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+                    <TextBox Margin="0,18,0,0" Grid.Column="1" Text="{Binding MaxNaprRemove}" HorizontalAlignment="Right" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+                    <TextBox Margin="0,36,0,0" Grid.Column="1" Text="{Binding MaxPotRemove}" HorizontalAlignment="Right" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+                    <TextBox Margin="0,54,0,0" Grid.Column="1" Text="{Binding MaxResistRemove}" HorizontalAlignment="Right" Width="31" Padding="0,-2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" Height="16"/>
+
+
+                    <Button Margin="10,76,10,6" Command="{Binding RemoveDeviationCommand}" Content="Удалить отклонения" Grid.Column="1"/>
                 </Grid>
             </GroupBox>
             <GroupBox Header="Измеренные показания" Margin="10,0,4,0" Background="#FFE8E8E8" Grid.Row="1">
@@ -273,18 +303,22 @@
                     <DropShadowEffect Color="#FFC5C5C5" ShadowDepth="2" BlurRadius="20"/>
                 </GroupBox.Effect>
                 <Grid>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top"/>
-                    <TextBox Margin="172,9,-0.7,0" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top"/>
-                    <TextBox Margin="172,32,0,0" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
-                    <TextBox Margin="172,55,0,0" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
-                    <RadioButton Content="Расчет по сопротивлению" HorizontalAlignment="Left" Margin="10,151,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}"/>
-                    <RadioButton Content="Расчет по потенциалам" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="10,79,0,0" TextWrapping="Wrap" Text="Степень для расчета" VerticalAlignment="Top"/>
-                    <TextBox Margin="172,78,0,0" VerticalAlignment="Top" Text="{Binding orderCalc}"/>
-                    <TextBlock HorizontalAlignment="Left" Margin="31,171,0,0" TextWrapping="Wrap" Text="Ток для расчета" VerticalAlignment="Top"/>
-                    <TextBox Margin="172,171,0,0" VerticalAlignment="Top" Text="{Binding AvgCurrent, FallbackValue=null, StringFormat=F1, TargetNullValue=''}"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="107*"/>
+                        <RowDefinition Height="135*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Минимальный потенциал" VerticalAlignment="Top" Visibility="Hidden"/>
+                    <TextBox Margin="172,9,0,0" Text="{Binding MinPotCalc}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18" Visibility="Hidden"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,33,0,0" TextWrapping="Wrap" Text="Максимальный ток СКЗ" VerticalAlignment="Top" Visibility="Hidden"/>
+                    <TextBox Margin="172,32,0,0" Text="{Binding MaxCurrentSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18" Visibility="Hidden"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,17,0,0" TextWrapping="Wrap" Text="Макс. напряжение СКЗ" VerticalAlignment="Top"/>
+                    <TextBox Margin="172,16,0,0" Text="{Binding MaxNaprSKZ}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="18"/>
+                    <RadioButton Content="Расчет по сопротивлению" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcResist}" Visibility="Hidden" Grid.Row="1"/>
+                    <RadioButton Content="Расчет по потенциалам" HorizontalAlignment="Left" Margin="10,21,0,0" VerticalAlignment="Top" IsChecked="{Binding CalcPotencial}" Visibility="Hidden" Grid.Row="1"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,40,0,0" TextWrapping="Wrap" Text="Степень для расчета" VerticalAlignment="Top"/>
+                    <TextBox Margin="172,39,0,0" VerticalAlignment="Top" Text="{Binding orderCalc}"/>
+                    <TextBlock HorizontalAlignment="Left" Margin="31,64,0,0" TextWrapping="Wrap" Text="Ток для расчета" VerticalAlignment="Top"/>
+                    <TextBox Margin="172,64,0,0" VerticalAlignment="Top" Text="{Binding AvgCurrent, FallbackValue=null, StringFormat=F1, TargetNullValue=''}"/>
                 </Grid>
             </GroupBox>
             <GroupBox Margin="10,120,10,0" Background="#FFE6E6E6" Grid.Row="1">
@@ -336,27 +370,27 @@
                     <Image Source="/ResourceAZ;component/Resources/Images/chart_curve.png"/>
                 </Button>
             </ToolBarPanel>
-            <WpfPlot x:Name="PlotCurrent" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="True" Margin="5,5" Grid.Column="1" Grid.Row="1">
+            <WpfPlot x:Name="PlotCurrent" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="True" Margin="10,5,5,5" Grid.Column="1" Grid.Row="1">
                 <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
                 </WpfPlot.Effect>
             </WpfPlot>
-            <WpfPlot x:Name="PlotNapr" Margin="5,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="2" Grid.Column="1">
+            <WpfPlot x:Name="PlotNapr" Margin="10,5,5,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="2" Grid.Column="1">
                 <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
                 </WpfPlot.Effect>
             </WpfPlot>
-            <WpfPlot x:Name="PlotPot" Margin="5,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="3" Grid.Column="1">
+            <WpfPlot x:Name="PlotPot" Margin="10,5,5,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="3" Grid.Column="1">
                 <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
                 </WpfPlot.Effect>
             </WpfPlot>
-            <WpfPlot x:Name="PlotKoeff" Margin="5,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="4" Grid.Column="1">
+            <WpfPlot x:Name="PlotKoeff" Margin="10,5,5,5" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="4" Grid.Column="1">
                 <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
                 </WpfPlot.Effect>
             </WpfPlot>
-            <WpfPlot x:Name="PlotResist" Margin="5,5,5,0" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="5" Grid.Column="1">
+            <WpfPlot x:Name="PlotResist" Margin="10,5,5,0" BorderBrush="Black" IsTabStop="False" Focusable="False" IsManipulationEnabled="False" Grid.Row="5" Grid.Column="1">
                 <WpfPlot.Effect>
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
                 </WpfPlot.Effect>

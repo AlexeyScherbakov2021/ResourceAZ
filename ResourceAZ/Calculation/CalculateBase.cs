@@ -34,7 +34,7 @@ namespace ResourceAZ.Calculation
 
             // индекс последнего значения в средней линии сопротивления
             indexEndR = model.ApproxR.endIndex;
-            indexEndA = model.ApproxA.endIndex;
+            //indexEndA = model.ApproxA.endIndex;
 
             StartDate = DateTime.FromOADate(model.dates[Array.IndexOf(model.dates, 
                 model.dates.FirstOrDefault(n => n >= (double.IsNaN(model.X1) ? 0 : model.X1)))]);

@@ -169,7 +169,10 @@ namespace ResourceAZ.ViewModels
             plotCurr.LineWidth = 3;
             view.PlotCurrent.Refresh();
 
-            view.PlotNapr.Plot.AddHorizontalLine(MaxNapr, Color.Red, 3, LineStyle.Solid);
+            var hline = view.PlotNapr.Plot.AddHorizontalLine(MaxNapr, Color.Red, 3, LineStyle.Solid);
+            hline.PositionLabel = true;
+            hline.PositionLabelBackground = hline.Color;
+            //hline.DragEnabled = true;
             ScatterPlot plotNapr = view.PlotNapr.Plot.AddScatter(dates, naprs, Color.Blue);
             view.PlotNapr.Plot.Title($"Напряжение, максимальное: {MaxNapr}", false);
             plotNapr.LineWidth = 3;

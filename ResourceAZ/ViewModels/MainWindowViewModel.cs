@@ -24,7 +24,7 @@ namespace ResourceAZ.ViewModels
 
     internal partial class MainWindowViewModel : ViewModel
     {
-        public ApproxLine ApproxA;
+        //public ApproxLine ApproxA;
         public ApproxLine ApproxR;
 
         public List<scottChart> listPlot;
@@ -151,6 +151,16 @@ namespace ResourceAZ.ViewModels
 
         // переменные связанные с экраннй формой
         #region
+
+        public double MinCurrentRemove { get; set; } = 0.4;
+        public double MaxCurrentRemove { get; set; } = 80;
+        public double MinNaprRemove { get; set; } = 1;
+        public double MaxNaprRemove { get; set; } = 100;
+        public double MinPotRemove { get; set; } = -6;
+        public double MaxPotRemove { get; set; } = 2;
+        public double MinResistRemove { get; set; } = 0.3;
+        public double MaxResistRemove { get; set; } = 90;
+
         public int orderCalc { get; set; } = 4;
         bool _GroupNone;
         public bool GroupNone
@@ -221,6 +231,13 @@ namespace ResourceAZ.ViewModels
             FileName = "";
 
             listMeasureOrig = repository.GetAllData(od.FileName);
+            if(listMeasureOrig.Count <= 0)
+            {
+                MessageBox.Show("Не удалось загрузить данные из файла " + od.FileName, "Ошибка", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
 
             OpenNewList();
 
@@ -294,7 +311,6 @@ namespace ResourceAZ.ViewModels
 
         }
 
-
         //----------------------------------------------------------------------------------------------
         // команда на удаление недостоверных показаний
         //----------------------------------------------------------------------------------------------
@@ -313,22 +329,18 @@ namespace ResourceAZ.ViewModels
 
             Mouse.OverrideCursor = Cursors.Wait;
 
-            IEnumerable<Measure> list = listMeasureOrig.Where(w => w.SummPot > 2 || w.SummPot < -6 
-                    || w.Current < 0.4 || w.Current > 80 
-                    || w.Napr < 1 || w.Napr > 100 
-                    || w.Resist < 0.3 || w.Resist > 90 
-                    //|| w.Koeff > -0.1 || w.Koeff < AvgKoef * 2
+            IEnumerable<Measure> list = listMeasureOrig.Where(w => w.SummPot > MaxPotRemove || w.SummPot < MinPotRemove 
+                    || w.Current < MinCurrentRemove || w.Current > MaxCurrentRemove 
+                    || w.Napr < MinNaprRemove || w.Napr > MaxNaprRemove 
+                    || w.Resist < MinResistRemove || w.Resist > MaxResistRemove 
                     );
 
             while (list.Count() > 0)
                 listMeasureOrig.Remove(list.First());
 
             FormatListMeasure(SelectGroup);
-            //CalculateApproximate();
-
 
             Mouse.OverrideCursor = null;
-
         }
 
         //----------------------------------------------------------------------------------------------
@@ -419,15 +431,15 @@ namespace ResourceAZ.ViewModels
                     datesRange[i] = dates[n];
 
                 // рассчитываем среднюю линию коэффициентов для диапазона 
-                Aavg = ApproxA.CalcDataPoint(rangeKoeff, datesRange, orderCalc);
+                //Aavg = ApproxA.CalcDataPoint(rangeKoeff, datesRange, orderCalc);
                 // добавление расчетных точек
-                if (ApproxA.CalcAddRange(dates.Last()))
-                {
-                    // если добавленные точки есть, добавляем их в график
-                    Aavg = ApproxA.GetY();
-                    double[] d = ApproxA.GetX();
-                    chartKoeff.AddSeriesOrUpdateApprox(d, Aavg);
-                }
+                //if (ApproxA.CalcAddRange(dates.Last()))
+                //{
+                //    // если добавленные точки есть, добавляем их в график
+                //    Aavg = ApproxA.GetY();
+                //    double[] d = ApproxA.GetX();
+                //    chartKoeff.AddSeriesOrUpdateApprox(d, Aavg);
+                //}
 
                 // рассчитываем среднюю линию сопротивлений для диапазона 
                 Ravg = ApproxR.CalcDataPoint(rangeResist, datesRange, orderCalc);
@@ -450,13 +462,11 @@ namespace ResourceAZ.ViewModels
 
         }
 
-
         //----------------------------------------------------------------------------------------------
         // событие после загрузки главного окна
         //----------------------------------------------------------------------------------------------
         public ICommand CommandLoaded { get; }
         private bool CanCommandLoadedCommand(object p) => true;
-
         private void OnCommandLoadedCommand(object p)
         {
             chartCurrent = new scottChart(App.mainWindow.PlotCurrent, this);
@@ -465,7 +475,6 @@ namespace ResourceAZ.ViewModels
             chartKoeff = new scottChart(App.mainWindow.PlotKoeff, this);
             chartResist = new scottChart(App.mainWindow.PlotResist, this);
         }
-
         #endregion
 
         public MainWindowViewModel()
@@ -483,13 +492,15 @@ namespace ResourceAZ.ViewModels
             RemoveSelectedValuesCommand = new LambdaCommand(OnRemoveSelectedValuesCommand, CanRemoveSelectedValuesCommand);
 
             // подгтовка графиков для всех измерений
-            ApproxA = new ApproxLine();
+            //ApproxA = new ApproxLine();
             ApproxR = new ApproxLine();
 
             listPlot = new List<scottChart>();
 
             dates = new double[0];
             currents = new double[0];
+
+
 
             listMeasureOrig = new ObservableCollection<Measure>();
             listMeasure = new ObservableCollection<Measure>();
@@ -683,8 +694,8 @@ namespace ResourceAZ.ViewModels
         //----------------------------------------------------------------------------------------------
         void CalculateApproximate()
         {
-            Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);
-            chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
+            //Aavg = ApproxA.CalcDataPoint(koeffs, dates, orderCalc);
+            //chartKoeff.AddSeriesOrUpdateApprox(dates, Aavg);
 
             Ravg = ApproxR.CalcDataPoint(resists, dates, orderCalc);
             chartResist.AddSeriesOrUpdateApprox(dates, Ravg);
