@@ -21,34 +21,44 @@ namespace ResourceAZ.Repository
 
             ObservableCollection<Measure> listM = new ObservableCollection<Measure>();
 
-            using (XLWorkbook wb = new XLWorkbook(Source))
+            try
             {
-                var ws = wb.Worksheets.Worksheet(1);
-
-                for(int i = 2; i < 100000; i++)
+                using (XLWorkbook wb = new XLWorkbook(Source))
                 {
+                    var ws = wb.Worksheets.Worksheet(1);
 
-                    DateTime dt = ToDateTime(ws.Cell("A" + i).Value);
+                    for (int i = 2; i < 100000; i++)
+                    {
+                        string cell = ws.Cell("A" + i).Value.ToString();
+                        if (string.IsNullOrEmpty(cell))
+                            break;
 
-                    if (dt == DateTime.MinValue)
-                        break;
+                        DateTime dt = ToDateTime(ws.Cell("A" + i).Value);
 
-                    Measure measure = new Measure();
-                    measure.date = dt;
+                        if (dt == DateTime.MinValue)
+                            continue;
 
-                    measure.Napr = ToDouble(ws.Cell("B" + i).Value);
-                    measure.Current = ToDouble(ws.Cell("C" + i).Value);
-                    measure.SummPot = ToDouble(ws.Cell("D" + i).Value);
+                        Measure measure = new Measure();
+                        measure.date = dt;
 
-                    //if (double.IsNaN(measure.SummPot))
-                    //    measure.SummPot = 0;
+                        measure.Napr = ToDouble(ws.Cell("B" + i).Value);
+                        measure.Current = ToDouble(ws.Cell("C" + i).Value);
+                        measure.SummPot = ToDouble(ws.Cell("D" + i).Value);
 
-                    if (measure.Napr <= 0 || measure.Current <= 0 || measure.SummPot == 0 ||
-                        Double.IsNaN(measure.Napr) || Double.IsNaN(measure.Current) ||  Double.IsNaN(measure.SummPot))
-                        continue;
+                        //if (double.IsNaN(measure.SummPot))
+                        //    measure.SummPot = 0;
 
-                    listM.Add(measure);
-                } 
+                        if (measure.Napr <= 0 || measure.Current <= 0 || measure.SummPot == 0 ||
+                            Double.IsNaN(measure.Napr) || Double.IsNaN(measure.Current) || Double.IsNaN(measure.SummPot))
+                            continue;
+
+                        listM.Add(measure);
+                    }
+                }
+            }
+            catch
+            {
+
             }
 
             Mouse.OverrideCursor = null;

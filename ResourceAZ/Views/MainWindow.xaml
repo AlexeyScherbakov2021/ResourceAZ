@@ -395,6 +395,11 @@
                     <DropShadowEffect Color="Gainsboro" ShadowDepth="1" BlurRadius="30"/>
                 </WpfPlot.Effect>
             </WpfPlot>
+            <TextBlock Text = "Выходной ток" Margin="0,-2,0,0" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Top" Grid.RowSpan="2" Background="White"  Grid.Row="1" FontWeight="Bold"/>
+            <TextBlock Text = "Напряжение" Margin="0,-2,0,0" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Top" Background="White" Grid.Row="2" FontWeight="Bold"/>
+            <TextBlock Text = "Потенциал" Margin="0,-2,0,0" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Top" Background="White" Grid.Row="3" FontWeight="Bold" />
+            <TextBlock Text = "Коэффициент" Margin="0,-2,0,0" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Top" Background="White" Grid.Row="4" FontWeight="Bold" />
+            <TextBlock Text = "Сопротивление" Margin="0,-2,0,0" HorizontalAlignment="Center" FontSize="14" VerticalAlignment="Top" Background="White" Grid.Row="5" FontWeight="Bold" />
         </Grid>
     </DockPanel>
 </Window>

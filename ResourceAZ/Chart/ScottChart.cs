@@ -36,10 +36,13 @@ namespace ResourceAZ.ScottChart
             //_chart.Plot.XAxis.`
             //_chart.Plot.XAxis.TickLabelStyle(null, null, 10, false, 30);
             //_chart.Plot.YAxis.Layout(0.1f);
+
             _chart.Plot.Layout(0,0,0,0, -3);
             _chart.Plot.Grid(true, Color.LightGray);
 
-            span = _chart.Plot.AddHorizontalSpan(0, 0, Color.FromArgb(140, 0, 255, 255));
+            //_chart.Plot.Title("33333");
+
+           span = _chart.Plot.AddHorizontalSpan(0, 0, Color.FromArgb(140, 0, 255, 255));
             span.Dragged += Span_Dragged;
             span.IsVisible = false;
 
