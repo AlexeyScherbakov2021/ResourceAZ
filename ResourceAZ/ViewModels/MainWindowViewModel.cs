@@ -18,6 +18,8 @@ using System.Collections;
 using ResourceAZ.Chart;
 using ResourceAZ.ScottChart;
 using ScottPlot;
+using ResourceAZ.Infrastructure;
+using static ResourceAZ.Infrastructure.Reg;
 
 namespace ResourceAZ.ViewModels
 {
@@ -126,7 +128,11 @@ namespace ResourceAZ.ViewModels
         private IMeasureData repository = new MeasureDataExcel();
 
         public KindGroup SelectGroup;
-
+        string Inform;
+        private DateTime _DTcount;
+        public DateTime DTcount { get => _DTcount; set { Set(ref _DTcount, value); } }
+        private Visibility _visibleButton;
+        public Visibility visibleButton { get => _visibleButton; set { Set( ref _visibleButton, value); } }
 
         // измерения, преобраованные в списки точек для графика
         #region
@@ -218,7 +224,8 @@ namespace ResourceAZ.ViewModels
         // команда загрузки из Excel
         //----------------------------------------------------------------------------------------------
         public ICommand FromExcelCommand { get; }
-        private bool CanFromExcelCommand(object p) => true;
+        private bool CanFromExcelCommand(object p) => Inform == Encryption.UniqueMachineId() + Encryption.GetMACAddress() &&
+            DTcount >= DateTime.Now;
         private void OnFromExcelCommandExecuted(object p)
         {
             OpenFileDialog od = new OpenFileDialog();
@@ -238,7 +245,6 @@ namespace ResourceAZ.ViewModels
                 return;
             }
 
-
             OpenNewList();
 
             FileName = od.FileName;
@@ -249,7 +255,7 @@ namespace ResourceAZ.ViewModels
         // команада группировки измерений
         //----------------------------------------------------------------------------------------------
         public ICommand GroupByCommand { get; }
-        private bool CanGroupByCommand(object p) => true;
+        private bool CanGroupByCommand(object p) => listMeasureOrig.Count > 0;
         private void OnGroupByCommandExecuted(object p)
         {
             KindGroup param = (KindGroup)p;
@@ -475,11 +481,41 @@ namespace ResourceAZ.ViewModels
             chartKoeff = new scottChart(App.mainWindow.PlotKoeff, this);
             chartResist = new scottChart(App.mainWindow.PlotResist, this);
         }
+
+        //----------------------------------------------------------------------------------------------
+        // 
+        //----------------------------------------------------------------------------------------------
+        public ICommand CommandLives { get; }
+        private bool CanLivesCommand(object p) => true;
+        private void OnLivesCommand(object p)
+        {
+            LiveView dlg = new LiveView();
+            dlg.ShowDialog();
+            Inform = Reg.GetInf();
+
+            if (!string.IsNullOrEmpty(Inform))
+            {
+                string[] str1 = Inform.Split('@');
+                string Mach = Encryption.UniqueMachineId() + Encryption.GetMACAddress();
+
+                DTcount = new DateTime(int.Parse(str1[1].Substring(6, 4)),
+                            int.Parse(str1[1].Substring(3, 2)), int.Parse(str1[1].Substring(0, 2)));
+
+                Inform = str1[0];
+
+                visibleButton = Inform == Mach && DTcount <= DateTime.Now ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
+
         #endregion
 
         public MainWindowViewModel()
         {
+
+            Inform = Reg.GetInf();
+
             // инициализация команд
+            CommandLives = new LambdaCommand(OnLivesCommand, CanLivesCommand);
             CommandLoaded = new LambdaCommand(OnCommandLoadedCommand, CanCommandLoadedCommand);
             GroupByCommand = new LambdaCommand(OnGroupByCommandExecuted, CanGroupByCommand);
             CalculateCommand = new LambdaCommand(OnCalculateCommand, CanCalculateCommand);
@@ -501,6 +537,16 @@ namespace ResourceAZ.ViewModels
             currents = new double[0];
 
 
+            string[] str1 = Inform.Split('@');
+            string Mach = Encryption.UniqueMachineId() + Encryption.GetMACAddress();
+
+            if (str1.Length >= 2)
+            {
+                DTcount = new DateTime(int.Parse(str1[1].Substring(6, 4)),
+                            int.Parse(str1[1].Substring(3, 2)), int.Parse(str1[1].Substring(0, 2)));
+            }
+            Inform = str1[0];
+            visibleButton = Inform == Mach && DTcount >= DateTime.Now ? Visibility.Hidden : Visibility.Visible;
 
             listMeasureOrig = new ObservableCollection<Measure>();
             listMeasure = new ObservableCollection<Measure>();

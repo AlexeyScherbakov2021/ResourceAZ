@@ -181,6 +181,7 @@
             <TextBlock Text="{Binding MinSelectedValue, StringFormat=Минимальная дата: dd.MM.yyyy}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
             <TextBlock Text="{Binding MaxSelectedValue, StringFormat=Максимальная дата: dd.MM.yyyy}" HorizontalAlignment="Left" Margin="23,0,0,0"/>
             <TextBlock Text="{Binding ResistFunc, StringFormat=Функция линии сопротивления: \{0\}}" HorizontalAlignment="Left" Margin="23,0,0,0" Visibility="Hidden"/>
+            <TextBlock Text="{Binding DTcount, StringFormat=Дата окончания лицензии:  dd.MM.yyyy}" HorizontalAlignment="Right" Margin="23,0,0,0" Visibility="Visible"/>
         </StatusBar>
         <Grid Margin="0" Width="422">
             <Grid.RowDefinitions>
@@ -336,6 +337,13 @@
                         <StackPanel Orientation="Horizontal" >
                             <Image Source="/ResourceAZ;component/Resources/Images/door.png" Width="32" Height="32" Margin="5"/>
                             <TextBlock Margin="5" Text="Закрыть программу" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Width="79"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" VerticalAlignment="Top" Width="160" Height="60" 
+                            Command="{Binding CommandLives}" Margin="0,264,0,0" Visibility="{Binding visibleButton}">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/ResourceAZ;component/Resources/Images/Lock T¬ Unlocked.png" Width="32" Height="32" Margin="5"/>
+                            <TextBlock Margin="5" Text="Регистрация программы" TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" Width="79"/>
                         </StackPanel>
                     </Button>
                     <Button HorizontalAlignment="Center" Margin="26,96,26,0" VerticalAlignment="Top" Width="160" Height="60" Command="{Binding CalculateCommand}">
