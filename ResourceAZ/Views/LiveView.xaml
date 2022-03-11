@@ -6,24 +6,24 @@
         xmlns:vm="clr-namespace:ResourceAZ.ViewModels"
         xmlns:local="clr-namespace:ResourceAZ.Views"
         mc:Ignorable="d"
-        Title="LiveView" Height="590" Width="1000" WindowStartupLocation="CenterScreen">
+        Title="Регистрация" Height="590" Width="1000" WindowStartupLocation="CenterScreen" Background="#FFF0EEEE">
     <Window.DataContext>
         <vm:LiveViewModel/>
     </Window.DataContext>
 
     <Grid>
-        <Label Margin="0" VerticalAlignment="Top" FontSize="20">
-            <TextBlock TextWrapping="Wrap" Margin="15,15,0,0"><Run Text="Программа не зарегестрирована. Для ее использвания необходимо произвести регистрацию"/><Run Text=". "/></TextBlock>
+        <Label Margin="0,17,0,0" VerticalAlignment="Top" FontSize="20" HorizontalAlignment="Center" FontWeight="Bold">
+            <TextBlock TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center"><Run Text="Программа не зарегестрирована. Для ее использвания необходимо произвести регистрацию"/><Run Text=". "/></TextBlock>
         </Label>
-        <TextBlock TextWrapping="Wrap" Margin="56.5,159.5,0,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top"><Run Text="Отправьте указанный ниже файл на "/><Run Text="e-mail support@ngk-ehz.ru"/><Run Text=". Ожидайте ответное письмо."/></TextBlock>
-        <TextBlock Text="Файл для отправки" Margin="56,201,0,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
+        <TextBox TextWrapping="Wrap" Margin="56,146,0,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" Text="Отправьте указанный ниже файл на e-mail y.razdobudko@ngk-ehz.ru. Ожидайте ответное письмо." BorderThickness="0" Background="{x:Null}"/>
+        <TextBlock Text="Файл для отправки" Margin="56,188,0,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
         <TextBlock TextWrapping="Wrap" Margin="56.5,275.5,0,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top"><Run Text="Откройте полученный файл или перетащите его в окно "/><Run Text="н"/><Run Text="иже."/><Run Text=" И после этого нажмите кнопку «Выполнить регистрацию»."/></TextBlock>
         <Grid Margin="211,197,0,0" HorizontalAlignment="Left" Width="679" VerticalAlignment="Top" Height="31.96">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="203*"/>
                 <ColumnDefinition Width="23*"/>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="tbGet" IsReadOnly="True" Margin="0,0,10,0" Grid.ColumnSpan="2" FontSize="16" Text="{Binding GetFile}" />
+            <TextBox x:Name="tbGet" IsReadOnly="True" Margin="0,-13,10,12.96" Grid.ColumnSpan="2" FontSize="16" Text="{Binding GetFile}" />
         </Grid>
         <TextBlock Text="Ответный файл" Margin="56.5,320.563,0,0" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBlock>
         <Grid Margin="211,315.5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="665" Height="34.72">

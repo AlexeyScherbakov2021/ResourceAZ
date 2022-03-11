@@ -31,7 +31,15 @@ namespace ResourceAZ.ViewModels
         private void OnLiveCommandExecuted(object p)
         {
             string saveFile = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\ResourceAZ.lic";
-            File.Copy(Answer, saveFile, true);
+            try
+            {
+                File.Copy(Answer, saveFile, true);
+            }
+            catch
+            {
+
+            }
+
             WindowCollection wins = App.Current.Windows;
             foreach(Window win in App.Current.Windows)
             {
