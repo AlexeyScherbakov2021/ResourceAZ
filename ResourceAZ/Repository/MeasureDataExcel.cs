@@ -18,7 +18,6 @@ namespace ResourceAZ.Repository
         public ObservableCollection<Measure> GetAllData(string Source)
         {
             Mouse.OverrideCursor = Cursors.Wait;
-
             ObservableCollection<Measure> listM = new ObservableCollection<Measure>();
 
             try
@@ -27,7 +26,7 @@ namespace ResourceAZ.Repository
                 {
                     var ws = wb.Worksheets.Worksheet(1);
 
-                    for (int i = 2; i < 100000; i++)
+                    for (int i = 1; i < 100000; i++)
                     {
                         string cell = ws.Cell("A" + i).Value.ToString();
                         if (string.IsNullOrEmpty(cell))
@@ -48,7 +47,7 @@ namespace ResourceAZ.Repository
                         //if (double.IsNaN(measure.SummPot))
                         //    measure.SummPot = 0;
 
-                        if (measure.Napr <= 0 || measure.Current <= 0 || measure.SummPot == 0 ||
+                        if (measure.Napr <= 0 || measure.Current <= 0 /*|| measure.SummPot == 0*/ ||
                             Double.IsNaN(measure.Napr) || Double.IsNaN(measure.Current) || Double.IsNaN(measure.SummPot))
                             continue;
 
@@ -118,21 +117,24 @@ namespace ResourceAZ.Repository
 
 
 
-
-
-
         double ToDouble(object obj)
         {
-            //double d = 0;
+            double d = 0;
             string s = obj.ToString();
             int index = s.IndexOfAny(new char[] {',', '.' });
 
+
             if (index < 1)
-                return double.NaN;
+            {
+                if (double.TryParse(s, out d))
+                    return d;
+                else
+                    return double.NaN;
+            }
 
             if (!double.TryParse(s, NumberStyles.Number, 
                 new NumberFormatInfo() { NumberDecimalSeparator = s[index].ToString() } , 
-                out double d))
+                out d))
                 return double.NaN;
 
             //string ds = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
